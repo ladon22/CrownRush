@@ -6,7 +6,12 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public GridManager GridManager;
     [HideInInspector]
+    public TurnManager TurnManager;
+    [HideInInspector]
+    public EnemyManager EnemyManager;
+    [HideInInspector]
     public InputController InputController;
+    
 
     public GameObject PreviewIndicator;
 
@@ -40,6 +45,7 @@ public class PlayerController : MonoBehaviour
         if (IsMoving) return;
 
         int TargetX = CurrentX;
+        int TargetY = CurrentY;
         if (Direction == SwipeDirection.Left) TargetX -= MoveCount;
         else if (Direction == SwipeDirection.Right) TargetX += MoveCount;
 
@@ -48,9 +54,11 @@ public class PlayerController : MonoBehaviour
         if (Direction == SwipeDirection.Up)  
         {
             TargetX = CurrentX;
+            TargetY += MoveCount;
         }
+        TargetY = Mathf.Clamp(TargetY, 0, GridManager.Rows - 1);
 
-        Vector2 PreviewPos = GridManager.GetWorldPosition(TargetX, CurrentY);
+        Vector2 PreviewPos = GridManager.GetWorldPosition(TargetX, TargetY);
         PreviewIndicator.transform.position = PreviewPos;
         PreviewIndicator.SetActive(true);
     }
@@ -78,6 +86,7 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(SmoothMove(TargetWorldPos));
         }
     }
+
     private void HidePreview()
     {
         if (PreviewIndicator != null)
@@ -88,6 +97,7 @@ public class PlayerController : MonoBehaviour
     private void Attack()
     {
         Debug.Log("АјАн");
+        StartCoroutine(SmoothAttack());
     }
 
     private void UpdatePositionInstantly()
@@ -104,5 +114,37 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
         IsMoving = false;
+
+        if (TurnManager != null) TurnManager.EndPlayerTurn();
+    }
+
+    private IEnumerator SmoothAttack()
+    {
+        IsMoving = true;
+        Vector2 TargetPosition = GridManager.GetWorldPosition(CurrentX, CurrentY + 1);
+        while ((Vector2)transform.position != TargetPosition)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, TargetPosition, MoveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        if (EnemyManager != null)
+        {
+            EnemyBase SelectedEnemy = EnemyManager.GetEnemyAtPosition(CurrentX, CurrentY + 1);
+            if (SelectedEnemy != null)
+            {
+                EnemyManager.RemoveEnemy(SelectedEnemy);
+                SelectedEnemy.Die();
+            }
+        }
+
+        TargetPosition = GridManager.GetWorldPosition(CurrentX,CurrentY);
+        while ((Vector2)transform.position != TargetPosition)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, TargetPosition, MoveSpeed * Time.deltaTime);
+            yield return null;
+        }
+        IsMoving = false;
+        if (TurnManager != null) TurnManager.EndPlayerTurn();
     }
 }

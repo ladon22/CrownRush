@@ -15,12 +15,15 @@ public class GameManager : MonoBehaviour
     public GridManager GridManager;
     public BoardRenderer BoardRenderer;
     public InputController InputController;
+    public TurnManager TurnManager;
+    public EnemyManager EnemyManager;
 
     public GameObject PlayerPrefab;
 
     void Start()
     {
         InitiallizeGameStage();
+        TurnManager.StartGameLoop();
     }
 
     public void ChangeState(GameState state)
@@ -71,6 +74,8 @@ public class GameManager : MonoBehaviour
             Controller.InputController = InputController;
             Controller.CurrentX = StartX;
             Controller.CurrentY = StartY;
+            Controller.TurnManager = TurnManager;
+            Controller.EnemyManager = EnemyManager;
         }
 
     }
