@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 public abstract class EnemyBase : MonoBehaviour
@@ -10,7 +11,7 @@ public abstract class EnemyBase : MonoBehaviour
     public int CurrentX;
     public int CurrentY;
     public float MoveSpeed = 15f;
-
+    public int ScoreValue = 1;
     public virtual void Initialize(EnemyManager EnemyManager, GridManager GridManager, int StartX, int StartY)
     {
         this.EnemyManager = EnemyManager;
@@ -25,10 +26,12 @@ public abstract class EnemyBase : MonoBehaviour
     public virtual IEnumerator MoveRoutine()
     {
         CalculateNextPosition();
+
         if (CurrentY < 0)
         {
             if (EnemyManager != null)
             {
+                ApplyDamage();
                 EnemyManager.RemoveEnemy(this);
             }
             Destroy(gameObject);
@@ -43,10 +46,37 @@ public abstract class EnemyBase : MonoBehaviour
             transform.position = Vector2.MoveTowards(transform.position, TargetPosition, MoveSpeed * Time.deltaTime);
             yield return null;
         }
+
+        if (CurrentY == 0)
+        {
+            PlayerController Player = FindFirstObjectByType<PlayerController>();
+            if (Player != null && Player.CurrentX == CurrentX && Player.CurrentY == this.CurrentY)
+            {
+                if (EnemyManager != null)
+                {
+                    EnemyManager.RemoveEnemy(this);
+                }
+                Die();
+            }
+        }
     }
 
     public virtual void Die()
     {
+        ScoreManager ScoreManager = FindFirstObjectByType<ScoreManager>();
+        if (ScoreManager != null)
+        {
+            ScoreManager.AddScore(ScoreValue);
+        }
         Destroy(gameObject);
+    }
+
+    public virtual void ApplyDamage()
+    {
+        PlayerController Player = FindFirstObjectByType<PlayerController>();
+        if (Player != null && Player.HealthComponent != null)
+        {
+            Player.HealthComponent.TakeDamage(1);
+        }
     }
 }

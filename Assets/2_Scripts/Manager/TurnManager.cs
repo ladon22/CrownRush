@@ -5,7 +5,7 @@ public class TurnManager : MonoBehaviour
 {
     public GameManager GameManager;
     public EnemyManager EnemyManager;
-
+    public float TurnDelay = 0.5f;
     public void StartGameLoop()
     {
         EnemyManager.SpawnEnemy();
@@ -14,7 +14,7 @@ public class TurnManager : MonoBehaviour
     
     public void StartPlayerTurn()
     {
-        GameManager.ChangeState(GameState.PlayerTurn);
+        StartCoroutine(DelayStartPlayerTurn());
         Debug.Log("----플레이어 턴----");
     }
 
@@ -29,10 +29,17 @@ public class TurnManager : MonoBehaviour
     private IEnumerator EnemyTurnRoutine()
     {
         GameManager.ChangeState(GameState.EnemyTurn);
+        yield return new WaitForSeconds(TurnDelay);
         Debug.Log("--- 적 턴 시작 (이동 및 스폰) ---");
 
         yield return StartCoroutine(EnemyManager.ProcessEnemiesTurnRoutine());
-
         StartPlayerTurn();
     }
+
+    private IEnumerator DelayStartPlayerTurn()
+    {
+        GameManager.ChangeState(GameState.PlayerTurn);
+        yield return new WaitForSeconds(TurnDelay);
+    }
+
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -11,7 +12,8 @@ public class PlayerController : MonoBehaviour
     public EnemyManager EnemyManager;
     [HideInInspector]
     public InputController InputController;
-    
+    [HideInInspector]
+    public HealthComponent HealthComponent;
 
     public GameObject PreviewIndicator;
 
@@ -22,7 +24,8 @@ public class PlayerController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if(InputController != null)
+        HealthComponent = GetComponent<HealthComponent>();
+        if (InputController != null)
         {
             InputController.OnSwipeUpdate += HandleSwipeUpdate;
             InputController.OnSwipeEnd += HandleSwipeEnd;
@@ -42,6 +45,8 @@ public class PlayerController : MonoBehaviour
 
     private void HandleSwipeUpdate(SwipeDirection Direction, int MoveCount)
     {
+        if (TurnManager.GameManager.CurrentState == GameState.EnemyTurn || HealthComponent.CurrentHealth <= 0) return;
+
         if (IsMoving) return;
 
         int TargetX = CurrentX;
@@ -65,6 +70,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleSwipeEnd(SwipeDirection Direction, int MoveCount)
     {
+        if (TurnManager.GameManager.CurrentState == GameState.EnemyTurn || HealthComponent.CurrentHealth <= 0) return;
         HidePreview();
 
         if (IsMoving) return;
@@ -100,11 +106,6 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(SmoothAttack());
     }
 
-    private void UpdatePositionInstantly()
-    {
-        if (GridManager != null) transform.position = GridManager.GetWorldPosition(CurrentX, CurrentY);
-    }
-
     private IEnumerator SmoothMove(Vector2 TargetPosition)
     {
         IsMoving = true;
@@ -115,6 +116,7 @@ public class PlayerController : MonoBehaviour
         }
         IsMoving = false;
 
+        AttackEnemyAt(CurrentX, CurrentY);
         if (TurnManager != null) TurnManager.EndPlayerTurn();
     }
 
@@ -128,15 +130,7 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
 
-        if (EnemyManager != null)
-        {
-            EnemyBase SelectedEnemy = EnemyManager.GetEnemyAtPosition(CurrentX, CurrentY + 1);
-            if (SelectedEnemy != null)
-            {
-                EnemyManager.RemoveEnemy(SelectedEnemy);
-                SelectedEnemy.Die();
-            }
-        }
+        AttackEnemyAt(CurrentX, CurrentY + 1);
 
         TargetPosition = GridManager.GetWorldPosition(CurrentX,CurrentY);
         while ((Vector2)transform.position != TargetPosition)
@@ -146,5 +140,30 @@ public class PlayerController : MonoBehaviour
         }
         IsMoving = false;
         if (TurnManager != null) TurnManager.EndPlayerTurn();
+    }
+
+    private void AttackEnemyAt(int TargetX, int TargetY)
+    {
+        if (EnemyManager != null)
+        {
+            EnemyBase SelectedEnemy = EnemyManager.GetEnemyAtPosition(TargetX, TargetY);
+            if (SelectedEnemy != null)
+            {
+                EnemyManager.RemoveEnemy(SelectedEnemy);
+                SelectedEnemy.Die();
+            }
+        }
+    }
+
+    public void ResetPlayer()
+    {
+        GridManager.GetPlayerStartIndex(out CurrentX, out CurrentY);
+        transform.position = GridManager.GetWorldPosition(CurrentX, CurrentY);
+
+        if (HealthComponent != null)
+        {
+            HealthComponent.ResetHealth();
+        }
+        IsMoving = false;
     }
 }
