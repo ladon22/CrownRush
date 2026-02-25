@@ -2,11 +2,34 @@ using UnityEngine;
 
 public class LinearEnemy : EnemyBase
 {
+    bool bIsResting = false;
+
     public override void CalculateNextPosition()
     {
-        if (!IsPositionOccupied(CurrentX, CurrentY - 1))
+        if (bIsResting)
         {
-            CurrentY -= 1;
+            bIsResting = false;
+            return;
         }
+        PlayerController Player = FindFirstObjectByType<PlayerController>();
+        if (Player == null) return;
+
+        int DiffX = Player.CurrentX - CurrentX;
+        int DiffY = Player.CurrentY - CurrentY;
+
+        if (Mathf.Abs(DiffX) > Mathf.Abs(DiffY))
+        {
+            CurrentX += (int)Mathf.Sign(DiffX);
+        }
+        else if (DiffY != 0)
+        {
+            CurrentY += (int)Mathf.Sign(DiffY);
+        }
+        else
+        {
+            CurrentX += (int)Mathf.Sign(DiffX);
+        }
+
+        bIsResting = true;
     }
 }

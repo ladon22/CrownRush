@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -43,115 +44,76 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void HandleSwipeUpdate(SwipeDirection Direction, int MoveCount)
+    private void HandleSwipeUpdate(Vector2Int Direction)
     {
         if (TurnManager.GameManager.CurrentState == GameState.EnemyTurn || HealthComponent.CurrentHealth <= 0) return;
 
         if (IsMoving) return;
 
-        int TargetX = CurrentX;
-        int TargetY = CurrentY;
-        if (Direction == SwipeDirection.Left) TargetX -= MoveCount;
-        else if (Direction == SwipeDirection.Right) TargetX += MoveCount;
+        int TargetX = CurrentX + Direction.x;
+        int TargetY = CurrentY + Direction.y;
 
-        TargetX = Mathf.Clamp(TargetX, 0, GridManager.Columns - 1);
-
-        if (Direction == SwipeDirection.Up)  
+        if (!GridManager.IsValidGridPosition(TargetX, TargetY))
         {
-            TargetX = CurrentX;
-            TargetY += MoveCount;
+            HidePreview();
+            return;
         }
-        TargetY = Mathf.Clamp(TargetY, 0, GridManager.Rows - 1);
 
         Vector2 PreviewPos = GridManager.GetWorldPosition(TargetX, TargetY);
         PreviewIndicator.transform.position = PreviewPos;
         PreviewIndicator.SetActive(true);
     }
 
-    private void HandleSwipeEnd(SwipeDirection Direction, int MoveCount)
+    private void HandleSwipeEnd(Vector2Int Direction)
     {
         if (TurnManager.GameManager.CurrentState == GameState.EnemyTurn || HealthComponent.CurrentHealth <= 0) return;
         HidePreview();
 
         if (IsMoving) return;
 
-        int TargetX = CurrentX;
+        int TargetX = CurrentX + Direction.x;
+        int TargetY = CurrentY + Direction.y;
 
-        if (Direction == SwipeDirection.Left) TargetX -= MoveCount;
-        else if (Direction == SwipeDirection.Right) TargetX += MoveCount;
+        if (!GridManager.IsValidGridPosition(TargetX, TargetY)) return;
 
-        TargetX = Mathf.Clamp(TargetX, 0, GridManager.Columns - 1);
-        if (Direction == SwipeDirection.Up)
-        {
-            Attack();
-        }
-        else if (TargetX != CurrentX)
-        {
-            CurrentX = TargetX;
-            Vector2 TargetWorldPos = GridManager.GetWorldPosition(CurrentX, CurrentY);
-            StartCoroutine(SmoothMove(TargetWorldPos));
-        }
+        StartCoroutine(PerformAction(TargetX, TargetY));
     }
 
-    private void HidePreview()
-    {
-        if (PreviewIndicator != null)
-        {
-            PreviewIndicator.SetActive (false);
-        }
-    }
-    private void Attack()
-    {
-        Debug.Log("공격");
-        StartCoroutine(SmoothAttack());
-    }
-
-    private IEnumerator SmoothMove(Vector2 TargetPosition)
+    private IEnumerator PerformAction(int TargetX, int TargetY)
     {
         IsMoving = true;
+        Vector2 TargetPosition = GridManager.GetWorldPosition(TargetX, TargetY);
+
+        EnemyBase TargetEnemy = null;
+        if (EnemyManager != null)
+        {
+            TargetEnemy = EnemyManager.GetEnemyAtPosition(TargetX, TargetY);
+        }
+
         while((Vector2)transform.position != TargetPosition)
         {
             transform.position = Vector2.MoveTowards(transform.position, TargetPosition, MoveSpeed * Time.deltaTime);
             yield return null;
         }
-        IsMoving = false;
 
-        AttackEnemyAt(CurrentX, CurrentY);
-        if (TurnManager != null) TurnManager.EndPlayerTurn();
-    }
-
-    private IEnumerator SmoothAttack()
-    {
-        IsMoving = true;
-        Vector2 TargetPosition = GridManager.GetWorldPosition(CurrentX, CurrentY + 1);
-        while ((Vector2)transform.position != TargetPosition)
+        if (TargetEnemy != null)
         {
-            transform.position = Vector2.MoveTowards(transform.position, TargetPosition, MoveSpeed * Time.deltaTime);
-            yield return null;
+            EnemyManager.RemoveEnemy(TargetEnemy);
+            TargetEnemy.Die();
+            //TODO: 파티클과 화면 흔들림
         }
 
-        AttackEnemyAt(CurrentX, CurrentY + 1);
-
-        TargetPosition = GridManager.GetWorldPosition(CurrentX,CurrentY);
-        while ((Vector2)transform.position != TargetPosition)
-        {
-            transform.position = Vector2.MoveTowards(transform.position, TargetPosition, MoveSpeed * Time.deltaTime);
-            yield return null;
-        }
+        CurrentX = TargetX;
+        CurrentY = TargetY;
         IsMoving = false;
+
         if (TurnManager != null) TurnManager.EndPlayerTurn();
     }
-
-    private void AttackEnemyAt(int TargetX, int TargetY)
+    private void HidePreview()
     {
-        if (EnemyManager != null)
+        if (PreviewIndicator != null)
         {
-            EnemyBase SelectedEnemy = EnemyManager.GetEnemyAtPosition(TargetX, TargetY);
-            if (SelectedEnemy != null)
-            {
-                EnemyManager.RemoveEnemy(SelectedEnemy);
-                SelectedEnemy.Die();
-            }
+            PreviewIndicator.SetActive (false);
         }
     }
 

@@ -3,85 +3,60 @@ using UnityEngine;
 
 public class KnightEnemy : EnemyBase
 {
-    private int XDirection = 1;
+    private Vector2Int[] KnightMoves = new Vector2Int[]
+        {
+            new Vector2Int(1, 2), new Vector2Int(1, -2),
+            new Vector2Int(-1, 2), new Vector2Int(-1, -2),
+            new Vector2Int(2, 1), new Vector2Int(2, -1),
+            new Vector2Int(-2, 1), new Vector2Int(-2, -1)
+        };
 
-    public override void Initialize(EnemyManager EnemyManager, GridManager GridManager, int StartX, int StartY)
-    {
-        base.Initialize(EnemyManager, GridManager, StartX, StartY);
-        XDirection = Random.value > 0.5 ? 1 : -1;
-        if (CurrentX == 0)
-        {
-            XDirection = 1;
-        }
-        else if (CurrentX == GridManager.Columns - 1)
-        {
-            XDirection = -1;
-        }
-    }
     public override void CalculateNextPosition()
     {
-        int NextY = CurrentY - 2;
-        int NextX = CurrentX + XDirection;
+        PlayerController Player = FindFirstObjectByType<PlayerController>();
+        if (Player == null) return;
 
-        if (NextX <= 0) 
-        { 
-            NextX = 0; 
-            XDirection = 1; 
-        }
-        else if (NextX >= GridManager.Columns - 1) 
-        { 
-            NextX = GridManager.Columns - 1; 
-            XDirection = -1; 
-        }
+        Vector2Int BestMove = new Vector2Int(CurrentX, CurrentY);
+        float MinDistance = float.MaxValue;
+        bool FoundValidMove = false;
 
-        if (!IsPositionOccupied(NextX, NextY))
+        foreach (Vector2Int Move in KnightMoves)
         {
-            CurrentX = NextX;
-            CurrentY = NextY;
-        }
-        else
-        {
-            XDirection *= -1;
-            NextX = CurrentX + XDirection;
+            int NextX = CurrentX + Move.x;
+            int NextY = CurrentY + Move.y;
 
-            if (NextX <= 0) 
-            { 
-                NextX = 0; 
-                XDirection = 1; 
-            }
-            else if (NextX >= GridManager.Columns - 1) 
-            { 
-                NextX = GridManager.Columns - 1; 
-                XDirection = -1; 
-            }
+            if (!GridManager.IsValidGridPosition(NextX, NextY)) continue;
+            if (IsPositionOccupied(NextX, NextY)) continue;
 
-            if (!IsPositionOccupied(NextX, NextY))
+            float Distance = Vector2.Distance(new Vector2(NextX, NextY), new Vector2(Player.CurrentX, Player.CurrentY));
+
+            if (Distance < MinDistance)
             {
-                CurrentX = NextX;
-                CurrentY = NextY;
+                MinDistance = Distance;
+                BestMove = new Vector2Int(NextX, NextY);
+                FoundValidMove = true;
             }
         }
 
-        //CurrentY -= 2;
-        //if (CurrentX <= 0)
-        //{
-        //    CurrentX = 0;
-        //    XDirection = 1;
-        //}
-        //else if (CurrentX >= GridManager.Columns - 1)
-        //{
-        //    CurrentX = GridManager.Columns - 1;
-        //    XDirection = -1;
-        //}
-        //CurrentX += XDirection;
+        if (FoundValidMove)
+        {
+            CurrentX = BestMove.x;
+            CurrentY = BestMove.y;
+        }
     }
 
     protected override IEnumerator AnimateMove(int StartX, int StartY, int TargetX, int TargetY)
     {
-        Vector2 Wayporint = GridManager.GetWorldPosition(StartX, TargetY);
-        while ((Vector2)transform.position != Wayporint)
+        int DiffX = Mathf.Abs(TargetX - StartX);
+        int DiffY = Mathf.Abs(TargetY - StartY);
+
+        Vector2 Waypoint;
+        if (DiffY == 2) Waypoint = GridManager.GetWorldPosition(StartX, TargetY);
+        else Waypoint = GridManager.GetWorldPosition(TargetX, StartY);            
+
+        while ((Vector2)transform.position != Waypoint)
         {
-            transform.position = Vector2.MoveTowards(transform.position, Wayporint, MoveSpeed * Time.deltaTime);
+            transform.position = Vector2.MoveTowards(transform.position, Waypoint, MoveSpeed * Time.deltaTime);
             yield return null;
         }
 

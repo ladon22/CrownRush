@@ -50,33 +50,38 @@ public abstract class EnemyBase : MonoBehaviour
 
         CalculateNextPosition();
 
-        if (CurrentY < 0)
+        CurrentX = Mathf.Clamp(CurrentX, 0, GridManager.Columns - 1);
+        CurrentY = Mathf.Clamp(CurrentY, 0, GridManager.Rows - 1);
+
+        PlayerController Player = FindFirstObjectByType<PlayerController>();
+
+        if (Player != null && Player.CurrentX == CurrentX && Player.CurrentY == CurrentY)
         {
+            Vector2 TargetPos = GridManager.GetWorldPosition(Player.CurrentX, Player.CurrentY);
+            while ((Vector2)transform.position != TargetPos)
+            {
+                transform.position = Vector2.MoveTowards(transform.position, TargetPos, MoveSpeed * 2 * Time.deltaTime);
+                yield return null;
+            }
+
+            ApplyDamage();
+
             if (EnemyManager != null)
             {
-                ApplyDamage();
                 EnemyManager.RemoveEnemy(this);
             }
             Destroy(gameObject);
+
             yield break;
         }
 
-        CurrentX = Mathf.Clamp(CurrentX, 0, GridManager.Columns - 1);
+        if (IsPositionOccupied(CurrentX, CurrentY))
+        {
+            CurrentX = PreviousX;
+            CurrentY = PreviousY;
+        }
 
         yield return StartCoroutine(AnimateMove(PreviousX, PreviousY, CurrentX, CurrentY));
-
-        if (CurrentY == 0)
-        {
-            PlayerController Player = FindFirstObjectByType<PlayerController>();
-            if (Player != null && Player.CurrentX == CurrentX && Player.CurrentY == this.CurrentY)
-            {
-                if (EnemyManager != null)
-                {
-                    EnemyManager.RemoveEnemy(this);
-                }
-                Die();
-            }
-        }
     }
 
     protected virtual IEnumerator AnimateMove(int StartX, int StartY, int TargetX, int TargetY)

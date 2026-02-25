@@ -45,6 +45,6 @@ public class GridManager : MonoBehaviour
     public void GetPlayerStartIndex(out int StartX, out int StartY)
     {
         StartX = Columns / 2;
-        StartY = 0;
+        StartY = Rows / 2;
     }
 }

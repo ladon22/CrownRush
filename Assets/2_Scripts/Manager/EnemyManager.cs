@@ -9,94 +9,145 @@ public class EnemyManager : MonoBehaviour
     public GameObject[] EnemyPrefabs;
 
     [Header("Spawn Settings")]
-    public int SpawnInterval = 3;
-    private int CurrentTurnCount = 0;
+    public int MaxEnemyCount = 4;
 
-    [Header("Bag Settings")]
+    [Header("Enemy Bag Settings")]
     public int BasicEnemyCount = 5;   
     public int DiagonalEnemyCount = 2;
     public int DashEnemyCount = 1;
     public int KnightEnemyCount = 1;
-    public int EmptySpaceCount = 6;
 
-    private List<int> SpawnBag = new List<int>();
+    private List<int> EnemyBag = new List<int>();
 
     [HideInInspector]
     public List<EnemyBase> ActiveEnemies = new List<EnemyBase>();
 
     public void SpawnEnemy()
     {
+        MaintainEnemyCount();
+    }
+
+    private void MaintainEnemyCount()
+    {
         if (EnemyPrefabs.Length == 0 || GridManager == null) return;
 
-        //int RandomX = Random.Range(0, GridManager.Columns);
-        int SpawnY = GridManager.Rows - 1;
+        ActiveEnemies.RemoveAll(Enemy => Enemy == null);
 
-        for (int i = 0; i < GridManager.Columns; i++)
+        int SpawnAmount = MaxEnemyCount - ActiveEnemies.Count;
+
+        if (SpawnAmount <= 0) return;
+
+        for (int i = 0; i < SpawnAmount; i++)
         {
-            if (SpawnBag.Count == 0)
+            if (EnemyBag.Count == 0)
             {
-                RefillAndShuffleBag();
+                RefillAndShuffleEnemyBag();
             }
 
-            int PulledIndex = SpawnBag[0];
-            SpawnBag.RemoveAt(0);
-
-            if (PulledIndex == -1) continue;
-
-            GameObject PrefabToSpawn = EnemyPrefabs[PulledIndex];
-            Vector2 SpawnPosition = GridManager.GetWorldPosition(i, SpawnY);
-            GameObject NewEnemyObj = Instantiate(PrefabToSpawn, SpawnPosition, Quaternion.identity);
-
-            EnemyBase NewEnemy = NewEnemyObj.GetComponent<EnemyBase>();
-            if (NewEnemy != null)
+            int SpawnX, SpawnY;
+            if (GetValidEdgeSpawnPosition(out SpawnX, out SpawnY))
             {
-                NewEnemy.Initialize(this, GridManager, i, SpawnY);
-                ActiveEnemies.Add(NewEnemy);
+                int PulledEnemyIndex = EnemyBag[0];
+                EnemyBag.RemoveAt(0);
+
+                GameObject PrefabToSpawn = EnemyPrefabs[PulledEnemyIndex];
+                Vector2 SpawnPosition = GridManager.GetWorldPosition(SpawnX, SpawnY);
+                GameObject NewEnemyObj = Instantiate(PrefabToSpawn, SpawnPosition, Quaternion.identity);
+
+                EnemyBase NewEnemy = NewEnemyObj.GetComponent<EnemyBase>();
+                if (NewEnemy != null)
+                {
+                    NewEnemy.Initialize(this, GridManager, SpawnX, SpawnY);
+                    ActiveEnemies.Add(NewEnemy);
+                }
             }
         }
 
-        //int RandomEnemyIndex = Random.Range(0, EnemyPrefabs.Length);
-        //GameObject PrefabToSpawn = EnemyPrefabs[RandomEnemyIndex];
-
-        //Vector2 SpawnPosition = GridManager.GetWorldPosition(RandomX, SpawnY);
-        //GameObject NewEnemyObj = Instantiate(PrefabToSpawn, SpawnPosition, Quaternion.identity);
-
-        //EnemyBase NewEnemy = NewEnemyObj.GetComponent<EnemyBase>();
-        //if (NewEnemy != null)
-        //{
-        //    NewEnemy.Initialize(this, GridManager, RandomX, SpawnY);
-        //    ActiveEnemies.Add(NewEnemy);
-        //}
     }
 
-    private void RefillAndShuffleBag()
+    private bool GetValidEdgeSpawnPosition(out int SpawnX, out int SpawnY)
     {
-        SpawnBag.Clear();
-        for (int i = 0; i < BasicEnemyCount; i++)
-            SpawnBag.Add(0);
-        for (int i = 0; i < DiagonalEnemyCount; i++)
-            SpawnBag.Add(1);
-        for (int i = 0; i < DashEnemyCount; i++)
-            SpawnBag.Add(2);
-        for (int i = 0; i < KnightEnemyCount; i++)
-            SpawnBag.Add(3);
+        SpawnX = -1; SpawnY = -1;
+        List<Vector2Int> EdgeTiles = new List<Vector2Int>();
 
-        for (int i = 0; i < EmptySpaceCount; i++)
-            SpawnBag.Add(-1);
-
-        for(int i = 0; i < SpawnBag.Count; i++)
+        for (int X = 0; X < GridManager.Columns; X++)
         {
-            int RandomIndex = Random.Range(i, SpawnBag.Count);
-            int Temp = SpawnBag[i];
-            SpawnBag[i] = SpawnBag[RandomIndex];
-            SpawnBag[RandomIndex] = Temp;
+            EdgeTiles.Add(new Vector2Int(X, 0));
+            EdgeTiles.Add(new Vector2Int(X, GridManager.Rows - 1));
+        }
+        for (int Y = 1; Y < GridManager.Rows - 1; Y++)
+        {
+            EdgeTiles.Add(new Vector2Int(0, Y));
+            EdgeTiles.Add(new Vector2Int(GridManager.Columns - 1, Y));
+        }
+        for (int I = 0; I < EdgeTiles.Count; I++)
+        {
+            int RandomIndex = Random.Range(I, EdgeTiles.Count);
+            Vector2Int Temp = EdgeTiles[I];
+            EdgeTiles[I] = EdgeTiles[RandomIndex];
+            EdgeTiles[RandomIndex] = Temp;
+        }
+        PlayerController Player = FindFirstObjectByType<PlayerController>();
+
+        foreach (Vector2Int Tile in EdgeTiles)
+        {
+            if (GetEnemyAtPosition(Tile.x, Tile.y) != null) continue;
+
+            if (Player != null)
+            {
+                int DistX = Mathf.Abs(Player.CurrentX - Tile.x);
+                int DistY = Mathf.Abs(Player.CurrentY - Tile.y);
+                if (DistX <= 1 && DistY <= 1) continue;
+            }
+
+            SpawnX = Tile.x;
+            SpawnY = Tile.y;
+            return true;
+        }
+
+        return false;
+    }
+    private void RefillAndShuffleEnemyBag()
+    {
+        EnemyBag.Clear();
+        for (int i = 0; i < BasicEnemyCount; i++)
+            EnemyBag.Add(0);
+        for (int i = 0; i < DiagonalEnemyCount; i++)
+            EnemyBag.Add(1);
+        for (int i = 0; i < DashEnemyCount; i++)
+            EnemyBag.Add(2);
+        for (int i = 0; i < KnightEnemyCount; i++)
+            EnemyBag.Add(3);
+
+        for(int i = 0; i < EnemyBag.Count; i++)
+        {
+            int RandomIndex = Random.Range(i, EnemyBag.Count);
+            int Temp = EnemyBag[i];
+            EnemyBag[i] = EnemyBag[RandomIndex];
+            EnemyBag[RandomIndex] = Temp;
         }
     }
 
     public IEnumerator ProcessEnemiesTurnRoutine()
     {
         ActiveEnemies.RemoveAll(Enemy => Enemy == null);
-        ActiveEnemies.Sort((A, B) => A.CurrentY.CompareTo(B.CurrentY));
+
+        PlayerController Player = FindFirstObjectByType<PlayerController>();
+
+        if (Player != null)
+        {
+            ActiveEnemies.Sort((A, B) =>
+            {
+                float DistanceA = Vector2.Distance(new Vector2(A.CurrentX, A.CurrentY), new Vector2(Player.CurrentX, Player.CurrentY));
+                float DistanceB = Vector2.Distance(new Vector2(B.CurrentX, B.CurrentY), new Vector2(Player.CurrentX, Player.CurrentY));
+
+                return DistanceA.CompareTo(DistanceB);
+            });
+        }
+        else
+        {
+            ActiveEnemies.Sort((A, B) => A.CurrentY.CompareTo(B.CurrentY));
+        }
 
         List<Coroutine> MoveCoroutines = new List<Coroutine>();
 
@@ -114,12 +165,7 @@ public class EnemyManager : MonoBehaviour
             yield return MoveRoutine;
         }
 
-        CurrentTurnCount++;
-        if (CurrentTurnCount >= SpawnInterval)
-        {
-            SpawnEnemy();
-            CurrentTurnCount = 0;
-        }
+        MaintainEnemyCount();
     }
 
     public EnemyBase GetEnemyAtPosition(int TargetX , int TargetY)
