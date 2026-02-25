@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
@@ -21,10 +21,33 @@ public abstract class EnemyBase : MonoBehaviour
         transform.position = GridManager.GetWorldPosition(CurrentX, CurrentY);
     }
 
+    protected virtual void OnDestroy()
+    {
+        if (EnemyManager != null)
+        {
+            EnemyManager.RemoveEnemy(this);
+        }
+    }
+
     public abstract void CalculateNextPosition();
 
+    public bool IsPositionOccupied(int TargetX, int TargetY)
+    {
+        if (EnemyManager != null)
+        {
+            EnemyBase OtherEnemy = EnemyManager.GetEnemyAtPosition(TargetX, TargetY);
+            if (OtherEnemy != null && OtherEnemy != this)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     public virtual IEnumerator MoveRoutine()
     {
+        int PreviousX = CurrentX;
+        int PreviousY = CurrentY;
+
         CalculateNextPosition();
 
         if (CurrentY < 0)
@@ -40,12 +63,7 @@ public abstract class EnemyBase : MonoBehaviour
 
         CurrentX = Mathf.Clamp(CurrentX, 0, GridManager.Columns - 1);
 
-        Vector2 TargetPosition = GridManager.GetWorldPosition(CurrentX, CurrentY);
-        while((Vector2)transform.position != TargetPosition)
-        {
-            transform.position = Vector2.MoveTowards(transform.position, TargetPosition, MoveSpeed * Time.deltaTime);
-            yield return null;
-        }
+        yield return StartCoroutine(AnimateMove(PreviousX, PreviousY, CurrentX, CurrentY));
 
         if (CurrentY == 0)
         {
@@ -61,6 +79,15 @@ public abstract class EnemyBase : MonoBehaviour
         }
     }
 
+    protected virtual IEnumerator AnimateMove(int StartX, int StartY, int TargetX, int TargetY)
+    {
+        Vector2 TargetPosition = GridManager.GetWorldPosition(TargetX, TargetY);
+        while ((Vector2)transform.position != TargetPosition)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, TargetPosition, MoveSpeed * Time.deltaTime);
+            yield return null;
+        }
+    }
     public virtual void Die()
     {
         ScoreManager ScoreManager = FindFirstObjectByType<ScoreManager>();

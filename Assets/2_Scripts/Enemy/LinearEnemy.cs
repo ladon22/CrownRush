@@ -4,6 +4,9 @@ public class LinearEnemy : EnemyBase
 {
     public override void CalculateNextPosition()
     {
-        CurrentY -= 1;
+        if (!IsPositionOccupied(CurrentX, CurrentY - 1))
+        {
+            CurrentY -= 1;
+        }
     }
 }
