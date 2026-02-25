@@ -109,4 +109,4 @@ MonoBehaviour:
   CurrentX: 0
   CurrentY: 0
   MoveSpeed: 15
-  ScoreValue: 1
+  ScoreValue: 3
