@@ -20,6 +20,7 @@ public abstract class EnemyBase : MonoBehaviour
 
     [Header("Movement Settings")]
     public int MoveInterval = 1;
+    public float HopHeight = 0.5f;
     protected int CurrentWaitCount = 0;
 
     public virtual void Initialize(EnemyManager EnemyManager, GridManager GridManager, int StartX, int StartY)
@@ -74,16 +75,22 @@ public abstract class EnemyBase : MonoBehaviour
         CurrentY = Mathf.Clamp(CurrentY, 0, GridManager.Rows - 1);
 
         PlayerController Player = FindFirstObjectByType<PlayerController>();
-
+        bool bIsAttacking = false;
         if (Player != null && Player.CurrentX == CurrentX && Player.CurrentY == CurrentY)
         {
-            Vector2 TargetPos = GridManager.GetWorldPosition(Player.CurrentX, Player.CurrentY);
-            while ((Vector2)transform.position != TargetPos)
-            {
-                transform.position = Vector2.MoveTowards(transform.position, TargetPos, MoveSpeed * 2 * Time.deltaTime);
-                yield return null;
-            }
+            bIsAttacking = true;
+        }
+        else if (IsPositionOccupied(CurrentX, CurrentY))
+        {
+            CurrentX = PreviousX;
+            CurrentY = PreviousY;
+        }
 
+        yield return StartCoroutine(AnimateMove(PreviousX, PreviousY, CurrentX, CurrentY));
+
+
+        if (bIsAttacking)
+        {
             ApplyDamage();
 
             if (EnemyManager != null)
@@ -91,27 +98,38 @@ public abstract class EnemyBase : MonoBehaviour
                 EnemyManager.RemoveEnemy(this);
             }
             Destroy(gameObject);
-
-            yield break;
         }
-
-        if (IsPositionOccupied(CurrentX, CurrentY))
-        {
-            CurrentX = PreviousX;
-            CurrentY = PreviousY;
-        }
-
-        yield return StartCoroutine(AnimateMove(PreviousX, PreviousY, CurrentX, CurrentY));
     }
 
     protected virtual IEnumerator AnimateMove(int StartX, int StartY, int TargetX, int TargetY)
     {
+        SpriteDepthSorter Sorter = GetComponent<SpriteDepthSorter>();
+        if (Sorter != null) Sorter.SortingOrderOffset += 1000;
+
+        Vector2 StartPosition = transform.position;
         Vector2 TargetPosition = GridManager.GetWorldPosition(TargetX, TargetY);
-        while ((Vector2)transform.position != TargetPosition)
+        float Distance = Vector2.Distance(StartPosition, TargetPosition);
+
+        if (Distance > 0)
         {
-            transform.position = Vector2.MoveTowards(transform.position, TargetPosition, MoveSpeed * Time.deltaTime);
-            yield return null;
+            float Duration = Distance / MoveSpeed;
+            float Elapsed = 0f;
+            float DynamicHopHeight = HopHeight * (Distance * 0.5f + 0.5f);
+            while (Elapsed < Duration)
+            {
+                Elapsed += Time.deltaTime;
+                float T = Mathf.Clamp01(Elapsed / Duration);
+
+                Vector2 LinearPos = Vector2.Lerp(StartPosition, TargetPosition, T);
+                float HeightOffset = Mathf.Sin(T * Mathf.PI) * DynamicHopHeight;
+
+                transform.position = new Vector3(LinearPos.x, LinearPos.y + HeightOffset, transform.position.z);
+                yield return null;
+            }
         }
+
+        transform.position = TargetPosition;
+        if (Sorter != null) Sorter.SortingOrderOffset -= 1000;
     }
     public virtual void Die()
     {

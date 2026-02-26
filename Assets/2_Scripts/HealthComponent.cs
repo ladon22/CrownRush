@@ -22,6 +22,12 @@ public class HealthComponent : MonoBehaviour
         CurrentHealth -= DamageAmount;
         CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth);
         OnHealthChanged?.Invoke(CurrentHealth);
+
+        if (CameraController.Instance != null)
+        {
+            CameraController.Instance.ShakeForHit();
+        }
+
         if (CurrentHealth <= 0)
         {
             OnDied?.Invoke();

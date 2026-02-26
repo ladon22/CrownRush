@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3817170426751839510}
   - component: {fileID: 4707715865307546175}
   - component: {fileID: 2795049002157436698}
+  - component: {fileID: -1215114838098583976}
   m_Layer: 0
   m_Name: LinearEnemy
   m_TagString: Untagged
@@ -109,10 +110,23 @@ MonoBehaviour:
   EnemyManager: {fileID: 0}
   CurrentX: 0
   CurrentY: 0
-  MoveSpeed: 15
+  MoveSpeed: 10
   ScoreValue: 1
   IntentIndicator: {fileID: 3319413469457181901}
   MoveInterval: 2
+--- !u!114 &-1215114838098583976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1447372442310996781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172a2c5e24433614dbf138928369a93a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpriteDepthSorter
+  SorttingOrderOffset: 0
 --- !u!1001 &7808886143581401739
 PrefabInstance:
   m_ObjectHideFlags: 0

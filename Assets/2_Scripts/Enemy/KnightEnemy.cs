@@ -46,26 +46,26 @@ public class KnightEnemy : EnemyBase
         }
     }
 
-    protected override IEnumerator AnimateMove(int StartX, int StartY, int TargetX, int TargetY)
-    {
-        int DiffX = Mathf.Abs(TargetX - StartX);
-        int DiffY = Mathf.Abs(TargetY - StartY);
+    //protected override IEnumerator AnimateMove(int StartX, int StartY, int TargetX, int TargetY)
+    //{
+    //    int DiffX = Mathf.Abs(TargetX - StartX);
+    //    int DiffY = Mathf.Abs(TargetY - StartY);
 
-        Vector2 Waypoint;
-        if (DiffY == 2) Waypoint = GridManager.GetWorldPosition(StartX, TargetY);
-        else Waypoint = GridManager.GetWorldPosition(TargetX, StartY);            
+    //    Vector2 Waypoint;
+    //    if (DiffY == 2) Waypoint = GridManager.GetWorldPosition(StartX, TargetY);
+    //    else Waypoint = GridManager.GetWorldPosition(TargetX, StartY);            
 
-        while ((Vector2)transform.position != Waypoint)
-        {
-            transform.position = Vector2.MoveTowards(transform.position, Waypoint, MoveSpeed * Time.deltaTime);
-            yield return null;
-        }
+    //    while ((Vector2)transform.position != Waypoint)
+    //    {
+    //        transform.position = Vector2.MoveTowards(transform.position, Waypoint, MoveSpeed * Time.deltaTime);
+    //        yield return null;
+    //    }
 
-        Vector2 FinalPosition = GridManager.GetWorldPosition(TargetX, TargetY);
-        while ((Vector2)transform.position != FinalPosition)
-        {
-            transform.position = Vector2.MoveTowards(transform.position, FinalPosition, MoveSpeed * Time.deltaTime);
-            yield return null;
-        }
-    }
+    //    Vector2 FinalPosition = GridManager.GetWorldPosition(TargetX, TargetY);
+    //    while ((Vector2)transform.position != FinalPosition)
+    //    {
+    //        transform.position = Vector2.MoveTowards(transform.position, FinalPosition, MoveSpeed * Time.deltaTime);
+    //        yield return null;
+    //    }
+    //}
 }
