@@ -1,16 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class LinearEnemy : EnemyBase
 {
-    bool bIsResting = false;
-
     public override void CalculateNextPosition()
     {
-        if (bIsResting)
-        {
-            bIsResting = false;
-            return;
-        }
         PlayerController Player = FindFirstObjectByType<PlayerController>();
         if (Player == null) return;
 
@@ -29,7 +23,5 @@ public class LinearEnemy : EnemyBase
         {
             CurrentX += (int)Mathf.Sign(DiffX);
         }
-
-        bIsResting = true;
     }
 }

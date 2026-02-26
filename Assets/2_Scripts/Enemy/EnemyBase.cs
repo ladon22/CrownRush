@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using NUnit.Framework;
+using System.Collections;
+using System.Collections.Generic;
 using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
@@ -12,6 +14,14 @@ public abstract class EnemyBase : MonoBehaviour
     public int CurrentY;
     public float MoveSpeed = 15f;
     public int ScoreValue = 1;
+
+    [Header("UI")]
+    public GameObject IntentIndicator;
+
+    [Header("Movement Settings")]
+    public int MoveInterval = 1;
+    protected int CurrentWaitCount = 0;
+
     public virtual void Initialize(EnemyManager EnemyManager, GridManager GridManager, int StartX, int StartY)
     {
         this.EnemyManager = EnemyManager;
@@ -19,6 +29,9 @@ public abstract class EnemyBase : MonoBehaviour
         CurrentX = StartX;
         CurrentY = StartY;
         transform.position = GridManager.GetWorldPosition(CurrentX, CurrentY);
+
+        CurrentWaitCount = 0;
+        SetIntent(false);
     }
 
     protected virtual void OnDestroy()
@@ -45,6 +58,13 @@ public abstract class EnemyBase : MonoBehaviour
     }
     public virtual IEnumerator MoveRoutine()
     {
+        if (!WillMoveThisTurn())
+        {
+            CurrentWaitCount--;
+            yield break;
+        }
+        CurrentWaitCount = MoveInterval - 1;
+
         int PreviousX = CurrentX;
         int PreviousY = CurrentY;
 
@@ -109,6 +129,21 @@ public abstract class EnemyBase : MonoBehaviour
         if (Player != null && Player.HealthComponent != null)
         {
             Player.HealthComponent.TakeDamage(1);
+        }
+    }
+
+    // 이동 턴 표시
+    public virtual bool WillMoveThisTurn()
+    {
+        return CurrentWaitCount <= 0;
+    }
+
+
+    public void SetIntent(bool bIsAttacking)
+    {
+        if (IntentIndicator != null)
+        {
+            IntentIndicator.SetActive(bIsAttacking);
         }
     }
 }

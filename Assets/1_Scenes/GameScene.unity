@@ -637,8 +637,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d6dddaef24e1354089ab495d3d5b93c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputController
-  ShortSwipeThreshold: 75
-  LongSwipeThreshold: 150
+  SwipeThreshold: 50
 --- !u!4 &385474663
 Transform:
   m_ObjectHideFlags: 0
@@ -798,12 +797,11 @@ MonoBehaviour:
   - {fileID: 179464862539146791, guid: 986e2eaea4f762347b88924bdb21933b, type: 3}
   - {fileID: 3623772883223278602, guid: 4d01f3835e7333441839ef812a9eace7, type: 3}
   - {fileID: 7697079286472874373, guid: 112755aed62498f41b1d2d2a8edd3dc8, type: 3}
-  SpawnInterval: 2
+  MaxEnemyCount: 5
   BasicEnemyCount: 3
   DiagonalEnemyCount: 2
-  DashEnemyCount: 1
-  KnightEnemyCount: 1
-  EmptySpaceCount: 8
+  DashEnemyCount: 2
+  KnightEnemyCount: 2
   ActiveEnemies: []
 --- !u!1 &519420028
 GameObject:

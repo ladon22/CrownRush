@@ -137,7 +137,7 @@ public class EnemyManager : MonoBehaviour
         if (Player != null)
         {
             ActiveEnemies.Sort((A, B) =>
-            {
+            {   
                 float DistanceA = Vector2.Distance(new Vector2(A.CurrentX, A.CurrentY), new Vector2(Player.CurrentX, Player.CurrentY));
                 float DistanceB = Vector2.Distance(new Vector2(B.CurrentX, B.CurrentY), new Vector2(Player.CurrentX, Player.CurrentY));
 
@@ -184,6 +184,28 @@ public class EnemyManager : MonoBehaviour
         if(ActiveEnemies.Contains(EnemyToRemove))
         {
             ActiveEnemies.Remove(EnemyToRemove);
+        }
+    }
+
+    public void UpdateEnemyIntents()
+    {
+        foreach (EnemyBase Enemy in ActiveEnemies)
+        {
+            if (Enemy != null)
+            {
+                Enemy.SetIntent(Enemy.WillMoveThisTurn());
+            }
+        }
+    }
+
+    public void ClearAllIntents()
+    {
+        foreach (EnemyBase Enemy in ActiveEnemies)
+        {
+            if (Enemy != null)
+            {
+                Enemy.SetIntent(false);
+            }
         }
     }
 }

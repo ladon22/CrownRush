@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
     public int CurrentX = 2;
     public int CurrentY = 0;
     public float MoveSpeed = 15f;
-    public bool IsMoving = false;
+    public bool bIsMoving = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour
     {
         if (TurnManager.GameManager.CurrentState == GameState.EnemyTurn || HealthComponent.CurrentHealth <= 0) return;
 
-        if (IsMoving) return;
+        if (bIsMoving) return;
 
         int TargetX = CurrentX + Direction.x;
         int TargetY = CurrentY + Direction.y;
@@ -69,7 +69,7 @@ public class PlayerController : MonoBehaviour
         if (TurnManager.GameManager.CurrentState == GameState.EnemyTurn || HealthComponent.CurrentHealth <= 0) return;
         HidePreview();
 
-        if (IsMoving) return;
+        if (bIsMoving) return;
 
         int TargetX = CurrentX + Direction.x;
         int TargetY = CurrentY + Direction.y;
@@ -81,7 +81,7 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator PerformAction(int TargetX, int TargetY)
     {
-        IsMoving = true;
+        bIsMoving = true;
         Vector2 TargetPosition = GridManager.GetWorldPosition(TargetX, TargetY);
 
         EnemyBase TargetEnemy = null;
@@ -105,7 +105,7 @@ public class PlayerController : MonoBehaviour
 
         CurrentX = TargetX;
         CurrentY = TargetY;
-        IsMoving = false;
+        bIsMoving = false;
 
         if (TurnManager != null) TurnManager.EndPlayerTurn();
     }
@@ -126,6 +126,6 @@ public class PlayerController : MonoBehaviour
         {
             HealthComponent.ResetHealth();
         }
-        IsMoving = false;
+        bIsMoving = false;
     }
 }

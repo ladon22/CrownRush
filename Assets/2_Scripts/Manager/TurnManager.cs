@@ -29,6 +29,7 @@ public class TurnManager : MonoBehaviour
     private IEnumerator EnemyTurnRoutine()
     {
         GameManager.ChangeState(GameState.EnemyTurn);
+        if (EnemyManager != null) EnemyManager.ClearAllIntents();
         yield return new WaitForSeconds(TurnDelay);
         Debug.Log("--- 적 턴 시작 (이동 및 스폰) ---");
 
@@ -39,6 +40,7 @@ public class TurnManager : MonoBehaviour
     private IEnumerator DelayStartPlayerTurn()
     {
         GameManager.ChangeState(GameState.PlayerTurn);
+        if (EnemyManager != null) EnemyManager.UpdateEnemyIntents();
         yield return new WaitForSeconds(TurnDelay);
     }
 

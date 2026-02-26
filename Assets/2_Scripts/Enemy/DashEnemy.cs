@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class DashEnemy : EnemyBase
 {
-    public int DashAmount = 5;
+    public int DashAmount = 3;
 
     public override void CalculateNextPosition()
     {
