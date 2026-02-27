@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
@@ -29,10 +30,11 @@ public abstract class EnemyBase : MonoBehaviour
         this.GridManager = GridManager;
         CurrentX = StartX;
         CurrentY = StartY;
-        transform.position = GridManager.GetWorldPosition(CurrentX, CurrentY);
 
         CurrentWaitCount = 0;
         SetIntent(false);
+        Vector2 TargetPosition = GridManager.GetWorldPosition(CurrentX, CurrentY);
+        StartCoroutine(SpawnDropRoutine(TargetPosition));
     }
 
     protected virtual void OnDestroy()
@@ -43,6 +45,38 @@ public abstract class EnemyBase : MonoBehaviour
         }
     }
 
+    private IEnumerator SpawnDropRoutine(Vector2 TargetPosition)
+    {
+        float DropHeight = 5.0f;
+        transform.position = new Vector3(TargetPosition.x, TargetPosition.y + DropHeight, 0f);
+
+        // 떨어지는 시간
+        float Duration = 0.35f;
+        float Elapsed = 0f;
+        SpriteDepthSorter Sorter = GetComponent<SpriteDepthSorter>();
+        if (Sorter != null) Sorter.SortingOrderOffset += 2000;
+
+        while (Elapsed < Duration)
+        {
+            Elapsed += Time.deltaTime;
+            float T = Mathf.Clamp01(Elapsed / Duration);
+
+            // 🌟 중력의 느낌을 살리기 위해 Ease-In 곡선(점점 빠르게)을 적용합니다.
+            // T * T 를 곱해주면 처음엔 천천히 떨어지다 마지막에 확 떨어집니다.
+            float EaseInT = T * T;
+
+            transform.position = Vector3.Lerp(
+                new Vector3(TargetPosition.x, TargetPosition.y + DropHeight, 0f),
+                new Vector3(TargetPosition.x, TargetPosition.y, 0f),
+                EaseInT
+            );
+
+            yield return null;
+        }
+
+        transform.position = TargetPosition;
+        if (Sorter != null) Sorter.SortingOrderOffset -= 2000;
+    }
     public abstract void CalculateNextPosition();
 
     public bool IsPositionOccupied(int TargetX, int TargetY)
