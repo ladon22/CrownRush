@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     public TurnManager TurnManager;
     public EnemyManager EnemyManager;
     public HealthUIManager HealthUIManager;
+    public ItemManager ItemManager;
     public ScoreManager ScoreManager;
 
     public GameObject PlayerPrefab;
@@ -42,19 +43,6 @@ public class GameManager : MonoBehaviour
     public void ChangeState(GameState state)
     {
         CurrentState = state;
-        switch (CurrentState)
-        {
-            case GameState.Initialize:
-                break;
-            case GameState.PlayerTurn:
-                break;
-            case GameState.EnemyTurn:
-                break;
-            case GameState.GameOver:
-                break;
-            default:
-                break;
-        }
     }
 
     private void InitiallizeGameStage()
@@ -90,6 +78,7 @@ public class GameManager : MonoBehaviour
             CurrentPlayer.CurrentY = StartY;
             CurrentPlayer.TurnManager = TurnManager;
             CurrentPlayer.EnemyManager = EnemyManager;
+            CurrentPlayer.ItemManager = ItemManager;
         }
 
         HealthComponent PlayerHealth = PlayerInstance.GetComponent<HealthComponent>();

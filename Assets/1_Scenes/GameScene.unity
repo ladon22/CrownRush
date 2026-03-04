@@ -309,6 +309,7 @@ MonoBehaviour:
   TurnManager: {fileID: 389287589}
   EnemyManager: {fileID: 466530478}
   HealthUIManager: {fileID: 1664507348}
+  ItemManager: {fileID: 1947208025}
   ScoreManager: {fileID: 2124704220}
   PlayerPrefab: {fileID: 3835922535514634800, guid: 63d719892eaf38145886d7013311ed5a, type: 3}
   LobbyUIPanel: {fileID: 1672219514}
@@ -606,6 +607,7 @@ Transform:
   - {fileID: 466530477}
   - {fileID: 2124704219}
   - {fileID: 1664507347}
+  - {fileID: 1947208024}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &385474661
@@ -1449,9 +1451,9 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 277081797}
   - {fileID: 653975602}
   - {fileID: 1851250463}
-  - {fileID: 277081797}
   - {fileID: 992851309}
   - {fileID: 1975692422}
   m_Father: {fileID: 1105136593}
@@ -1752,7 +1754,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -268}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1672219516
@@ -2125,6 +2127,54 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1942657522}
   m_CullTransparentMesh: 1
+--- !u!1 &1947208023
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1947208024}
+  - component: {fileID: 1947208025}
+  m_Layer: 0
+  m_Name: ItemManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1947208024
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1947208023}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 377048671}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1947208025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1947208023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 930073b7ca7750a4eb66200b79eac3aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemManager
+  GridManager: {fileID: 302024083}
+  EnemyManager: {fileID: 466530478}
+  ItemPrefabs:
+  - {fileID: 7141382381004458382, guid: d7d24363705bc6046b08c0e7f58c8b14, type: 3}
 --- !u!1 &1975692421
 GameObject:
   m_ObjectHideFlags: 0
@@ -2366,6 +2416,7 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
+  ItemSpawnScoreThreshold: 200
 --- !u!1 &2143024694
 GameObject:
   m_ObjectHideFlags: 0
@@ -2402,7 +2453,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -425}
   m_SizeDelta: {x: 421.5, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2143024696

@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public EnemyManager EnemyManager;
     [HideInInspector]
+    public ItemManager ItemManager;
+    [HideInInspector]
     public InputController InputController;
     [HideInInspector]
     public HealthComponent HealthComponent;
@@ -95,6 +97,12 @@ public class PlayerController : MonoBehaviour
             TargetEnemy = EnemyManager.GetEnemyAtPosition(TargetX, TargetY);
         }
 
+        ItemBase TargetItem = null;
+        if (ItemManager != null)
+        {
+            TargetItem = ItemManager.GetItemAtPosition(TargetX, TargetY);
+        }
+
         SpriteDepthSorter Sorter = GetComponent<SpriteDepthSorter>();
         if (Sorter != null) Sorter.SortingOrderOffset += 1000;
 
@@ -132,6 +140,11 @@ public class PlayerController : MonoBehaviour
             {
                 CameraController.Instance.ShakeForAttack();
             }
+        }
+
+        if (TargetItem != null)
+        {
+            TargetItem.Consume(this);
         }
 
         CurrentX = TargetX;

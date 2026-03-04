@@ -89,6 +89,15 @@ public abstract class EnemyBase : MonoBehaviour
                 return true;
             }
         }
+        ItemManager ItemManager = FindFirstObjectByType<ItemManager>();
+        if (ItemManager != null)
+        {
+            ItemBase ItemOnTile = ItemManager.GetItemAtPosition(TargetX, TargetY);
+            if (ItemOnTile != null)
+            {
+                return true;
+            }
+        }
         return false;
     }
     public virtual IEnumerator MoveRoutine()

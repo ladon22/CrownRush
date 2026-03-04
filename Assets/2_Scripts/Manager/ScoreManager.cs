@@ -29,6 +29,9 @@ public class ScoreManager : MonoBehaviour
     public float ComboDuration = 0.1f;
     public Gradient ComboGaugeColorGradient;
 
+    [Header("Item Spawn Settings")]
+    public int ItemSpawnScoreThreshold = 200;
+    private int CurrentItemScore = 0;
 
     private GameManager GameManager;
     private PlayerController Player;
@@ -65,6 +68,7 @@ public class ScoreManager : MonoBehaviour
         CurrentScore = 0;
         CurrentCombo = 0;
         CurrentComboTimer = 0f;
+        CurrentItemScore = 0;
 
         if (ComboText != null)
         {
@@ -100,6 +104,23 @@ public class ScoreManager : MonoBehaviour
         }
         int FinalScore = Mathf.RoundToInt(ScoreToAdd * Multiplier);
         CurrentScore += FinalScore;
+
+        CurrentItemScore += FinalScore;
+        if (CurrentItemScore >= ItemSpawnScoreThreshold)
+        {
+            int SpawnCount = CurrentItemScore / ItemSpawnScoreThreshold;
+
+            CurrentItemScore %= ItemSpawnScoreThreshold;
+            ItemManager ItemManager = FindFirstObjectByType<ItemManager>();
+            if (ItemManager != null)
+            {
+                for (int i = 0; i < SpawnCount; i++)
+                {
+                    ItemManager.SpawnRandomItem();
+                }
+            }
+        }
+
         UpdateScore();
         PlayGaugeFillAnimation();
         UpdateComboUI();

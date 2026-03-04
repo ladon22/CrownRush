@@ -34,6 +34,15 @@ public class HealthComponent : MonoBehaviour
         }
     }
 
+    public void Heal(int HealAmount)
+    {
+        if (CurrentHealth <= 0 || CurrentHealth >= MaxHealth) return;
+
+        CurrentHealth += HealAmount;
+        CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth);
+        OnHealthChanged?.Invoke(CurrentHealth);
+    }
+
     public void ResetHealth()
     {
         CurrentHealth = MaxHealth;
