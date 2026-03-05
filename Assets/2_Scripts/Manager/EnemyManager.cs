@@ -88,7 +88,7 @@ public class EnemyManager : MonoBehaviour
             EdgeTiles[RandomIndex] = Temp;
         }
         PlayerController Player = FindFirstObjectByType<PlayerController>();
-
+        ItemManager ItemManager = FindFirstObjectByType<ItemManager>();
         foreach (Vector2Int Tile in EdgeTiles)
         {
             if (GetEnemyAtPosition(Tile.x, Tile.y) != null) continue;
@@ -100,6 +100,10 @@ public class EnemyManager : MonoBehaviour
                 if (DistX <= 1 && DistY <= 1) continue;
             }
 
+            if (ItemManager != null && ItemManager.GetItemAtPosition(Tile.x, Tile.y) != null)
+            {
+                continue;
+            }
             SpawnX = Tile.x;
             SpawnY = Tile.y;
             return true;

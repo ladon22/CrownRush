@@ -82,4 +82,16 @@ public class ItemManager : MonoBehaviour
             SpawnRandomItem();
         }
     }
+
+    public void ClearItem()
+    {
+        foreach(ItemBase Item in ActiveItems)
+        {
+            if (Item != null)
+            {
+                Destroy(Item.gameObject);
+            }
+        }
+        ActiveItems.Clear();
+    }
 }

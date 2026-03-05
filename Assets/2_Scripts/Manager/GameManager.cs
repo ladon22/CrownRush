@@ -98,6 +98,7 @@ public class GameManager : MonoBehaviour
         if (GameOverUIPanel != null) GameOverUIPanel.SetActive(false);
 
         if (ScoreManager != null) ScoreManager.ResetScore();
+        if (ItemManager != null) ItemManager.ClearItem();
 
         ClearEnemies();
 
@@ -143,6 +144,8 @@ public class GameManager : MonoBehaviour
         if (LobbyUIPanel != null) LobbyUIPanel.SetActive(true);
         if (GameUIPanel != null) GameUIPanel.SetActive(false);
         if (GameOverUIPanel != null) GameOverUIPanel.SetActive(false);
+
+        if (ItemManager != null) ItemManager.ClearItem();
     }
 
     private void ClearEnemies()

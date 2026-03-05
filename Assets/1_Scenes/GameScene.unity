@@ -2378,9 +2378,9 @@ MonoBehaviour:
   ScorePopScale: 1.5
   CurrentCombo: 0
   MaxComboTime: 5
-  Stage1Threshold: 2
+  Stage1Threshold: 5
   Stage1Multiplier: 1.5
-  Stage2Threshold: 5
+  Stage2Threshold: 10
   Stage2Multiplier: 2
   ComboText: {fileID: 992851307}
   ComboGaugeImage: {fileID: 1975692423}
@@ -2416,7 +2416,7 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
-  ItemSpawnScoreThreshold: 200
+  ItemSpawnScoreThreshold: 5
 --- !u!1 &2143024694
 GameObject:
   m_ObjectHideFlags: 0

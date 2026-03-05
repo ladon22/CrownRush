@@ -16,7 +16,7 @@ public class ScoreManager : MonoBehaviour
     public float MaxComboTime = 5.0f;
     private float CurrentComboTimer = 0f;
     [Header("Combo Multiplier Settings")]
-    public int Stage1Threshold = 2;
+    public int Stage1Threshold = 5;
     public float Stage1Multiplier = 1.5f;
 
     public int Stage2Threshold = 10;
@@ -163,7 +163,20 @@ public class ScoreManager : MonoBehaviour
             if (CurrentCombo >= 1)
             {
                 ComboText.gameObject.SetActive(true);
-                ComboText.text = $"{CurrentCombo} COMBO!";
+                
+                string MultiplierText = "";
+                if (CurrentCombo >= Stage2Threshold)
+                {
+                    // 10콤보 이상 (x2.0): 강렬한 빨간색 지정
+                    MultiplierText = " <color=#FF2A2A>[x2.0]</color>";
+                }
+                else if (CurrentCombo >= Stage1Threshold)
+                {
+                    // 2콤보 이상 (x1.5): 고급스러운 황금/주황색 지정
+                    MultiplierText = " <color=#FFB300>[x1.5]</color>";
+                }
+                ComboText.text = $"{CurrentCombo} COMBO!{MultiplierText}";
+
                 ComboText.DOKill();
                 ComboText.transform.DOKill();
 
