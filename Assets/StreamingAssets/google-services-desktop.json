@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "476601330354",
+    "firebase_url": "https://projectchess-23990-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "projectchess-23990",
+    "storage_bucket": "projectchess-23990.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:476601330354:android:ff9a64255ab778cc96f7ab",
+        "android_client_info": {
+          "package_name": "com.hyeock.projectChess"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbjqjnVrmKhbE6RNRKB93s6nS_ak8kjO8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

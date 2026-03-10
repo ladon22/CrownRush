@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/firebase_database_url,@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id">
+  <string name="firebase_database_url" translatable="false">https://projectchess-23990-default-rtdb.asia-southeast1.firebasedatabase.app</string>
+  <string name="gcm_defaultSenderId" translatable="false">476601330354</string>
+  <string name="google_storage_bucket" translatable="false">projectchess-23990.firebasestorage.app</string>
+  <string name="project_id" translatable="false">projectchess-23990</string>
+  <string name="google_api_key" translatable="false">AIzaSyDbjqjnVrmKhbE6RNRKB93s6nS_ak8kjO8</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDbjqjnVrmKhbE6RNRKB93s6nS_ak8kjO8</string>
+  <string name="google_app_id" translatable="false">1:476601330354:android:ff9a64255ab778cc96f7ab</string>
+</resources>
