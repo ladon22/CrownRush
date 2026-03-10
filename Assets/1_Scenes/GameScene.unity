@@ -311,6 +311,7 @@ MonoBehaviour:
   HealthUIManager: {fileID: 1664507348}
   ItemManager: {fileID: 1947208025}
   ScoreManager: {fileID: 2124704220}
+  FireBaseManager: {fileID: 646864590}
   PlayerPrefab: {fileID: 3835922535514634800, guid: 63d719892eaf38145886d7013311ed5a, type: 3}
   LobbyUIPanel: {fileID: 1672219514}
   GameUIPanel: {fileID: 1301762391}
@@ -608,6 +609,7 @@ Transform:
   - {fileID: 2124704219}
   - {fileID: 1664507347}
   - {fileID: 1947208024}
+  - {fileID: 646864591}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &385474661
@@ -1041,6 +1043,50 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &646864589
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 646864591}
+  - component: {fileID: 646864590}
+  m_Layer: 0
+  m_Name: FirebaseManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &646864590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 646864589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5c158de6c941304aa8346a7957bdea7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FireBaseManager
+--- !u!4 &646864591
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 646864589}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 377048671}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &653975601
 GameObject:
@@ -2416,7 +2462,7 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
-  ItemSpawnScoreThreshold: 5
+  ItemSpawnScoreThreshold: 100
 --- !u!1 &2143024694
 GameObject:
   m_ObjectHideFlags: 0

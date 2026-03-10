@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     public HealthUIManager HealthUIManager;
     public ItemManager ItemManager;
     public ScoreManager ScoreManager;
+    public FireBaseManager FireBaseManager;
 
     public GameObject PlayerPrefab;
 
@@ -125,6 +126,11 @@ public class GameManager : MonoBehaviour
     {
         ChangeState(GameState.GameOver);
         if (GameOverUIPanel != null) GameOverUIPanel.SetActive(true);
+
+        if (ScoreManager != null && FireBaseManager != null)
+        {
+            FireBaseManager.SaveScoreToDatabase(ScoreManager.CurrentScore);
+        }
     }
 
     public void RetryGame()
