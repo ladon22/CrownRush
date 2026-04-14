@@ -605,11 +605,12 @@ Transform:
   - {fileID: 105234642}
   - {fileID: 302024084}
   - {fileID: 389287588}
-  - {fileID: 466530477}
   - {fileID: 2124704219}
   - {fileID: 1664507347}
   - {fileID: 1947208024}
   - {fileID: 646864591}
+  - {fileID: 466530477}
+  - {fileID: 1254759520}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &385474661
@@ -1073,6 +1074,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5c158de6c941304aa8346a7957bdea7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FireBaseManager
+  bUseFirebase: 0
 --- !u!4 &646864591
 Transform:
   m_ObjectHideFlags: 0
@@ -1467,6 +1469,61 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1254759519
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1254759520}
+  - component: {fileID: 1254759521}
+  m_Layer: 0
+  m_Name: PoolManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1254759520
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1254759519}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 377048671}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1254759521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1254759519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d0aaed8b24f7c444802f4150e512904, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PoolManager
+  ItemsToPrewarm:
+  - Prefab: {fileID: 1447372442310996781, guid: c03f4450f0417d649ae6f22346d1a0d9, type: 3}
+    InitialSize: 5
+  - Prefab: {fileID: 179464862539146791, guid: 986e2eaea4f762347b88924bdb21933b, type: 3}
+    InitialSize: 3
+  - Prefab: {fileID: 3623772883223278602, guid: 4d01f3835e7333441839ef812a9eace7, type: 3}
+    InitialSize: 3
+  - Prefab: {fileID: 7697079286472874373, guid: 112755aed62498f41b1d2d2a8edd3dc8, type: 3}
+    InitialSize: 3
+  - Prefab: {fileID: 1447372442310996781, guid: f10f5094320af344f91148cba1ae031a, type: 3}
+    InitialSize: 3
 --- !u!1 &1301762391
 GameObject:
   m_ObjectHideFlags: 0

@@ -61,7 +61,6 @@ public abstract class EnemyBase : MonoBehaviour
             Elapsed += Time.deltaTime;
             float T = Mathf.Clamp01(Elapsed / Duration);
 
-            // 🌟 중력의 느낌을 살리기 위해 Ease-In 곡선(점점 빠르게)을 적용합니다.
             // T * T 를 곱해주면 처음엔 천천히 떨어지다 마지막에 확 떨어집니다.
             float EaseInT = T * T;
 

@@ -115,6 +115,7 @@ MonoBehaviour:
   IntentIndicator: {fileID: 3319413469457181901}
   MoveInterval: 2
   HopHeight: 0.5
+  QueenPrefab: {fileID: 1447372442310996781, guid: f10f5094320af344f91148cba1ae031a, type: 3}
 --- !u!114 &-1215114838098583976
 MonoBehaviour:
   m_ObjectHideFlags: 0
