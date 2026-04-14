@@ -31,7 +31,7 @@ public class EnemyManager : MonoBehaviour
     {
         if (EnemyPrefabs.Length == 0 || GridManager == null) return;
 
-        ActiveEnemies.RemoveAll(Enemy => Enemy == null);
+        ActiveEnemies.RemoveAll(Enemy => Enemy == null || !Enemy.gameObject.activeInHierarchy);
 
         int SpawnAmount = MaxEnemyCount - ActiveEnemies.Count;
 
@@ -44,15 +44,17 @@ public class EnemyManager : MonoBehaviour
                 RefillAndShuffleEnemyBag();
             }
 
+            int PulledEnemyIndex = EnemyBag[0];
+            GameObject PrefabToSpawn = EnemyPrefabs[PulledEnemyIndex];
+            bool bIsLinearEnemy = PrefabToSpawn.GetComponent<LinearEnemy>() != null;
+
             int SpawnX, SpawnY;
-            if (GetValidEdgeSpawnPosition(out SpawnX, out SpawnY))
+            if (GetValidEdgeSpawnPosition(bIsLinearEnemy, out SpawnX, out SpawnY))
             {
-                int PulledEnemyIndex = EnemyBag[0];
                 EnemyBag.RemoveAt(0);
 
-                GameObject PrefabToSpawn = EnemyPrefabs[PulledEnemyIndex];
                 Vector2 SpawnPosition = GridManager.GetWorldPosition(SpawnX, SpawnY);
-                GameObject NewEnemyObj = Instantiate(PrefabToSpawn, SpawnPosition, Quaternion.identity);
+                GameObject NewEnemyObj = PoolManager.Instance.SpawnFromPool(PrefabToSpawn, SpawnPosition, Quaternion.identity);
 
                 EnemyBase NewEnemy = NewEnemyObj.GetComponent<EnemyBase>();
                 if (NewEnemy != null)
@@ -65,7 +67,7 @@ public class EnemyManager : MonoBehaviour
 
     }
 
-    private bool GetValidEdgeSpawnPosition(out int SpawnX, out int SpawnY)
+    private bool GetValidEdgeSpawnPosition(bool bIsLinearEnemy, out int SpawnX, out int SpawnY)
     {
         SpawnX = -1; SpawnY = -1;
         List<Vector2Int> EdgeTiles = new List<Vector2Int>();
@@ -75,10 +77,14 @@ public class EnemyManager : MonoBehaviour
             EdgeTiles.Add(new Vector2Int(X, 0));
             EdgeTiles.Add(new Vector2Int(X, GridManager.Rows - 1));
         }
-        for (int Y = 1; Y < GridManager.Rows - 1; Y++)
+
+        if (!bIsLinearEnemy)
         {
-            EdgeTiles.Add(new Vector2Int(0, Y));
-            EdgeTiles.Add(new Vector2Int(GridManager.Columns - 1, Y));
+            for (int Y = 1; Y < GridManager.Rows - 1; Y++)
+            {
+                EdgeTiles.Add(new Vector2Int(0, Y));
+                EdgeTiles.Add(new Vector2Int(GridManager.Columns - 1, Y));
+            }
         }
         for (int I = 0; I < EdgeTiles.Count; I++)
         {
@@ -92,6 +98,24 @@ public class EnemyManager : MonoBehaviour
         foreach (Vector2Int Tile in EdgeTiles)
         {
             if (GetEnemyAtPosition(Tile.x, Tile.y) != null) continue;
+
+            if (bIsLinearEnemy)
+            {
+                bool bIsColumnOccupiedByLinear = false;
+                foreach (EnemyBase Enemy in ActiveEnemies)
+                {
+                    if (Enemy != null && Enemy.gameObject.activeInHierarchy && Enemy is LinearEnemy)
+                    {
+                        if (Enemy.CurrentX == Tile.x) // 같은 줄에 있다면
+                        {
+                            bIsColumnOccupiedByLinear = true;
+                            break;
+                        }
+                    }
+                }
+                // 이미 같은 줄에 폰이 있다면 이 스폰 위치는 건너뜁니다!
+                if (bIsColumnOccupiedByLinear) continue;
+            }
 
             if (Player != null)
             {
@@ -134,7 +158,7 @@ public class EnemyManager : MonoBehaviour
 
     public IEnumerator ProcessEnemiesTurnRoutine()
     {
-        ActiveEnemies.RemoveAll(Enemy => Enemy == null);
+        ActiveEnemies.RemoveAll(Enemy => Enemy == null || !Enemy.gameObject.activeInHierarchy);
 
         PlayerController Player = FindFirstObjectByType<PlayerController>();
 
@@ -158,7 +182,7 @@ public class EnemyManager : MonoBehaviour
         List<EnemyBase> SnapshotEnemies = new List<EnemyBase>(ActiveEnemies);
         foreach (EnemyBase Enemy in SnapshotEnemies)
         {
-            if (Enemy != null)
+            if (Enemy != null && Enemy.gameObject.activeInHierarchy)
             {
                 MoveCoroutines.Add(StartCoroutine(Enemy.MoveRoutine()));
             }
@@ -176,7 +200,7 @@ public class EnemyManager : MonoBehaviour
     {
         foreach (EnemyBase Enemy in ActiveEnemies)
         {
-            if (Enemy != null && Enemy.CurrentX == TargetX && Enemy.CurrentY == TargetY)
+            if (Enemy != null && Enemy.gameObject.activeInHierarchy && Enemy.CurrentX == TargetX && Enemy.CurrentY == TargetY)
             {
                 return Enemy;
             }
@@ -195,7 +219,7 @@ public class EnemyManager : MonoBehaviour
     {
         foreach (EnemyBase Enemy in ActiveEnemies)
         {
-            if (Enemy != null)
+            if (Enemy != null && Enemy.gameObject.activeInHierarchy)
             {
                 Enemy.SetIntent(Enemy.WillMoveThisTurn());
             }
@@ -206,7 +230,7 @@ public class EnemyManager : MonoBehaviour
     {
         foreach (EnemyBase Enemy in ActiveEnemies)
         {
-            if (Enemy != null)
+            if (Enemy != null && Enemy.gameObject.activeInHierarchy)
             {
                 Enemy.SetIntent(false);
             }

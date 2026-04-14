@@ -163,7 +163,10 @@ public class GameManager : MonoBehaviour
         {
             foreach (EnemyBase Enemy in EnemyManager.ActiveEnemies)
             {
-                if (Enemy != null) Destroy(Enemy.gameObject);
+                if (Enemy != null)
+                {
+                    PoolManager.Instance.ReturnToPool(Enemy.gameObject);
+                }
             }
             EnemyManager.ActiveEnemies.Clear();
         }

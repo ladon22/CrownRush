@@ -8,9 +8,18 @@ public class FireBaseManager : MonoBehaviour
     private DatabaseReference DBReference;
     private bool bIsFireBaseReady = false;
 
+
+    public bool bUseFirebase = false;
+
     void Start()
     {
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+        if (bUseFirebase == false)
+        {
+            Debug.Log("파이어 베이스를 사용하지 않습니다.");
+            return;
+        }
+
+            FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
         {
             if (task.Result == DependencyStatus.Available)
             {
@@ -28,6 +37,11 @@ public class FireBaseManager : MonoBehaviour
 
     public void SaveScoreToDatabase(int FinalScore)
     {
+        if (bUseFirebase == false)
+        {
+            Debug.Log("파이어 베이스를 사용하지 않아 점수를 저장하지 않습니다.");
+            return;
+        }
         if (!bIsFireBaseReady || DBReference == null)
         {
             Debug.LogWarning("파이어베이스가 준비 되지 않아 점수를 저장할 수 없습니다.");
