@@ -16,34 +16,32 @@ public class LinearEnemy : EnemyBase
     }
     public override void CalculateNextPosition()
     {
-        PlayerController Player = FindFirstObjectByType<PlayerController>();
-
         if (Player != null)
         {
-            // 1. ´ë°¢¼± °ø°Ý È®ÀÎ: ÇÃ·¹ÀÌ¾î°¡ ³ªÀÇ ÁøÇà ¹æÇâ ´ë°¢¼±(ÁÂ¿ì 1Ä­)¿¡ ÀÖ´ÂÁö °Ë»çÇÕ´Ï´Ù.
+            // 1. ï¿½ë°¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½: ï¿½Ã·ï¿½ï¿½Ì¾î°¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ë°¢ï¿½ï¿½(ï¿½Â¿ï¿½ 1Ä­)ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Õ´Ï´ï¿½.
             if (Player.CurrentY == CurrentY + MoveDirY && Mathf.Abs(Player.CurrentX - CurrentX) == 1)
             {
-                // °ø°Ý À§Ä¡·Î ¸ñÇ¥¸¦ º¯°æÇÕ´Ï´Ù! (´ë°¢¼± µ¹Áø)
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½! (ï¿½ë°¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
                 CurrentX = Player.CurrentX;
                 CurrentY = Player.CurrentY;
                 return;
             }
 
-            // 2. Á¤¸é ±æ¸·Èû È®ÀÎ: ÇÃ·¹ÀÌ¾î°¡ Á¤È®È÷ ³ªÀÇ Á¤¸é(ÁøÇà ¹æÇâ 1Ä­ ¾Õ)¿¡ ÀÖ´ÂÁö °Ë»çÇÕ´Ï´Ù.
+            // 2. ï¿½ï¿½ï¿½ï¿½ ï¿½æ¸·ï¿½ï¿½ È®ï¿½ï¿½: ï¿½Ã·ï¿½ï¿½Ì¾î°¡ ï¿½ï¿½È®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 1Ä­ ï¿½ï¿½)ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Õ´Ï´ï¿½.
             if (Player.CurrentX == CurrentX && Player.CurrentY == CurrentY + MoveDirY)
             {
-                // Á¤¸éÀ¸·Î´Â °ø°ÝÇÒ ¼ö ¾øÀ¸¹Ç·Î Á¦ÀÚ¸®¿¡¼­ ´ë±âÇÕ´Ï´Ù (ÁÂÇ¥¸¦ ¹Ù²ÙÁö ¾Ê°í return).
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½ (ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½Ù²ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ return).
                 return;
             }
         }
 
         if (IsPositionOccupied(CurrentX, CurrentY + MoveDirY))
         {
-            return; // ¶Õ°í °¡Áö ¾Ê°í Á¦ÀÚ¸®¿¡ ¾äÀüÈ÷ ¸ØÃä´Ï´Ù.
+            return; // ï¿½Õ°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
         }
 
-        // 3. °ø°Ý ´ë»óµµ ¾ø°í, Á¤¸éÀÌ ÇÃ·¹ÀÌ¾î·Î ¸·È÷Áöµµ ¾Ê¾Ò´Ù¸é ¹«Á¶°Ç ÇÑ Ä­ Á÷ÁøÇÕ´Ï´Ù.
-        // (Á¤¸é¿¡ ´Ù¸¥ ¸ó½ºÅÍ³ª ¾ÆÀÌÅÛÀÌ ÀÖ¾î¼­ ¸·Èù °æ¿ì´Â ºÎ¸ð Å¬·¡½º¿¡¼­ ¾Ë¾Æ¼­ Ã³¸®ÇØ ÁÝ´Ï´Ù!)
+        // 3. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ä­ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
+        // (ï¿½ï¿½ï¿½é¿¡ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½Í³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾î¼­ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Î¸ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¾Æ¼ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½Ý´Ï´ï¿½!)
         CurrentY += MoveDirY;
     }
 
@@ -53,7 +51,7 @@ public class LinearEnemy : EnemyBase
 
         if (this != null && gameObject.activeInHierarchy)
         {
-            // ¸ÊÀÇ ¾çÂÊ ³¡ ÁÙ¿¡ µµ´ÞÇß´ÂÁö °Ë»çÇÕ´Ï´Ù.
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½Õ´Ï´ï¿½.
             if (CurrentY == 0 || CurrentY == GridManager.Rows - 1)
             {
                 yield return StartCoroutine(PromotionRoutine());
@@ -65,11 +63,11 @@ public class LinearEnemy : EnemyBase
     {
         if (QueenPrefab == null)
         {
-            Debug.LogWarning("QueenPrefabÀÌ ÇÒ´çµÇÁö ¾Ê¾Ò½À´Ï´Ù.");
+            Debug.LogWarning("QueenPrefabï¿½ï¿½ ï¿½Ò´ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò½ï¿½ï¿½Ï´ï¿½.");
             yield break;
         }
 
-        // 1. ÄýÀ» »ý¼ºÇÕ´Ï´Ù. (EnemyBaseÀÇ Initialize ´öºÐ¿¡ ÀÚµ¿À¸·Î ÇÏ´Ã¿¡¼­ ¶³¾îÁý´Ï´Ù)
+        // 1. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½. (EnemyBaseï¿½ï¿½ Initialize ï¿½ï¿½ï¿½Ð¿ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´Ã¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½)
         Vector2 TargetPos = GridManager.GetWorldPosition(CurrentX, CurrentY);
         GameObject QueenObj = PoolManager.Instance.SpawnFromPool(QueenPrefab, TargetPos, Quaternion.identity);
         EnemyBase QueenEnemy = QueenObj.GetComponent<EnemyBase>();
@@ -80,38 +78,12 @@ public class LinearEnemy : EnemyBase
             EnemyManager.ActiveEnemies.Add(QueenEnemy);
         }
 
-        // 2. ÄýÀÌ ¹Ù´Ú¿¡ ´êÀ» ¶§±îÁö Á¤È®È÷ ´ë±âÇÕ´Ï´Ù. (SpawnDropRoutine ³«ÇÏ ½Ã°£ÀÌ 0.35ÃÊÀÔ´Ï´Ù)
+        // 2. ï¿½ï¿½ï¿½ï¿½ ï¿½Ù´Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½. (SpawnDropRoutine ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ 0.35ï¿½ï¿½ï¿½Ô´Ï´ï¿½)
         yield return new WaitForSeconds(0.35f);
 
-        // 3. ÄýÀÌ ÂøÁöÇÏ´Â ¼ø°£ ±âÁ¸ Æù(ÀÚ½Å)À» Ç®·Î ¹Ý³³ÇÏ¿© »ç¶óÁö°Ô ÇÕ´Ï´Ù.
+        // 3. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½(ï¿½Ú½ï¿½)ï¿½ï¿½ Ç®ï¿½ï¿½ ï¿½Ý³ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Õ´Ï´ï¿½.
         EnemyManager.RemoveEnemy(this);
         PoolManager.Instance.ReturnToPool(gameObject);
     }
 
-    private void PromoteToQueen()
-    {
-        if (QueenPrefab == null)
-        {
-            Debug.LogWarning("Äý ÇÁ¸®ÆÕÀÌ ºñ¾îÀÖ¾î ½Â±ÞÇÒ ¼ö ¾ø½À´Ï´Ù! ÀÎ½ºÆåÅÍ¸¦ È®ÀÎÇØÁÖ¼¼¿ä.");
-            return;
-        }
-
-        // 1. ÇöÀç ³» À§Ä¡(¿ùµå ÁÂÇ¥)¸¦ ±¸ÇÕ´Ï´Ù.
-        Vector2 SpawnPosition = GridManager.GetWorldPosition(CurrentX, CurrentY);
-
-        // 2. ¿ÀºêÁ§Æ® Ç®À» ÀÌ¿ëÇØ ±× ÀÚ¸®¿¡ ÄýÀ» »ý¼º(²¨³¿)ÇÕ´Ï´Ù.
-        GameObject QueenObj = PoolManager.Instance.SpawnFromPool(QueenPrefab, SpawnPosition, Quaternion.identity);
-
-        EnemyBase QueenEnemy = QueenObj.GetComponent<EnemyBase>();
-        if (QueenEnemy != null)
-        {
-            // 3. Äý ÃÊ±âÈ­ ¹× Àû ¸Å´ÏÀú¿¡ µî·Ï
-            QueenEnemy.Initialize(EnemyManager, GridManager, CurrentX, CurrentY);
-            EnemyManager.ActiveEnemies.Add(QueenEnemy);
-        }
-
-        // 4. ½Â±ÞÀÌ ¿Ï·áµÇ¾úÀ¸¹Ç·Î ±âÁ¸ÀÇ Æù(ÀÚ½Å)Àº ¸®½ºÆ®¿¡¼­ »©°í Ç®·Î ¹Ý³³ÇÕ´Ï´Ù!
-        EnemyManager.RemoveEnemy(this);
-        PoolManager.Instance.ReturnToPool(gameObject);
-    }
 }
