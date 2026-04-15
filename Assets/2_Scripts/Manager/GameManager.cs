@@ -28,17 +28,17 @@ public class GameManager : MonoBehaviour
     [Header("UI")]
     public GameObject LobbyUIPanel;
     public GameObject GameUIPanel;
-    public GameObject GameOverUIPanel;
+    public GameOverUIController GameOverUI;
 
     private bool IsInitialized = false;
     private PlayerController CurrentPlayer;
+
     void Start()
     {
         ChangeState(GameState.Lobby);
 
         if (LobbyUIPanel != null) LobbyUIPanel.SetActive(true);
         if (GameUIPanel != null) GameUIPanel.SetActive(false);
-        if (GameOverUIPanel != null) GameOverUIPanel.SetActive(false);
     }
 
     public void ChangeState(GameState state)
@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
             Debug.LogError("PlayerPrefab is null");
             return;
         }
-        
+
         int StartX = 0;
         int StartY = 0;
         GridManager.GetPlayerStartIndex(out StartX, out StartY);
@@ -96,7 +96,7 @@ public class GameManager : MonoBehaviour
 
         if (LobbyUIPanel != null) LobbyUIPanel.SetActive(false);
         if (GameUIPanel != null) GameUIPanel.SetActive(true);
-        if (GameOverUIPanel != null) GameOverUIPanel.SetActive(false);
+        if (GameOverUI != null) GameOverUI.Hide();
 
         if (ScoreManager != null) ScoreManager.ResetScore();
         if (ItemManager != null) ItemManager.ClearItem();
@@ -125,11 +125,13 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         ChangeState(GameState.GameOver);
-        if (GameOverUIPanel != null) GameOverUIPanel.SetActive(true);
+
+        int CurrentScore = ScoreManager != null ? ScoreManager.CurrentScore : 0;
+        if (GameOverUI != null) GameOverUI.Show(CurrentScore);
 
         if (ScoreManager != null && FireBaseManager != null)
         {
-            FireBaseManager.SaveScoreToDatabase(ScoreManager.CurrentScore);
+            FireBaseManager.SaveScoreToDatabase(CurrentScore);
         }
     }
 
@@ -149,7 +151,7 @@ public class GameManager : MonoBehaviour
 
         if (LobbyUIPanel != null) LobbyUIPanel.SetActive(true);
         if (GameUIPanel != null) GameUIPanel.SetActive(false);
-        if (GameOverUIPanel != null) GameOverUIPanel.SetActive(false);
+        if (GameOverUI != null) GameOverUI.Hide();
 
         if (ItemManager != null) ItemManager.ClearItem();
     }
