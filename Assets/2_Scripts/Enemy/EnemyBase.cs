@@ -1,8 +1,6 @@
-﻿using NUnit.Framework;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 public abstract class EnemyBase : MonoBehaviour
@@ -11,6 +9,13 @@ public abstract class EnemyBase : MonoBehaviour
     public GridManager GridManager;
     [HideInInspector]
     public EnemyManager EnemyManager;
+    [HideInInspector]
+    public PlayerController Player;
+
+    private ItemManager _itemManager;
+    private ItemManager CachedItemManager => _itemManager != null ? _itemManager : _itemManager = FindFirstObjectByType<ItemManager>();
+    private ScoreManager _scoreManager;
+    private ScoreManager CachedScoreManager => _scoreManager != null ? _scoreManager : _scoreManager = FindFirstObjectByType<ScoreManager>();
     public int CurrentX;
     public int CurrentY;
     public float MoveSpeed = 15f;
@@ -32,6 +37,7 @@ public abstract class EnemyBase : MonoBehaviour
         CurrentY = StartY;
 
         CurrentWaitCount = 0;
+        Player = FindFirstObjectByType<PlayerController>();
         SetIntent(false);
         Vector2 TargetPosition = GridManager.GetWorldPosition(CurrentX, CurrentY);
         StartCoroutine(SpawnDropRoutine(TargetPosition));
@@ -88,10 +94,9 @@ public abstract class EnemyBase : MonoBehaviour
                 return true;
             }
         }
-        ItemManager ItemManager = FindFirstObjectByType<ItemManager>();
-        if (ItemManager != null)
+        if (CachedItemManager != null)
         {
-            ItemBase ItemOnTile = ItemManager.GetItemAtPosition(TargetX, TargetY);
+            ItemBase ItemOnTile = CachedItemManager.GetItemAtPosition(TargetX, TargetY);
             if (ItemOnTile != null)
             {
                 return true;
@@ -116,7 +121,6 @@ public abstract class EnemyBase : MonoBehaviour
         CurrentX = Mathf.Clamp(CurrentX, 0, GridManager.Columns - 1);
         CurrentY = Mathf.Clamp(CurrentY, 0, GridManager.Rows - 1);
 
-        PlayerController Player = FindFirstObjectByType<PlayerController>();
         bool bIsAttacking = false;
         if (Player != null && Player.CurrentX == CurrentX && Player.CurrentY == CurrentY)
         {
@@ -139,7 +143,7 @@ public abstract class EnemyBase : MonoBehaviour
             {
                 EnemyManager.RemoveEnemy(this);
             }
-            Destroy(gameObject);
+            PoolManager.Instance.ReturnToPool(gameObject);
         }
     }
 
@@ -175,17 +179,15 @@ public abstract class EnemyBase : MonoBehaviour
     }
     public virtual void Die()
     {
-        ScoreManager ScoreManager = FindFirstObjectByType<ScoreManager>();
-        if (ScoreManager != null)
+        if (CachedScoreManager != null)
         {
-            ScoreManager.AddScore(ScoreValue);
+            CachedScoreManager.AddScore(ScoreValue);
         }
-        Destroy(gameObject);
+        PoolManager.Instance.ReturnToPool(gameObject);
     }
 
     public virtual void ApplyDamage()
     {
-        PlayerController Player = FindFirstObjectByType<PlayerController>();
         if (Player != null && Player.HealthComponent != null)
         {
             Player.HealthComponent.TakeDamage(1);

@@ -34,7 +34,10 @@ public class ScoreManager : MonoBehaviour
     private int CurrentItemScore = 0;
 
     private GameManager GameManager;
-    private PlayerController Player;
+    private PlayerController _player;
+    private PlayerController Player => _player != null ? _player : _player = FindFirstObjectByType<PlayerController>();
+    private ItemManager _itemManager;
+    private ItemManager CachedItemManager => _itemManager != null ? _itemManager : _itemManager = FindFirstObjectByType<ItemManager>();
     private bool bIsGaugeAnimating = false;
     private void Start()
     {
@@ -45,15 +48,13 @@ public class ScoreManager : MonoBehaviour
     {
         if (CurrentCombo > 0)
         {
-            if(Player == null) Player = FindFirstObjectByType<PlayerController>();
-
             if (GameManager != null && GameManager.CurrentState == GameState.PlayerTurn)
             {
                 if (Player != null && !Player.bIsMoving)
                 {
                     CurrentComboTimer -= Time.deltaTime;
                     UpdateComboGaugeUI();
-                    // ½Ã°£ÀÌ ´Ù µÇ¸é ÄÞº¸°¡ ²÷±é´Ï´Ù.
+                    // ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ç¸ï¿½ ï¿½Þºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
                     if (CurrentComboTimer <= 0)
                     {
                         ResetCombo();
@@ -111,12 +112,11 @@ public class ScoreManager : MonoBehaviour
             int SpawnCount = CurrentItemScore / ItemSpawnScoreThreshold;
 
             CurrentItemScore %= ItemSpawnScoreThreshold;
-            ItemManager ItemManager = FindFirstObjectByType<ItemManager>();
-            if (ItemManager != null)
+            if (CachedItemManager != null)
             {
                 for (int i = 0; i < SpawnCount; i++)
                 {
-                    ItemManager.SpawnRandomItem();
+                    CachedItemManager.SpawnRandomItem();
                 }
             }
         }
@@ -167,12 +167,12 @@ public class ScoreManager : MonoBehaviour
                 string MultiplierText = "";
                 if (CurrentCombo >= Stage2Threshold)
                 {
-                    // 10ÄÞº¸ ÀÌ»ó (x2.0): °­·ÄÇÑ »¡°£»ö ÁöÁ¤
+                    // 10ï¿½Þºï¿½ ï¿½Ì»ï¿½ (x2.0): ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                     MultiplierText = " <color=#FF2A2A>[x2.0]</color>";
                 }
                 else if (CurrentCombo >= Stage1Threshold)
                 {
-                    // 2ÄÞº¸ ÀÌ»ó (x1.5): °í±Þ½º·¯¿î È²±Ý/ÁÖÈ²»ö ÁöÁ¤
+                    // 2ï¿½Þºï¿½ ï¿½Ì»ï¿½ (x1.5): ï¿½ï¿½ï¿½Þ½ï¿½ï¿½ï¿½ï¿½ï¿½ È²ï¿½ï¿½/ï¿½ï¿½È²ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                     MultiplierText = " <color=#FFB300>[x1.5]</color>";
                 }
                 ComboText.text = $"{CurrentCombo} COMBO!{MultiplierText}";

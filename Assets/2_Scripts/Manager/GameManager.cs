@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
         CurrentState = state;
     }
 
-    private void InitiallizeGameStage()
+    private void InitializeGameStage()
     {
         Vector2 PrefabSize = BoardRenderer.GetTileSize();
         GridManager.InitializeGrid(PrefabSize);
@@ -105,7 +105,7 @@ public class GameManager : MonoBehaviour
 
         if (!IsInitialized)
         {
-            InitiallizeGameStage();
+            InitializeGameStage();
             IsInitialized = true;
         }
         else

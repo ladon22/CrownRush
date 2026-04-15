@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class ItemManager : MonoBehaviour
 {
@@ -10,6 +9,9 @@ public class ItemManager : MonoBehaviour
     public GameObject[] ItemPrefabs;
     private List<ItemBase> ActiveItems = new List<ItemBase>();
 
+    private PlayerController _player;
+    private PlayerController CachedPlayer => _player != null ? _player : _player = FindFirstObjectByType<PlayerController>();
+
     public void SpawnRandomItem()
     {
         if (ItemPrefabs.Length == 0) return;
@@ -17,8 +19,8 @@ public class ItemManager : MonoBehaviour
         int SpawnX, SpawnY;
         if (GetValidSpawnPosition(out SpawnX, out SpawnY))
         {
-            int RnadomIndex = Random.Range(0, ItemPrefabs.Length);
-            GameObject Prefab = ItemPrefabs[RnadomIndex];
+            int RandomIndex = Random.Range(0, ItemPrefabs.Length);
+            GameObject Prefab = ItemPrefabs[RandomIndex];
             Vector2 SpawnPos = GridManager.GetWorldPosition(SpawnX, SpawnY);
             GameObject NewItemObj = Instantiate(Prefab, SpawnPos, Quaternion.identity);
             ItemBase NewItem = NewItemObj.GetComponent<ItemBase>();
@@ -35,13 +37,11 @@ public class ItemManager : MonoBehaviour
     {
         SpawnX = -1; SpawnY = -1;
         List<Vector2Int> EmptyTiles = new List<Vector2Int>();
-        PlayerController Player = FindFirstObjectByType<PlayerController>();
-
         for (int Y = 0; Y < GridManager.Rows; Y++)
         {
             for (int X = 0; X < GridManager.Columns; X++)
             {
-                if (Player != null && Player.CurrentX == X && Player.CurrentY == Y)
+                if (CachedPlayer != null && CachedPlayer.CurrentX == X && CachedPlayer.CurrentY == Y)
                     continue;
                 if (EnemyManager != null && EnemyManager.GetEnemyAtPosition(X, Y))
                     continue;
@@ -73,14 +73,6 @@ public class ItemManager : MonoBehaviour
     public void RemoveItem(ItemBase item)
     {
         ActiveItems.Remove(item);
-    }
-
-    private void Update()
-    {
-        if (Keyboard.current != null && Keyboard.current.iKey.wasPressedThisFrame)
-        {
-            SpawnRandomItem();
-        }
     }
 
     public void ClearItem()
