@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +20,11 @@ public class EnemyManager : MonoBehaviour
 
     [HideInInspector]
     public List<EnemyBase> ActiveEnemies = new List<EnemyBase>();
+
+    private PlayerController _player;
+    private PlayerController CachedPlayer => _player != null ? _player : _player = FindFirstObjectByType<PlayerController>();
+    private ItemManager _itemManager;
+    private ItemManager CachedItemManager => _itemManager != null ? _itemManager : _itemManager = FindFirstObjectByType<ItemManager>();
 
     public void SpawnEnemy()
     {
@@ -93,8 +97,6 @@ public class EnemyManager : MonoBehaviour
             EdgeTiles[I] = EdgeTiles[RandomIndex];
             EdgeTiles[RandomIndex] = Temp;
         }
-        PlayerController Player = FindFirstObjectByType<PlayerController>();
-        ItemManager ItemManager = FindFirstObjectByType<ItemManager>();
         foreach (Vector2Int Tile in EdgeTiles)
         {
             if (GetEnemyAtPosition(Tile.x, Tile.y) != null) continue;
@@ -106,25 +108,25 @@ public class EnemyManager : MonoBehaviour
                 {
                     if (Enemy != null && Enemy.gameObject.activeInHierarchy && Enemy is LinearEnemy)
                     {
-                        if (Enemy.CurrentX == Tile.x) // °°Àº ÁÙ¿¡ ÀÖ´Ù¸é
+                        if (Enemy.CurrentX == Tile.x) // ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¿ï¿½ ï¿½Ö´Ù¸ï¿½
                         {
                             bIsColumnOccupiedByLinear = true;
                             break;
                         }
                     }
                 }
-                // ÀÌ¹Ì °°Àº ÁÙ¿¡ ÆùÀÌ ÀÖ´Ù¸é ÀÌ ½ºÆù À§Ä¡´Â °Ç³Ê¶Ý´Ï´Ù!
+                // ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ç³Ê¶Ý´Ï´ï¿½!
                 if (bIsColumnOccupiedByLinear) continue;
             }
 
-            if (Player != null)
+            if (CachedPlayer != null)
             {
-                int DistX = Mathf.Abs(Player.CurrentX - Tile.x);
-                int DistY = Mathf.Abs(Player.CurrentY - Tile.y);
+                int DistX = Mathf.Abs(CachedPlayer.CurrentX - Tile.x);
+                int DistY = Mathf.Abs(CachedPlayer.CurrentY - Tile.y);
                 if (DistX <= 1 && DistY <= 1) continue;
             }
 
-            if (ItemManager != null && ItemManager.GetItemAtPosition(Tile.x, Tile.y) != null)
+            if (CachedItemManager != null && CachedItemManager.GetItemAtPosition(Tile.x, Tile.y) != null)
             {
                 continue;
             }
@@ -160,14 +162,12 @@ public class EnemyManager : MonoBehaviour
     {
         ActiveEnemies.RemoveAll(Enemy => Enemy == null || !Enemy.gameObject.activeInHierarchy);
 
-        PlayerController Player = FindFirstObjectByType<PlayerController>();
-
-        if (Player != null)
+        if (CachedPlayer != null)
         {
             ActiveEnemies.Sort((A, B) =>
-            {   
-                float DistanceA = Vector2.Distance(new Vector2(A.CurrentX, A.CurrentY), new Vector2(Player.CurrentX, Player.CurrentY));
-                float DistanceB = Vector2.Distance(new Vector2(B.CurrentX, B.CurrentY), new Vector2(Player.CurrentX, Player.CurrentY));
+            {
+                float DistanceA = Vector2.Distance(new Vector2(A.CurrentX, A.CurrentY), new Vector2(CachedPlayer.CurrentX, CachedPlayer.CurrentY));
+                float DistanceB = Vector2.Distance(new Vector2(B.CurrentX, B.CurrentY), new Vector2(CachedPlayer.CurrentX, CachedPlayer.CurrentY));
 
                 return DistanceA.CompareTo(DistanceB);
             });
