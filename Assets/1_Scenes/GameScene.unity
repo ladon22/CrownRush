@@ -315,7 +315,7 @@ MonoBehaviour:
   PlayerPrefab: {fileID: 3835922535514634800, guid: 63d719892eaf38145886d7013311ed5a, type: 3}
   LobbyUIPanel: {fileID: 1672219514}
   GameUIPanel: {fileID: 1301762391}
-  GameOverUI: {fileID: 0}
+  GameOverUI: {fileID: 1178157895}
 --- !u!1 &277081796
 GameObject:
   m_ObjectHideFlags: 0
@@ -611,7 +611,6 @@ Transform:
   - {fileID: 646864591}
   - {fileID: 466530477}
   - {fileID: 1254759520}
-  - {fileID: 1424982148}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &385474661
@@ -1755,6 +1754,7 @@ GameObject:
   - component: {fileID: 1178157892}
   - component: {fileID: 1178157894}
   - component: {fileID: 1178157893}
+  - component: {fileID: 1178157895}
   m_Layer: 5
   m_Name: Dimmed Background
   m_TagString: Untagged
@@ -1822,6 +1822,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1178157891}
   m_CullTransparentMesh: 1
+--- !u!114 &1178157895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1178157891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 440b91ef66811bf44bffc127f1b90a47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameOverUIController
+  PanelRect: {fileID: 277081797}
+  ScoreText: {fileID: 1033599367}
+  BestScoreText: {fileID: 653926647}
+  PopDuration: 0.4
+  PopEase: 27
 --- !u!1 &1254759519
 GameObject:
   m_ObjectHideFlags: 0
@@ -2094,55 +2111,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1332492672}
   m_CullTransparentMesh: 1
---- !u!1 &1424982147
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1424982148}
-  - component: {fileID: 1424982149}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1424982148
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1424982147}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 377048671}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1424982149
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1424982147}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 440b91ef66811bf44bffc127f1b90a47, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameOverUIController
-  PanelRect: {fileID: 277081797}
-  ScoreText: {fileID: 1033599367}
-  BestScoreText: {fileID: 653926647}
-  PopDuration: 0.4
-  PopEase: 27
 --- !u!1 &1561472538
 GameObject:
   m_ObjectHideFlags: 0
