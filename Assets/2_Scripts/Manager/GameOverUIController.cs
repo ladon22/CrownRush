@@ -22,14 +22,16 @@ public class GameOverUIController : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void Show(int currentScore)
+    public bool Show(int currentScore)
     {
+        bool bIsNewRecord = false;
         int BestScore = PlayerPrefs.GetInt(BestScoreKey, 0);
         if (currentScore > BestScore)
         {
             BestScore = currentScore;
             PlayerPrefs.SetInt(BestScoreKey, BestScore);
             PlayerPrefs.Save();
+            bIsNewRecord = true;
         }
 
         if (ScoreText != null) ScoreText.text = currentScore.ToString();
@@ -39,6 +41,7 @@ public class GameOverUIController : MonoBehaviour
         PanelRect.localScale = Vector3.zero;
         PanelRect.DOKill();
         PanelRect.DOScale(Vector3.one, PopDuration).SetEase(PopEase);
+        return bIsNewRecord;
     }
 
     public void Hide()

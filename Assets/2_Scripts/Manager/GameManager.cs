@@ -127,9 +127,11 @@ public class GameManager : MonoBehaviour
         ChangeState(GameState.GameOver);
 
         int CurrentScore = ScoreManager != null ? ScoreManager.CurrentScore : 0;
-        if (GameOverUI != null) GameOverUI.Show(CurrentScore);
+        bool bIsNewRecord = false;
+        if (GameOverUI != null) 
+            bIsNewRecord = GameOverUI.Show(CurrentScore);
 
-        if (ScoreManager != null && FireBaseManager != null)
+        if (bIsNewRecord && ScoreManager != null && FireBaseManager != null)
         {
             FireBaseManager.SaveScoreToDatabase(CurrentScore);
         }
