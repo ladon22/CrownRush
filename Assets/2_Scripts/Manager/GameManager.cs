@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     public GameObject LobbyUIPanel;
     public GameObject GameUIPanel;
     public GameOverUIController GameOverUI;
+    public SettingsUIController SettingsUI;
 
     private bool IsInitialized = false;
     private PlayerController CurrentPlayer;
@@ -140,6 +141,16 @@ public class GameManager : MonoBehaviour
     public void RetryGame()
     {
         StartGame();
+    }
+
+    public void OpenSettings()
+    {
+        if (SettingsUI != null) SettingsUI.Show();
+    }
+
+    public void CloseSettings()
+    {
+        if (SettingsUI != null) SettingsUI.Hide();
     }
 
     public void ReturnToLobby()
