@@ -18,30 +18,23 @@ public class LinearEnemy : EnemyBase
     {
         if (Player != null)
         {
-            // 1. �밢�� ���� Ȯ��: �÷��̾ ���� ���� ���� �밢��(�¿� 1ĭ)�� �ִ��� �˻��մϴ�.
             if (Player.CurrentY == CurrentY + MoveDirY && Mathf.Abs(Player.CurrentX - CurrentX) == 1)
             {
-                // ���� ��ġ�� ��ǥ�� �����մϴ�! (�밢�� ����)
                 CurrentX = Player.CurrentX;
                 CurrentY = Player.CurrentY;
                 return;
             }
 
-            // 2. ���� �渷�� Ȯ��: �÷��̾ ��Ȯ�� ���� ����(���� ���� 1ĭ ��)�� �ִ��� �˻��մϴ�.
             if (Player.CurrentX == CurrentX && Player.CurrentY == CurrentY + MoveDirY)
             {
-                // �������δ� ������ �� �����Ƿ� ���ڸ����� ����մϴ� (��ǥ�� �ٲ��� �ʰ� return).
                 return;
             }
         }
 
         if (IsPositionOccupied(CurrentX, CurrentY + MoveDirY))
         {
-            return; // �հ� ���� �ʰ� ���ڸ��� ������ ����ϴ�.
+            return;
         }
-
-        // 3. ���� ��� ����, ������ �÷��̾�� �������� �ʾҴٸ� ������ �� ĭ �����մϴ�.
-        // (���鿡 �ٸ� ���ͳ� �������� �־ ���� ���� �θ� Ŭ�������� �˾Ƽ� ó���� �ݴϴ�!)
         CurrentY += MoveDirY;
     }
 
@@ -51,8 +44,7 @@ public class LinearEnemy : EnemyBase
 
         if (this != null && gameObject.activeInHierarchy)
         {
-            // ���� ���� �� �ٿ� �����ߴ��� �˻��մϴ�.
-            if (CurrentY == 0 || CurrentY == GridManager.Rows - 1)
+            if ((MoveDirY == 1 && CurrentY == GridManager.Rows - 1) || (MoveDirY == -1 && CurrentY == 0))
             {
                 yield return StartCoroutine(PromotionRoutine());
             }
@@ -63,11 +55,10 @@ public class LinearEnemy : EnemyBase
     {
         if (QueenPrefab == null)
         {
-            Debug.LogWarning("QueenPrefab�� �Ҵ���� �ʾҽ��ϴ�.");
+            Debug.LogWarning("QueenPrefab이 없습니다.");
             yield break;
         }
 
-        // 1. ���� �����մϴ�. (EnemyBase�� Initialize ���п� �ڵ����� �ϴÿ��� �������ϴ�)
         Vector2 TargetPos = GridManager.GetWorldPosition(CurrentX, CurrentY);
         GameObject QueenObj = PoolManager.Instance.SpawnFromPool(QueenPrefab, TargetPos, Quaternion.identity);
         EnemyBase QueenEnemy = QueenObj.GetComponent<EnemyBase>();
@@ -78,10 +69,8 @@ public class LinearEnemy : EnemyBase
             EnemyManager.ActiveEnemies.Add(QueenEnemy);
         }
 
-        // 2. ���� �ٴڿ� ���� ������ ��Ȯ�� ����մϴ�. (SpawnDropRoutine ���� �ð��� 0.35���Դϴ�)
         yield return new WaitForSeconds(0.35f);
 
-        // 3. ���� �����ϴ� ���� ���� ��(�ڽ�)�� Ǯ�� �ݳ��Ͽ� ������� �մϴ�.
         EnemyManager.RemoveEnemy(this);
         PoolManager.Instance.ReturnToPool(gameObject);
     }

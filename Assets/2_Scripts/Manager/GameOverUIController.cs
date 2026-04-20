@@ -34,8 +34,8 @@ public class GameOverUIController : MonoBehaviour
             bIsNewRecord = true;
         }
 
-        if (ScoreText != null) ScoreText.text = currentScore.ToString();
-        if (BestScoreText != null) BestScoreText.text = BestScore.ToString();
+        if (ScoreText != null) ScoreText.text = "Score: " + currentScore.ToString();
+        if (BestScoreText != null) BestScoreText.text ="Best: " + BestScore.ToString();
 
         gameObject.SetActive(true);
         PanelRect.localScale = Vector3.zero;

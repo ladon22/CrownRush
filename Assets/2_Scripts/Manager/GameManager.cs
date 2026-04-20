@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
     public HealthUIManager HealthUIManager;
     public ItemManager ItemManager;
     public ScoreManager ScoreManager;
-    public FireBaseManager FireBaseManager;
+    //public FireBaseManager FireBaseManager;
 
     public GameObject PlayerPrefab;
 
@@ -132,9 +132,9 @@ public class GameManager : MonoBehaviour
         if (GameOverUI != null) 
             bIsNewRecord = GameOverUI.Show(CurrentScore);
 
-        if (bIsNewRecord && ScoreManager != null && FireBaseManager != null)
+        if (bIsNewRecord && ScoreManager != null && FireBaseManager.Instance != null)
         {
-            FireBaseManager.SaveScoreToDatabase(CurrentScore);
+            FireBaseManager.Instance.SaveScoreToDatabase(CurrentScore);
         }
     }
 

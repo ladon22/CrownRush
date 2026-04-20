@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 638fd5e3af9feb244918db8f3ebfbc12
+guid: 32f420485c98e2743b6e34d3750c2352
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2350297403280568894
-    second: FullHeart_0
+      213: -1198477067713850731
+    second: Panel_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -75,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -113,23 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: FullHeart_0
+      name: Panel_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 64
-        height: 64
+        x: 26
+        y: 33
+        width: 148
+        height: 134
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 1, y: 1, z: 1, w: 1}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e32bf0f290fed9020800000000000000
-      internalID: 2350297403280568894
+      spriteID: 592d67be4772e5fe0800000000000000
+      internalID: -1198477067713850731
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 8f24303091e04c84c9fd108b14a38c32
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      FullHeart_0: 2350297403280568894
+      Panel_0: -1198477067713850731
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

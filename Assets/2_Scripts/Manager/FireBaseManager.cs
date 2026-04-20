@@ -2,20 +2,38 @@ using Firebase;
 using Firebase.Database;
 using Firebase.Extensions;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FireBaseManager : MonoBehaviour
 {
+    public static FireBaseManager Instance;
+
     private DatabaseReference DBReference;
     private bool bIsFireBaseReady = false;
 
 
     public bool bUseFirebase = false;
 
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(transform.root.gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+    }
+
     void Start()
     {
         if (bUseFirebase == false)
         {
             Debug.Log("파이어 베이스를 사용하지 않습니다.");
+            LoadMainScene();
             return;
         }
 
@@ -26,13 +44,20 @@ public class FireBaseManager : MonoBehaviour
                 DBReference = FirebaseDatabase.DefaultInstance.RootReference;
                 bIsFireBaseReady = true;
                 Debug.Log("파이어 베이스 초기화 성공, 데이터베이스 연결 완료");
+                LoadMainScene();
             }
             else
             {
                 Debug.LogError($"파이어베이스 초기화 실패: { task.Result}");
+                LoadMainScene();
             }
         });
         
+    }
+
+    private void LoadMainScene()
+    {
+        SceneManager.LoadScene(1);
     }
 
     public void SaveScoreToDatabase(int FinalScore)
