@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: UI_Text_en
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: a4eebcb6dd212424783714164f65a09a, type: 2}
+  m_Metadata:
+    m_Items:
+    - rid: 2870879215130509650
+  m_TableData:
+  - m_Id: 211088867328
+    m_Localized: GameStart
+    m_Metadata:
+      m_Items: []
+  - m_Id: 523241553920
+    m_Localized: 'Score: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 2870879215130509650
+  - m_Id: 1182187683840
+    m_Localized: 'Best: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 2870879215130509650
+  - m_Id: 1304216764416
+    m_Localized: Continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1446185566208
+    m_Localized: Retry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1833110110208
+    m_Localized: Lobby
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1980107882496
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2394467368960
+    m_Localized: Music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2403086663680
+    m_Localized: Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2400838516736
+    m_Localized: Vibration
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2397722148864
+    m_Localized: Sound effects
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 2870879215130509650
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 
+        m_SharedEntries:
+        - id: 1182187683840
+        - id: 523241553920

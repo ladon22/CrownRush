@@ -134,11 +134,14 @@ public class PlayerController : MonoBehaviour
         {
             EnemyManager.RemoveEnemy(TargetEnemy);
             TargetEnemy.Die();
-            //TODO: 파티클과 화면 흔들림
-
             if (CameraController.Instance != null)
             {
                 CameraController.Instance.ShakeForAttack();
+            }
+
+            if (SettingsManager.Instance != null)
+            {
+                SettingsManager.Instance.Vibrate(VibrateType.Light);
             }
         }
 

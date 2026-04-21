@@ -28,6 +28,9 @@ public class HealthComponent : MonoBehaviour
             CameraController.Instance.ShakeForHit();
         }
 
+        if (SettingsManager.Instance != null)
+            SettingsManager.Instance.Vibrate(VibrateType.Heavy);
+
         if (CurrentHealth <= 0)
         {
             OnDied?.Invoke();

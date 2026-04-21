@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: UI_Text Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: UI_Text
+  m_TableCollectionNameGuidString: a4eebcb6dd212424783714164f65a09a
+  m_Entries:
+  - m_Id: 211088867328
+    m_Key: btn_GameStart
+    m_Metadata:
+      m_Items: []
+  - m_Id: 523241553920
+    m_Key: gameover_score
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1182187683840
+    m_Key: gameover_best
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1304216764416
+    m_Key: gameover_continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1446185566208
+    m_Key: gameover_retry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1833110110208
+    m_Key: gameover_lobby
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1980107882496
+    m_Key: settings_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2394467368960
+    m_Key: settings_music
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2397722148864
+    m_Key: settings_soundeffects
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2400838516736
+    m_Key: settings_vibration
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2403086663680
+    m_Key: settings_language
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 2870879215130509602
+  references:
+    version: 2
+    RefIds:
+    - rid: 2870879215130509602
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1776752345272

@@ -1,22 +1,24 @@
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Localization.Settings;
+using TMPro;
+using System.Collections;
 
 public class SettingsUIController : MonoBehaviour
 {
     [Header("Panel")]
-    public RectTransform PanelRect;
+    [SerializeField] private RectTransform PanelRect;
 
     [Header("Audio")]
-    public Slider BGMSlider;
-    public Slider SFXSlider;
-
-    [Header("Language")]
-    public Button KoreanButton;
-    public Button EnglishButton;
+    [SerializeField] private Toggle BGMToggle;
+    [SerializeField] private Toggle SFXToggle;
 
     [Header("Gameplay")]
-    public Toggle ScreenShakeToggle;
+    [SerializeField] private Toggle VibrationToggle;
+
+    [Header("Language")]
+    [SerializeField] private TMP_Dropdown LanguageDropdown;
 
     [Header("Animation Settings")]
     public float PopDuration = 0.4f;
@@ -29,18 +31,27 @@ public class SettingsUIController : MonoBehaviour
 
     public void Show()
     {
-        // 현재 저장된 값으로 UI 초기화
+        gameObject.SetActive(true);
+        // 1. 오디오 토글 UI 초기화 (AudioManager 연동)
         if (AudioManager.Instance != null)
         {
-            if (BGMSlider != null) BGMSlider.value = AudioManager.Instance.BGMVolume;
-            if (SFXSlider != null) SFXSlider.value = AudioManager.Instance.SFXVolume;
+            if (BGMToggle != null) BGMToggle.SetIsOnWithoutNotify(AudioManager.Instance.IsBGMOn);
+            if (SFXToggle != null) SFXToggle.SetIsOnWithoutNotify(AudioManager.Instance.IsSFXOn);
         }
 
-        if (SettingsManager.Instance != null && ScreenShakeToggle != null)
-            ScreenShakeToggle.isOn = SettingsManager.Instance.IsScreenShakeEnabled;
+        // 2. 화면 흔들림 토글 UI 초기화
+        if (SettingsManager.Instance != null && VibrationToggle != null)
+        {
+            VibrationToggle.SetIsOnWithoutNotify(SettingsManager.Instance.IsVibrationEnabled);
+        }
 
-        UpdateLanguageButtons();
+        // 3. 공식 Localization 언어 드롭다운 초기화
+        if (LanguageDropdown != null && LocalizationSettings.AvailableLocales != null)
+        {
+            LanguageDropdown.value = LocalizationSettings.AvailableLocales.Locales.IndexOf(LocalizationSettings.SelectedLocale);
+        }
 
+        // 팝업 애니메이션 실행
         gameObject.SetActive(true);
         PanelRect.localScale = Vector3.zero;
         PanelRect.DOKill();
@@ -54,57 +65,35 @@ public class SettingsUIController : MonoBehaviour
             .SetEase(Ease.InBack)
             .OnComplete(() => gameObject.SetActive(false));
     }
-
-    // BGM 슬라이더 OnValueChanged에 연결
-    public void OnBGMChanged(float value)
+    public void OnBGMToggleChanged(bool isOn)
     {
-        if (AudioManager.Instance != null)
-            AudioManager.Instance.SetBGMVolume(value);
+        if (AudioManager.Instance != null) AudioManager.Instance.ToggleBGM(isOn);
     }
 
-    // SFX 슬라이더 OnValueChanged에 연결
-    public void OnSFXChanged(float value)
+    public void OnSFXToggleChanged(bool isOn)
     {
-        if (AudioManager.Instance != null)
-            AudioManager.Instance.SetSFXVolume(value);
+        if (AudioManager.Instance != null) AudioManager.Instance.ToggleSFX(isOn);
     }
 
-    // 한국어 버튼 OnClick에 연결
-    public void OnKoreanButtonClicked()
+    public void OnVibrationToggleChanged(bool isOn)
     {
-        if (LocalizationManager.Instance != null)
-            LocalizationManager.Instance.SetLanguage(Language.Korean);
-
-        UpdateLanguageButtons();
+        if (SettingsManager.Instance != null) SettingsManager.Instance.SetVibration(isOn);
     }
 
-    // 영어 버튼 OnClick에 연결
-    public void OnEnglishButtonClicked()
+    public void OnLanguageDropdownChanged(int index)
     {
-        if (LocalizationManager.Instance != null)
-            LocalizationManager.Instance.SetLanguage(Language.English);
-
-        UpdateLanguageButtons();
+        StartCoroutine(SetLocaleRoutine(index));
     }
 
-    // 화면 흔들림 토글 OnValueChanged에 연결
-    public void OnScreenShakeToggleChanged(bool value)
+    private IEnumerator SetLocaleRoutine(int localeID)
     {
-        if (SettingsManager.Instance != null)
-            SettingsManager.Instance.SetScreenShake(value);
-    }
+        // 1. 다국어 시스템이 완벽하게 로딩될 때까지 안전하게 기다립니다.
+        yield return LocalizationSettings.InitializationOperation;
 
-    // 현재 선택된 언어 버튼을 시각적으로 강조
-    private void UpdateLanguageButtons()
-    {
-        if (LocalizationManager.Instance == null) return;
-
-        bool isKorean = LocalizationManager.Instance.CurrentLanguage == Language.Korean;
-
-        if (KoreanButton != null)
-            KoreanButton.interactable = !isKorean;
-
-        if (EnglishButton != null)
-            EnglishButton.interactable = isKorean;
+        // 2. 시스템이 준비되면 언어를 교체합니다.
+        if (LocalizationSettings.AvailableLocales != null && localeID < LocalizationSettings.AvailableLocales.Locales.Count)
+        {
+            LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[localeID];
+        }
     }
 }

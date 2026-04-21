@@ -8,11 +8,11 @@ public class AudioManager : MonoBehaviour
     public AudioSource BGMAudioSource;
     public AudioSource SFXAudioSource;
 
-    private const string BGMVolumeKey = "Settings_BGMVolume";
-    private const string SFXVolumeKey = "Settings_SFXVolume";
+    private const string BGM_KEY = "Settings_BGM_On";
+    private const string SFX_KEY = "Settings_SFX_On";
 
-    public float BGMVolume { get; private set; }
-    public float SFXVolume { get; private set; }
+    public bool IsBGMOn { get; private set; }
+    public bool IsSFXOn { get; private set; }
 
     private void Awake()
     {
@@ -27,46 +27,35 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
-        LoadVolumes();
+        LoadSettings();
     }
 
-    private void LoadVolumes()
+    private void LoadSettings()
     {
-        BGMVolume = PlayerPrefs.GetFloat(BGMVolumeKey, 1f);
-        SFXVolume = PlayerPrefs.GetFloat(SFXVolumeKey, 1f);
+        IsBGMOn = PlayerPrefs.GetFloat(BGM_KEY, 1f) == 1;
+        IsSFXOn = PlayerPrefs.GetFloat(SFX_KEY, 1f) == 1;
 
-        ApplyBGMVolume();
-        ApplySFXVolume();
+        if (BGMAudioSource != null) BGMAudioSource.mute = !IsBGMOn;
+        if (SFXAudioSource != null) SFXAudioSource.mute = !IsSFXOn;
     }
 
-    public void SetBGMVolume(float value)
+    public void ToggleBGM(bool isOn)
     {
-        BGMVolume = value;
-        ApplyBGMVolume();
-        PlayerPrefs.SetFloat(BGMVolumeKey, BGMVolume);
+        IsBGMOn = isOn;
+        if (BGMAudioSource != null) BGMAudioSource.mute = !IsBGMOn;
+        PlayerPrefs.SetInt(BGM_KEY, IsBGMOn ? 1 : 0);
         PlayerPrefs.Save();
     }
 
-    public void SetSFXVolume(float value)
+    public void ToggleSFX(bool isOn)
     {
-        SFXVolume = value;
-        ApplySFXVolume();
-        PlayerPrefs.SetFloat(SFXVolumeKey, SFXVolume);
+        IsSFXOn = isOn;
+        if (SFXAudioSource != null) SFXAudioSource.mute = !IsSFXOn;
+        PlayerPrefs.SetInt(SFX_KEY, IsSFXOn ? 1 : 0);
         PlayerPrefs.Save();
     }
 
-    private void ApplyBGMVolume()
-    {
-        if (BGMAudioSource != null)
-            BGMAudioSource.volume = BGMVolume;
-    }
-
-    private void ApplySFXVolume()
-    {
-        if (SFXAudioSource != null)
-            SFXAudioSource.volume = SFXVolume;
-    }
-
+    // 기존의 재생/정지 함수들은 그대로 유지합니다.
     public void PlayBGM(AudioClip clip)
     {
         if (BGMAudioSource == null || clip == null) return;
@@ -77,8 +66,7 @@ public class AudioManager : MonoBehaviour
 
     public void StopBGM()
     {
-        if (BGMAudioSource != null)
-            BGMAudioSource.Stop();
+        if (BGMAudioSource != null) BGMAudioSource.Stop();
     }
 
     public void PlaySFX(AudioClip clip)

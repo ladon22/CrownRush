@@ -1,6 +1,7 @@
 using Firebase;
 using Firebase.Database;
 using Firebase.Extensions;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -28,36 +29,34 @@ public class FireBaseManager : MonoBehaviour
         }
     }
 
-    void Start()
+    public IEnumerator InitializeFirebaseRoutine()
     {
         if (bUseFirebase == false)
         {
-            Debug.Log("파이어 베이스를 사용하지 않습니다.");
-            LoadMainScene();
-            return;
+            Debug.Log("[FireBaseManager] 파이어베이스를 사용하지 않음 설정.");
+            yield break; // 코루틴 즉시 종료
         }
 
-            FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+        bool bWaitFirebase = true;
+
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
         {
             if (task.Result == DependencyStatus.Available)
             {
                 DBReference = FirebaseDatabase.DefaultInstance.RootReference;
                 bIsFireBaseReady = true;
-                Debug.Log("파이어 베이스 초기화 성공, 데이터베이스 연결 완료");
-                LoadMainScene();
+                Debug.Log("[FireBaseManager] 초기화 성공 및 연결 완료");
             }
             else
             {
-                Debug.LogError($"파이어베이스 초기화 실패: { task.Result}");
-                LoadMainScene();
+                Debug.LogError($"[FireBaseManager] 초기화 실패: {task.Result}");
             }
-        });
-        
-    }
 
-    private void LoadMainScene()
-    {
-        SceneManager.LoadScene(1);
+            bWaitFirebase = false;
+        });
+
+        // 비동기 작업이 끝날 때까지 대기
+        yield return new WaitUntil(() => bWaitFirebase == false);
     }
 
     public void SaveScoreToDatabase(int FinalScore)

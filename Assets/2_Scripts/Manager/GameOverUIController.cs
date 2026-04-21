@@ -1,15 +1,16 @@
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization.Components;
 
 public class GameOverUIController : MonoBehaviour
 {
     [Header("Panel")]
     public RectTransform PanelRect;
 
-    [Header("Texts")]
-    public TextMeshProUGUI ScoreText;
-    public TextMeshProUGUI BestScoreText;
+    [Header("Texts (Localize Events)")]
+    public LocalizeStringEvent ScoreTextEvent;
+    public LocalizeStringEvent BestScoreTextEvent;
 
     [Header("Animation Settings")]
     public float PopDuration = 0.4f;
@@ -24,6 +25,7 @@ public class GameOverUIController : MonoBehaviour
 
     public bool Show(int currentScore)
     {
+        gameObject.SetActive(true);
         bool bIsNewRecord = false;
         int BestScore = PlayerPrefs.GetInt(BestScoreKey, 0);
         if (currentScore > BestScore)
@@ -34,10 +36,19 @@ public class GameOverUIController : MonoBehaviour
             bIsNewRecord = true;
         }
 
-        if (ScoreText != null) ScoreText.text = "Score: " + currentScore.ToString();
-        if (BestScoreText != null) BestScoreText.text ="Best: " + BestScore.ToString();
+        if (ScoreTextEvent != null)
+        {
+            ScoreTextEvent.StringReference.Arguments = new object[] { currentScore };
+            ScoreTextEvent.RefreshString(); // "단어장 새로고침 해줘!" 라고 명령
+        }
 
-        gameObject.SetActive(true);
+        // 2. 최고 점수 업데이트
+        if (BestScoreTextEvent != null)
+        {
+            BestScoreTextEvent.StringReference.Arguments = new object[] { BestScore };
+            BestScoreTextEvent.RefreshString();
+        }
+
         PanelRect.localScale = Vector3.zero;
         PanelRect.DOKill();
         PanelRect.DOScale(Vector3.one, PopDuration).SetEase(PopEase);
