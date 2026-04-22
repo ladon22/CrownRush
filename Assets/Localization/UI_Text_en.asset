@@ -65,6 +65,10 @@ MonoBehaviour:
     m_Localized: Sound effects
     m_Metadata:
       m_Items: []
+  - m_Id: 341560635981824
+    m_Localized: Frame Rate
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

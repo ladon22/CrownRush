@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour
     {
         ChangeState(GameState.Lobby);
 
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayBGM(BgmType.Lobby);
         if (LobbyUIPanel != null) LobbyUIPanel.SetActive(true);
         if (GameUIPanel != null) GameUIPanel.SetActive(false);
     }
@@ -120,6 +121,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayBGM(BgmType.InGame);
         TurnManager.StartGameLoop();
     }
 
@@ -145,16 +147,24 @@ public class GameManager : MonoBehaviour
 
     public void OpenSettings()
     {
-        if (SettingsUI != null) SettingsUI.Show();
+        if (SettingsUI != null && !SettingsUI.isActiveAndEnabled) SettingsUI.Show();
+
+        if (CurrentState != GameState.Lobby)
+        {
+            Time.timeScale = 0f;
+        }
     }
 
     public void CloseSettings()
     {
         if (SettingsUI != null) SettingsUI.Hide();
+        Time.timeScale = 1f;
     }
 
     public void ReturnToLobby()
     {
+        Time.timeScale = 1f;
+
         ChangeState(GameState.Lobby);
 
         ClearEnemies();

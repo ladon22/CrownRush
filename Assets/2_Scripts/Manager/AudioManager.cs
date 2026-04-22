@@ -1,4 +1,37 @@
+using System.Collections.Generic;
 using UnityEngine;
+
+public enum BgmType
+{
+    Lobby,
+    InGame
+}
+
+public enum SfxType
+{
+    Click,
+    PlayerMove,
+    PlayerAttack,
+    PlayerHit,
+    EnemyDrop,
+    EnemyDie,
+    ItemConsume,
+    GameOver
+}
+
+[System.Serializable]
+public struct BgmTrack
+{
+    public BgmType Type;
+    public AudioClip Clip;
+}
+
+[System.Serializable]
+public struct SfxTrack
+{
+    public SfxType Type;
+    public AudioClip Clip;
+}
 
 public class AudioManager : MonoBehaviour
 {
@@ -7,6 +40,13 @@ public class AudioManager : MonoBehaviour
     [Header("Audio Sources")]
     public AudioSource BGMAudioSource;
     public AudioSource SFXAudioSource;
+
+    [Header("Audio Clips")]
+    public BgmTrack[] BgmTracks;
+    public SfxTrack[] SfxTracks;
+
+    private Dictionary<BgmType, AudioClip> BgmDictionary = new Dictionary<BgmType, AudioClip>();
+    private Dictionary<SfxType, AudioClip> SfxDictionary = new Dictionary<SfxType, AudioClip>();
 
     private const string BGM_KEY = "Settings_BGM_On";
     private const string SFX_KEY = "Settings_SFX_On";
@@ -26,8 +66,23 @@ public class AudioManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
+        InitializeDictionaries();
         LoadSettings();
+    }
+
+    private void InitializeDictionaries()
+    {
+        foreach (BgmTrack track in BgmTracks)
+        {
+            if (!BgmDictionary.ContainsKey(track.Type))
+                BgmDictionary.Add(track.Type, track.Clip);
+        }
+
+        foreach (SfxTrack track in SfxTracks)
+        {
+            if (!SfxDictionary.ContainsKey(track.Type))
+                SfxDictionary.Add(track.Type, track.Clip);
+        }
     }
 
     private void LoadSettings()
@@ -55,13 +110,18 @@ public class AudioManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
-    // 기존의 재생/정지 함수들은 그대로 유지합니다.
-    public void PlayBGM(AudioClip clip)
+    public void PlayBGM(BgmType type)
     {
-        if (BGMAudioSource == null || clip == null) return;
-        BGMAudioSource.clip = clip;
-        BGMAudioSource.loop = true;
-        BGMAudioSource.Play();
+        if (BGMAudioSource == null) return;
+        if (BgmDictionary.TryGetValue(type, out AudioClip clip))
+        {
+
+            if (BGMAudioSource.clip == clip && BGMAudioSource.isPlaying) return;
+
+            BGMAudioSource.clip = clip;
+            BGMAudioSource.loop = true;
+            BGMAudioSource.Play();
+        }
     }
 
     public void StopBGM()
@@ -69,9 +129,22 @@ public class AudioManager : MonoBehaviour
         if (BGMAudioSource != null) BGMAudioSource.Stop();
     }
 
-    public void PlaySFX(AudioClip clip)
+    public void PlaySFX(SfxType type, bool useRandomPitch = false)
     {
-        if (SFXAudioSource == null || clip == null) return;
-        SFXAudioSource.PlayOneShot(clip);
+        if (SFXAudioSource == null) return;
+
+        if (SfxDictionary.TryGetValue(type, out AudioClip clip))
+        {
+            if (useRandomPitch)
+            {
+                SFXAudioSource.pitch = Random.Range(0.9f, 1.1f);
+            }
+            else
+            {
+                SFXAudioSource.pitch = 1.0f;
+            }
+
+            SFXAudioSource.PlayOneShot(clip);
+        }
     }
 }

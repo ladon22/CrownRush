@@ -16,6 +16,7 @@ public class SettingsUIController : MonoBehaviour
 
     [Header("Gameplay")]
     [SerializeField] private Toggle VibrationToggle;
+    [SerializeField] private TMP_Dropdown FrameRateDropdown;
 
     [Header("Language")]
     [SerializeField] private TMP_Dropdown LanguageDropdown;
@@ -40,9 +41,15 @@ public class SettingsUIController : MonoBehaviour
         }
 
         // 2. 화면 흔들림 토글 UI 초기화
-        if (SettingsManager.Instance != null && VibrationToggle != null)
+        if (SettingsManager.Instance != null )
         {
-            VibrationToggle.SetIsOnWithoutNotify(SettingsManager.Instance.IsVibrationEnabled);
+            if(VibrationToggle != null)
+                VibrationToggle.SetIsOnWithoutNotify(SettingsManager.Instance.IsVibrationEnabled);
+            if(FrameRateDropdown != null)
+            {
+                int FpsIndex = SettingsManager.Instance.CurrentFrameRate == 60 ? 1 : 0;
+                FrameRateDropdown.SetValueWithoutNotify(FpsIndex);
+            }
         }
 
         // 3. 공식 Localization 언어 드롭다운 초기화
@@ -55,7 +62,7 @@ public class SettingsUIController : MonoBehaviour
         gameObject.SetActive(true);
         PanelRect.localScale = Vector3.zero;
         PanelRect.DOKill();
-        PanelRect.DOScale(Vector3.one, PopDuration).SetEase(PopEase);
+        PanelRect.DOScale(Vector3.one, PopDuration).SetEase(PopEase).SetUpdate(true); ;
     }
 
     public void Hide()
@@ -63,7 +70,12 @@ public class SettingsUIController : MonoBehaviour
         PanelRect.DOKill();
         PanelRect.DOScale(Vector3.zero, PopDuration * 0.7f)
             .SetEase(Ease.InBack)
-            .OnComplete(() => gameObject.SetActive(false));
+            .SetUpdate(true)
+            .OnComplete(() => {
+                gameObject.SetActive(false);
+                Time.timeScale = 1.0f;
+            });
+
     }
     public void OnBGMToggleChanged(bool isOn)
     {
@@ -83,6 +95,15 @@ public class SettingsUIController : MonoBehaviour
     public void OnLanguageDropdownChanged(int index)
     {
         StartCoroutine(SetLocaleRoutine(index));
+    }
+
+    public void OnFrameRateDropdownChanged(int index)
+    {
+        int TargetFPS = index == 0 ? 30 : 60;
+        if (SettingsManager.Instance != null)
+        {
+            SettingsManager.Instance.SetFrameRate(TargetFPS);
+        }
     }
 
     private IEnumerator SetLocaleRoutine(int localeID)

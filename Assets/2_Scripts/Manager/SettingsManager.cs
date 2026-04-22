@@ -13,8 +13,11 @@ public class SettingsManager : MonoBehaviour
     public static SettingsManager Instance;
 
     private const string VibrationKey = "Settings_Vibration";
+    private const string FrameRateKey = "Settings_FrameRate";
+
 
     public bool IsVibrationEnabled { get; private set; }
+    public int CurrentFrameRate { get; private set; }
 
     private void Awake()
     {
@@ -31,8 +34,11 @@ public class SettingsManager : MonoBehaviour
 
         IsVibrationEnabled = PlayerPrefs.GetInt(VibrationKey, 1) == 1;
         MOST_HapticFeedback.HapticsEnabled = IsVibrationEnabled;
-    }
 
+        CurrentFrameRate = PlayerPrefs.GetInt(FrameRateKey, 60);
+        ApplyFrameRate(CurrentFrameRate);
+    }
+    //###################### 진동 ######################
     public void SetVibration(bool value)
     {
         IsVibrationEnabled = value;
@@ -64,4 +70,22 @@ public class SettingsManager : MonoBehaviour
 #endif
         }
     }
+    //###################### 프레임 ######################
+
+    public void SetFrameRate(int fps)
+    {
+        CurrentFrameRate = fps;
+        PlayerPrefs.SetInt(FrameRateKey, fps);
+        PlayerPrefs.Save();
+
+        ApplyFrameRate(CurrentFrameRate);
+    }
+
+
+    private void ApplyFrameRate(int fps)
+    {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = fps;
+    }
+
 }

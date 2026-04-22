@@ -59,6 +59,10 @@ MonoBehaviour:
     m_Key: settings_language
     m_Metadata:
       m_Items: []
+  - m_Id: 341560635981824
+    m_Key: settings_framerate
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
