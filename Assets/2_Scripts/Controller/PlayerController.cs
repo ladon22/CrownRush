@@ -88,6 +88,7 @@ public class PlayerController : MonoBehaviour
     private IEnumerator PerformAction(int TargetX, int TargetY)
     {
         bIsMoving = true;
+
         Vector2 StartPosition = transform.position;
         Vector2 TargetPosition = GridManager.GetWorldPosition(TargetX, TargetY);
 
@@ -143,6 +144,11 @@ public class PlayerController : MonoBehaviour
             {
                 SettingsManager.Instance.Vibrate(VibrateType.Light);
             }
+        }
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(SfxType.PlayerMove, true);
         }
 
         if (TargetItem != null)

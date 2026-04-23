@@ -167,6 +167,9 @@ public class GameManager : MonoBehaviour
 
         ChangeState(GameState.Lobby);
 
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlayBGM(BgmType.Lobby);
+
         ClearEnemies();
 
         if (BoardRenderer != null) BoardRenderer.gameObject.SetActive(false);

@@ -87,8 +87,8 @@ public class AudioManager : MonoBehaviour
 
     private void LoadSettings()
     {
-        IsBGMOn = PlayerPrefs.GetFloat(BGM_KEY, 1f) == 1;
-        IsSFXOn = PlayerPrefs.GetFloat(SFX_KEY, 1f) == 1;
+        IsBGMOn = PlayerPrefs.GetInt(BGM_KEY, 1) == 1;
+        IsSFXOn = PlayerPrefs.GetInt(SFX_KEY, 1) == 1;
 
         if (BGMAudioSource != null) BGMAudioSource.mute = !IsBGMOn;
         if (SFXAudioSource != null) SFXAudioSource.mute = !IsSFXOn;
