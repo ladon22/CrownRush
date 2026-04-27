@@ -63,22 +63,22 @@ public class HealthUIManager : MonoBehaviour
             Animator Anim = HeartIcons[i].GetComponent<Animator>();   
             if (i < CurrentHealth)
             {
-                if(Anim != null)
+                if (Anim != null && Anim.isActiveAndEnabled)
                 {
                     Anim.SetBool("IsEmpty", false);
                 }
-                else
+                else if (Anim == null)
                 {
                     HeartIcons[i].sprite = FullHeartSprite;
                 }
             }
             else
             {
-                if (Anim != null)
+                if (Anim != null && Anim.isActiveAndEnabled)
                 {
                     Anim.SetBool("IsEmpty", true);
                 }
-                else
+                else if (Anim == null)
                 {
                     HeartIcons[i].sprite = EmptyHeartSprite;
                 }

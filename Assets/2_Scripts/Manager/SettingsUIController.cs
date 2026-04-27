@@ -55,7 +55,7 @@ public class SettingsUIController : MonoBehaviour
         // 3. 공식 Localization 언어 드롭다운 초기화
         if (LanguageDropdown != null && LocalizationSettings.AvailableLocales != null)
         {
-            LanguageDropdown.value = LocalizationSettings.AvailableLocales.Locales.IndexOf(LocalizationSettings.SelectedLocale);
+            LanguageDropdown.SetValueWithoutNotify(LocalizationSettings.AvailableLocales.Locales.IndexOf(LocalizationSettings.SelectedLocale));
         }
 
         // 팝업 애니메이션 실행

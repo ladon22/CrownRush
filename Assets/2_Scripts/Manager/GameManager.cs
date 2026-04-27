@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 public enum GameState
@@ -26,6 +27,7 @@ public class GameManager : MonoBehaviour
     public GameObject PlayerPrefab;
 
     [Header("UI")]
+    public UITransitionController UITransition;
     public GameObject LobbyUIPanel;
     public GameObject GameUIPanel;
     public GameOverUIController GameOverUI;
@@ -38,9 +40,15 @@ public class GameManager : MonoBehaviour
     {
         ChangeState(GameState.Lobby);
 
+        if (!IsInitialized)
+        {
+            InitializeGameStage();
+            IsInitialized = true;
+        }
+
         if (AudioManager.Instance != null) AudioManager.Instance.PlayBGM(BgmType.Lobby);
         if (LobbyUIPanel != null) LobbyUIPanel.SetActive(true);
-        if (GameUIPanel != null) GameUIPanel.SetActive(false);
+        //if (GameUIPanel != null) GameUIPanel.SetActive(false);
     }
 
     public void ChangeState(GameState state)
@@ -92,12 +100,24 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void StartGame()
+    public void StartGame(bool IsRetry = false)
     {
         ChangeState(GameState.Initialize);
 
-        if (LobbyUIPanel != null) LobbyUIPanel.SetActive(false);
-        if (GameUIPanel != null) GameUIPanel.SetActive(true);
+        float StartDelay = 0f;
+
+        if (!IsRetry)
+        {
+            if (UITransition != null)
+            {
+                UITransition.SlideToGame();
+                StartDelay = UITransition.SlideDuration;
+            }
+        }
+
+        //if (LobbyUIPanel != null) LobbyUIPanel.SetActive(false);
+        //if (GameUIPanel != null) GameUIPanel.SetActive(true);
+
         if (GameOverUI != null) GameOverUI.Hide();
 
         if (ScoreManager != null) ScoreManager.ResetScore();
@@ -105,24 +125,18 @@ public class GameManager : MonoBehaviour
 
         ClearEnemies();
 
-        if (!IsInitialized)
+        if (CurrentPlayer != null)
         {
-            InitializeGameStage();
-            IsInitialized = true;
-        }
-        else
-        {
-            if (BoardRenderer != null) BoardRenderer.gameObject.SetActive(true);
-
-            if (CurrentPlayer != null)
-            {
-                CurrentPlayer.gameObject.SetActive(true);
-                CurrentPlayer.ResetPlayer();
-            }
+            CurrentPlayer.gameObject.SetActive(true);
+            CurrentPlayer.ResetPlayer();
         }
 
         if (AudioManager.Instance != null) AudioManager.Instance.PlayBGM(BgmType.InGame);
-        TurnManager.StartGameLoop();
+
+        DOVirtual.DelayedCall(StartDelay, () =>
+        {
+            TurnManager.StartGameLoop();
+        });
     }
 
     public void GameOver()
@@ -142,7 +156,7 @@ public class GameManager : MonoBehaviour
 
     public void RetryGame()
     {
-        StartGame();
+        StartGame(true);
     }
 
     public void OpenSettings()
@@ -172,11 +186,17 @@ public class GameManager : MonoBehaviour
 
         ClearEnemies();
 
-        if (BoardRenderer != null) BoardRenderer.gameObject.SetActive(false);
-        if (CurrentPlayer != null) CurrentPlayer.gameObject.SetActive(false);
+        //if (BoardRenderer != null) BoardRenderer.gameObject.SetActive(false);
+        //if (CurrentPlayer != null) CurrentPlayer.gameObject.SetActive(false);
 
-        if (LobbyUIPanel != null) LobbyUIPanel.SetActive(true);
-        if (GameUIPanel != null) GameUIPanel.SetActive(false);
+        if (CurrentPlayer != null) CurrentPlayer.ResetPlayer();
+
+        //if (LobbyUIPanel != null) LobbyUIPanel.SetActive(true);
+        //if (GameUIPanel != null) GameUIPanel.SetActive(false);
+
+        if (UITransition != null)
+            UITransition.SlideToLobby();
+
         if (GameOverUI != null) GameOverUI.Hide();
 
         if (ItemManager != null) ItemManager.ClearItem();

@@ -36,13 +36,14 @@ public class GameOverUIController : MonoBehaviour
             bIsNewRecord = true;
         }
 
+
         if (ScoreTextEvent != null)
         {
             ScoreTextEvent.StringReference.Arguments = new object[] { currentScore };
             ScoreTextEvent.RefreshString(); // "단어장 새로고침 해줘!" 라고 명령
         }
 
-        // 2. 최고 점수 업데이트
+        // 최고 점수 업데이트
         if (BestScoreTextEvent != null)
         {
             BestScoreTextEvent.StringReference.Arguments = new object[] { BestScore };
