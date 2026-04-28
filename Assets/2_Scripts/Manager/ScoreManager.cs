@@ -106,6 +106,13 @@ public class ScoreManager : MonoBehaviour
         int FinalScore = Mathf.RoundToInt(ScoreToAdd * Multiplier);
         CurrentScore += FinalScore;
 
+        // 업적 매니저에게 현재 점수와 콤보 상태를 실시간으로 보고
+        if (AchievementManager.Instance != null)
+        {
+            AchievementManager.Instance.ReportProgress(AchievementType.Score, CurrentScore);
+            AchievementManager.Instance.ReportProgress(AchievementType.Combo, CurrentCombo);
+        }
+
         CurrentItemScore += FinalScore;
         if (CurrentItemScore >= ItemSpawnScoreThreshold)
         {

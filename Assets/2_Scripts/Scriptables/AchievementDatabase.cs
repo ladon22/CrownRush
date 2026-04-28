@@ -26,12 +26,10 @@ public class AchievementEntry
     public int TargetValue;
 
     [Header("UI Info")]
-    public string Title;
-    public string RewardText;
+    public string TitleKey;       // 해금 조건 키 (예: Achieve_Score_100)
 
-    [Header("Reward Info")]
-    public RewardType RewardType;
-    public string RewardID;
+    [Header("Reward Item Data")]
+    public ItemData RewardItem; // 스킨이든 보드판이든 이 안에 다 들어있습니다.
 }
 
 // 위의 '업적 항목'들을 묶어서 관리하는 단 하나의 '데이터베이스'

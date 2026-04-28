@@ -63,6 +63,22 @@ MonoBehaviour:
     m_Key: settings_framerate
     m_Metadata:
       m_Items: []
+  - m_Id: 2530924535250944
+    m_Key: ui_collection_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2531653262016512
+    m_Key: ui_btn_select
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2531676079030272
+    m_Key: ui_btn_equipped
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2531691614732288
+    m_Key: ui_btn_locked
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

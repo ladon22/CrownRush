@@ -4,6 +4,7 @@ using UnityEngine;
 public class AchievementManager : MonoBehaviour
 {
     public static AchievementManager Instance;
+    [Header("Achievement Database")]
     public AchievementDatabase Database;
 
     // [핵심] 업적이 달성되었음을 외부에 알리는 이벤트(방송국)
@@ -29,25 +30,29 @@ public class AchievementManager : MonoBehaviour
 
         foreach (AchievementEntry data in Database.Achievements)
         {
-            if (data.Type == type)
+            // 행동 타입이 일치하는지 확인
+            if (data.Type == type && data.RewardItem != null)
             {
-                if (PlayerPrefs.GetInt(data.AchievementID, 0) == 1) continue;
+                // 이미 해금된 스킨인지 확인 (RewardID를 기준으로 확인)
+                string UnlockKey = $"{data.RewardItem.ItemID}_Unlocked";
+                if (PlayerPrefs.GetInt(UnlockKey, 0) == 1) continue;
 
+                // 목표치에 도달했다면 해금!
                 if (currentValue >= data.TargetValue)
                 {
-                    UnlockAchievement(data);
+                    UnlockAchievement(data, UnlockKey);
                 }
             }
         }
     }
 
-    private void UnlockAchievement(AchievementEntry data)
+    private void UnlockAchievement(AchievementEntry data, string UnlockKey)
     {
-        PlayerPrefs.SetInt(data.AchievementID, 1);
+        // 기기에 "이 스킨 해금됨(1)" 이라고 저장
+        PlayerPrefs.SetInt(UnlockKey, 1);
         PlayerPrefs.Save();
 
-        // 더 이상 여기서 UI를 직접 조작하지 않습니다. 
-        // 대신 "업적 달성했어!" 라고 방송(Invoke)만 합니다.
+        // 팝업 UI 등에게 해금 사실을 알림
         OnAchievementUnlocked?.Invoke(data);
     }
 }

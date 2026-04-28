@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
     private bool IsInitialized = false;
     private PlayerController CurrentPlayer;
 
+    public CollectionUIController CollectionUI;
     void Start()
     {
         ChangeState(GameState.Lobby);
@@ -98,6 +99,12 @@ public class GameManager : MonoBehaviour
             HealthUIManager.InitializeHealthUI(PlayerHealth);
             PlayerHealth.OnDied += GameOver;
         }
+
+        // 플레이어가 생성된 직후, 현재 장착 중인 스킨을 입혀줍니다.
+        if (CurrentPlayer != null)
+        {
+            CurrentPlayer.ApplyEquippedSkin();
+        }
     }
 
     public void StartGame(bool IsRetry = false)
@@ -142,6 +149,17 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         ChangeState(GameState.GameOver);
+
+        // 게임 오버가 될 때마다 누적 플레이 횟수를 증가시키고 보고합니다.
+        int PlayCount = PlayerPrefs.GetInt("TotalPlayCount", 0) + 1;
+        PlayerPrefs.SetInt("TotalPlayCount", PlayCount);
+        PlayerPrefs.Save();
+
+        if (AchievementManager.Instance != null)
+        {
+            AchievementManager.Instance.ReportProgress(AchievementType.PlayCount, PlayCount);
+        }
+
 
         int CurrentScore = ScoreManager != null ? ScoreManager.CurrentScore : 0;
         bool bIsNewRecord = false;
@@ -217,6 +235,18 @@ public class GameManager : MonoBehaviour
                 }
             }
             EnemyManager.ActiveEnemies.Clear();
+        }
+    }
+
+    public void OpenCollectionUI()
+    {
+        // 로비 상태일 때만 열리도록 방어 코드 (게임 중엔 안 열리게)
+        if (CurrentState == GameState.Lobby)
+        {
+            if (CollectionUI != null && !CollectionUI.isActiveAndEnabled)
+            {
+                CollectionUI.Show();
+            }
         }
     }
 }

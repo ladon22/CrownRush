@@ -199,7 +199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e430f3b5b825e245beb8535893ee6fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AchievementManager
-  Database: {fileID: 0}
+  Database: {fileID: 11400000, guid: 1ea470c4f04c998479809b82d0b8a1ba, type: 2}
 --- !u!1 &1139133726
 GameObject:
   m_ObjectHideFlags: 0

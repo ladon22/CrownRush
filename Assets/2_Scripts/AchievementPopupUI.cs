@@ -1,43 +1,65 @@
 using UnityEngine;
-using TMPro;
 using DG.Tweening;
+using UnityEngine.Localization.Components;
+using UnityEngine.UI; 
 
 public class AchievementPopupUI : MonoBehaviour
 {
     [Header("Achievement UI")]
-    public GameObject AchievementPopup;
-    public TextMeshProUGUI AchievementText;
+    public GameObject AchievementPopup;     // 알림창 배경 패널
+    public Image RewardPreviewImage;
+
+    [Header("Localization Tables")]
+    // 테이블 이름 2개 선언
+    public string AchievementTableName = "Achievement_Table";
+    public string ItemTableName = "Item_Table";
+
+    [Header("Localization Texts")]
+    public LocalizeStringEvent TitleTextEvent; // "1,000점 달성!" 텍스트
+    public LocalizeStringEvent ItemNameTextEvent; // "황금 기사 획득" 텍스트
 
     private void Awake()
     {
         if (AchievementPopup != null) AchievementPopup.SetActive(false);
     }
 
-    // 오브젝트가 켜질 때 매니저의 방송을 구독(구독하기)
     private void OnEnable()
     {
         AchievementManager.OnAchievementUnlocked += ShowPopup;
     }
 
-    // 오브젝트가 꺼질 때 매니저의 방송을 취소(구독취소) - 메모리 누수 방지
     private void OnDisable()
     {
         AchievementManager.OnAchievementUnlocked -= ShowPopup;
     }
 
-    // 매니저가 방송을 하면 자동으로 실행되는 함수
     private void ShowPopup(AchievementEntry data)
     {
-        if (AchievementPopup == null || AchievementText == null) return;
+        if (AchievementPopup == null) return;
 
-        // 넘어온 데이터의 제목과 보상 텍스트를 UI에 적용
-        AchievementText.text = $"{data.Title}\n{data.RewardText}";
+        // 1. 다국어 키값 갱신 (자동 번역 됨)
+        if (TitleTextEvent != null)
+            TitleTextEvent.StringReference.SetReference(AchievementTableName, data.TitleKey);
 
+        if (ItemNameTextEvent != null)
+            ItemNameTextEvent.StringReference.SetReference(ItemTableName, data.RewardItem.ItemID);
+
+        if (RewardPreviewImage != null && data.RewardItem is SkinData skinData)
+        {
+            if (skinData.SkinSprite != null) RewardPreviewImage.sprite = skinData.SkinSprite;
+            RewardPreviewImage.color = skinData.SkinColor;
+        }
+
+        // 2. 알림창 등장 애니메이션
         AchievementPopup.SetActive(true);
         AchievementPopup.transform.localScale = Vector3.zero;
         AchievementPopup.transform.DOKill();
+
+        // 띠링! 하고 나타났다가
         AchievementPopup.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack).OnComplete(() => {
+            // 3초 뒤에
             DOVirtual.DelayedCall(3.0f, () => {
+                // 스르륵 사라짐
                 AchievementPopup.transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InBack).OnComplete(() => AchievementPopup.SetActive(false));
             });
         });
