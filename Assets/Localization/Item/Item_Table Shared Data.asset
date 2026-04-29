@@ -23,6 +23,10 @@ MonoBehaviour:
     m_Key: skin_gold
     m_Metadata:
       m_Items: []
+  - m_Id: 323098865860608
+    m_Key: skin_test
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

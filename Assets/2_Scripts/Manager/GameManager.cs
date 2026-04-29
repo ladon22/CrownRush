@@ -1,6 +1,6 @@
 using DG.Tweening;
 using UnityEngine;
-
+using UnityEngine.InputSystem;
 public enum GameState
 {
     Lobby,
@@ -52,6 +52,22 @@ public class GameManager : MonoBehaviour
         //if (GameUIPanel != null) GameUIPanel.SetActive(false);
     }
 
+    void Update()
+    {
+        // 유니티 에디터에서 플레이 중일 때만 작동하는 안전한 치트키입니다.
+#if UNITY_EDITOR
+        if (Keyboard.current != null && Keyboard.current.f12Key.wasPressedThisFrame)
+        {
+            PlayerPrefs.DeleteAll();
+            PlayerPrefs.Save();
+            Debug.Log("[Cheat] 모든 데이터 초기화 완료! 씬을 재시작합니다.");
+
+            UnityEngine.SceneManagement.SceneManager.LoadScene(
+                UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex
+            );
+        }
+#endif
+    }
     public void ChangeState(GameState state)
     {
         CurrentState = state;

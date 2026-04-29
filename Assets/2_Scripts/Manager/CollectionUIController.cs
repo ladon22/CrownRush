@@ -143,7 +143,7 @@ public class CollectionUIController : MonoBehaviour
                 UnlockConditionTextEvent.StringReference.SetReference(AchievementTableName, currentData.TitleKey);
 
             if (ProgressText != null)
-                ProgressText.text = $"{currentProgress} / {currentData.TargetValue}";
+                ProgressText.text = $"{(currentProgress < currentData.TargetValue ? currentProgress : currentData.TargetValue)} / {currentData.TargetValue}";
 
             if (ProgressFillBar != null)
                 ProgressFillBar.fillAmount = Mathf.Clamp01((float)currentProgress / currentData.TargetValue);
@@ -152,6 +152,7 @@ public class CollectionUIController : MonoBehaviour
             if (LockIconImage != null)
             {
                 LockIconImage.sprite = isUnlocked ? UnlockedIconSprite : LockedIconSprite;
+                LockIconImage.preserveAspect = true;
             }
 
             // 해금 여부와 상관없이 오버레이 패널(조건 텍스트 등 포함)은 일단 켜둡니다! 

@@ -85,6 +85,10 @@ MonoBehaviour:
     m_Localized: Chess
     m_Metadata:
       m_Items: []
+  - m_Id: 2893423008841728
+    m_Localized: Reward
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

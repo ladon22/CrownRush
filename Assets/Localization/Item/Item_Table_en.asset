@@ -26,6 +26,10 @@ MonoBehaviour:
     m_Localized: Gold King
     m_Metadata:
       m_Items: []
+  - m_Id: 323098865860608
+    m_Localized: test King
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

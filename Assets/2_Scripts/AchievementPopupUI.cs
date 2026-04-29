@@ -48,6 +48,7 @@ public class AchievementPopupUI : MonoBehaviour
         {
             if (skinData.SkinSprite != null) RewardPreviewImage.sprite = skinData.SkinSprite;
             RewardPreviewImage.color = skinData.SkinColor;
+            RewardPreviewImage.preserveAspect = true;
         }
 
         // 2. 알림창 등장 애니메이션

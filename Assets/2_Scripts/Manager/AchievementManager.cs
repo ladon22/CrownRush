@@ -33,6 +33,7 @@ public class AchievementManager : MonoBehaviour
             // 행동 타입이 일치하는지 확인
             if (data.Type == type && data.RewardItem != null)
             {
+                if (data.RewardItem.ItemID == "skin_default") continue;
                 // 이미 해금된 스킨인지 확인 (RewardID를 기준으로 확인)
                 string UnlockKey = $"{data.RewardItem.ItemID}_Unlocked";
                 if (PlayerPrefs.GetInt(UnlockKey, 0) == 1) continue;

@@ -23,6 +23,10 @@ MonoBehaviour:
     m_Key: achieve_score_100
     m_Metadata:
       m_Items: []
+  - m_Id: 323564580405248
+    m_Key: achieve_score_50
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
