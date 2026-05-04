@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.7, y: 1.7, z: 1}
+  m_LocalScale: {x: 2.7, y: 2.7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7275465334506013321}
@@ -116,7 +116,7 @@ MonoBehaviour:
   PreviewIndicator: {fileID: 1168756423759731191}
   CurrentX: 2
   CurrentY: 0
-  MoveSpeed: 10
+  MoveSpeed: 15
   bIsMoving: 0
   HopHeight: 0.5
 --- !u!114 &-1642776325222016386
@@ -202,10 +202,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5709367912076324242, guid: 220f3fe7591992447b74414150205f00, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: -6459474498090831172, guid: a49c68dbc1b0ab043a014ddf40b897f7, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

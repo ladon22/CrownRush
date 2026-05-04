@@ -18,7 +18,7 @@ public abstract class EnemyBase : MonoBehaviour
     private ScoreManager CachedScoreManager => _scoreManager != null ? _scoreManager : _scoreManager = FindFirstObjectByType<ScoreManager>();
     public int CurrentX;
     public int CurrentY;
-    public float MoveSpeed = 15f;
+    public float MoveSpeed = 20f;
     public int ScoreValue = 1;
 
     [Header("UI")]

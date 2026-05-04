@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.2, z: 0}
-  m_LocalScale: {x: 1.7, y: 1.7, z: 1}
+  m_LocalScale: {x: 2.7, y: 2.7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5139880620173125384}
@@ -108,9 +108,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::KnightEnemy
   GridManager: {fileID: 0}
   EnemyManager: {fileID: 0}
+  Player: {fileID: 0}
   CurrentX: 0
   CurrentY: 0
-  MoveSpeed: 10
+  MoveSpeed: 15
   ScoreValue: 6
   IntentIndicator: {fileID: 3718674613359918198}
   MoveInterval: 1
