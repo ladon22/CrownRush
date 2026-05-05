@@ -24,6 +24,10 @@ public abstract class EnemyBase : MonoBehaviour
     [Header("UI")]
     public GameObject IntentIndicator;
 
+    [Header("Skin Settings")]
+    public EnemyPieceType PieceType; // 인스펙터에서 적 종류 선택!
+
+
     [Header("Movement Settings")]
     public int MoveInterval = 1;
     public float HopHeight = 0.5f;
@@ -39,6 +43,9 @@ public abstract class EnemyBase : MonoBehaviour
         CurrentWaitCount = 0;
         Player = FindFirstObjectByType<PlayerController>();
         SetIntent(false);
+
+        ApplyEquippedSkin();
+
         Vector2 TargetPosition = GridManager.GetWorldPosition(CurrentX, CurrentY);
         StartCoroutine(SpawnDropRoutine(TargetPosition));
     }
@@ -48,6 +55,33 @@ public abstract class EnemyBase : MonoBehaviour
         if (EnemyManager != null)
         {
             EnemyManager.RemoveEnemy(this);
+        }
+    }
+
+    public void ApplyEquippedSkin()
+    {
+        string equippedSkinID = PlayerPrefs.GetString("Equipped_Skin", "skin_default");
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+
+        if (sr == null || AchievementManager.Instance == null || AchievementManager.Instance.Database == null) return;
+
+        foreach (var data in AchievementManager.Instance.Database.Achievements)
+        {
+            if (data.RewardItem is SkinData skinData && skinData.ItemID == equippedSkinID)
+            {
+                EnemySkinData enemySkin = skinData.GetEnemySkin(PieceType);
+
+                if (enemySkin.EnemySprite != null)
+                {
+                    sr.sprite = enemySkin.EnemySprite;
+                }
+
+                if (skinData.EnemyColor.a > 0)
+                {
+                    sr.color = skinData.EnemyColor;
+                }
+                break;
+            }
         }
     }
 

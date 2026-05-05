@@ -10,6 +10,8 @@ public class AchievementManager : MonoBehaviour
     // [핵심] 업적이 달성되었음을 외부에 알리는 이벤트(방송국)
     public static event Action<AchievementEntry> OnAchievementUnlocked;
 
+    public static event Action OnSkinEquipped;
+
     private void Awake()
     {
         if (Instance == null)
@@ -55,5 +57,14 @@ public class AchievementManager : MonoBehaviour
 
         // 팝업 UI 등에게 해금 사실을 알림
         OnAchievementUnlocked?.Invoke(data);
+    }
+
+    public void EquipSkin(string skinID)
+    {
+        PlayerPrefs.SetString("Equipped_Skin", skinID);
+        PlayerPrefs.Save();
+
+        // "스킨이 바뀌었어요!" 라고 온 동네에 방송합니다.
+        OnSkinEquipped?.Invoke();
     }
 }

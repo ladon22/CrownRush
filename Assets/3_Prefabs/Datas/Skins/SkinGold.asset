@@ -13,5 +13,19 @@ MonoBehaviour:
   m_Name: SkinGold
   m_EditorClassIdentifier: Assembly-CSharp::SkinData
   ItemID: skin_gold
-  SkinSprite: {fileID: -4821530343430527414, guid: 13e92312fe451f34b923e3bcb4b6f01c, type: 3}
-  SkinColor: {r: 1, g: 0.7848824, b: 0, a: 1}
+  LightTileSprite: {fileID: -8529257965362590198, guid: 817824d17e0b33b4389d1f99584dee71, type: 3}
+  DarkTileSprite: {fileID: 5086472641762343364, guid: 9002c3b02be2d8943bdf715a5583856b, type: 3}
+  PlayerSprite: {fileID: -4821530343430527414, guid: 13e92312fe451f34b923e3bcb4b6f01c, type: 3}
+  PlayerColor: {r: 1, g: 0.8735975, b: 0, a: 1}
+  EnemyColor: {r: 0.4716981, g: 0, b: 0, a: 1}
+  EnemySkins:
+  - Type: 0
+    EnemySprite: {fileID: 2533179969505074583, guid: 9ff83fbb185c25a43a3ff19156344045, type: 3}
+  - Type: 1
+    EnemySprite: {fileID: 6402892968040458680, guid: e0824125cd1444b40b5aff934a536cfa, type: 3}
+  - Type: 2
+    EnemySprite: {fileID: 1379780806020190625, guid: 4762e44fa55354b498f3caf6e9c344b9, type: 3}
+  - Type: 3
+    EnemySprite: {fileID: -5711848221618334454, guid: 2b10db1ea49dfe8469054a0b9b594cd7, type: 3}
+  - Type: 4
+    EnemySprite: {fileID: 7519753400087680208, guid: 828237c0987a82947a5cfe14bed3018d, type: 3}

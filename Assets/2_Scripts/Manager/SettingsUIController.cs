@@ -59,7 +59,6 @@ public class SettingsUIController : MonoBehaviour
         }
 
         // 팝업 애니메이션 실행
-        gameObject.SetActive(true);
         PanelRect.localScale = Vector3.zero;
         PanelRect.DOKill();
         PanelRect.DOScale(Vector3.one, PopDuration).SetEase(PopEase).SetUpdate(true); ;

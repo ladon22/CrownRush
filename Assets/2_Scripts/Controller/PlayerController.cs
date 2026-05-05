@@ -38,6 +38,10 @@ public class PlayerController : MonoBehaviour
             InputController.OnSwipeEnd += HandleSwipeEnd;
             InputController.OnSwipeCanceled += HidePreview;
         }
+
+        // 방송국 구독
+        AchievementManager.OnSkinEquipped += ApplyEquippedSkin;
+        ApplyEquippedSkin(); // 시작할 때 한 번 입기
     }
 
     private void OnDestroy()
@@ -48,6 +52,9 @@ public class PlayerController : MonoBehaviour
             InputController.OnSwipeEnd -= HandleSwipeEnd;
             InputController.OnSwipeCanceled -= HidePreview;
         }
+
+        // 방송국 구독 해제
+        AchievementManager.OnSkinEquipped -= ApplyEquippedSkin;
     }
 
     private void HandleSwipeUpdate(Vector2Int Direction)
@@ -184,25 +191,20 @@ public class PlayerController : MonoBehaviour
 
     public void ApplyEquippedSkin()
     {
-        // 1. 저장된 스킨 ID 불러오기
         string equippedSkinID = PlayerPrefs.GetString("Equipped_Skin", "skin_default");
-
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         if (sr == null || AchievementManager.Instance == null || AchievementManager.Instance.Database == null) return;
 
-        // 2. 데이터베이스를 돌면서 장착한 스킨 찾기
         foreach (var data in AchievementManager.Instance.Database.Achievements)
         {
-            // [핵심] 이 보상이 'SkinData' 타입이고, 내가 장착한 ID와 일치한다면?
             if (data.RewardItem is SkinData skinData && skinData.ItemID == equippedSkinID)
             {
-                // 인스펙터에서 넣어둔 실제 스프라이트 이미지를 캐릭터에 입혀줍니다!
-                if (skinData.SkinSprite != null)
+                if (skinData.PlayerSprite != null)
                 {
-                    sr.sprite = skinData.SkinSprite;
+                    sr.sprite = skinData.PlayerSprite;
                 }
-                sr.color = skinData.SkinColor;
-                break; // 찾았으니 반복문 종료
+                sr.color = skinData.PlayerColor;
+                break;
             }
         }
     }

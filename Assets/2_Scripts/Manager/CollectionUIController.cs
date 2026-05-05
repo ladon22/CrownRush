@@ -5,8 +5,18 @@ using UnityEngine;
 using UnityEngine.Localization.Components;
 using UnityEngine.UI;
 
+[System.Serializable]
+public class PreviewSlotUI
+{
+    public Image TileImage;
+    public Image PieceImage;
+}
+
 public class CollectionUIController : MonoBehaviour
 {
+    [Header("Item Preview UI - Full Set")]
+    public PreviewSlotUI[] PreviewSlots;
+
     [Header("Panel Animation")]
     public RectTransform PanelRect;
 
@@ -19,7 +29,6 @@ public class CollectionUIController : MonoBehaviour
     [Header("Item Preview UI")]
     // 기존 TextMeshProUGUI 대신 LocalizeStringEvent를 사용합니다.
     public LocalizeStringEvent ItemNameTextEvent;
-    public Image ItemPreviewImage;
 
     [Header("Unlock Status UI (잠금/진행도 박스)")]
     public GameObject LockOverlayPanel;
@@ -97,23 +106,22 @@ public class CollectionUIController : MonoBehaviour
 
         bool isDefaultSkin = (currentData.RewardItem.ItemID == "skin_default");
 
+
+
         // 이름 갱신
         if (ItemNameTextEvent != null && currentData.RewardItem != null)
         {
             ItemNameTextEvent.StringReference.SetReference(ItemTableName, currentData.RewardItem.ItemID);
         }
 
-        if (ItemPreviewImage != null && currentData.RewardItem is SkinData skinData)
+        if (currentData.RewardItem is SkinData skinData) // (기존 로직 유지)
         {
-            // 스프라이트가 등록되어 있다면 교체 (비어있다면 기본 이미지 유지)
-            if (skinData.SkinSprite != null)
-            {
-                ItemPreviewImage.sprite = skinData.SkinSprite;
-                ItemPreviewImage.preserveAspect = true;
-            }
-
-            // 가장 중요한 색상 변경!
-            ItemPreviewImage.color = skinData.SkinColor;
+            UpdateSkinDiorama(skinData);
+        }
+        else
+        {
+            // 스킨이 아닌 일반 아이템일 경우의 처리 (필요하다면)
+            ClearPreviewSlots();
         }
 
         int currentProgress = GetCurrentProgress(currentData.Type);
@@ -180,6 +188,75 @@ public class CollectionUIController : MonoBehaviour
         }
     }
 
+    private void UpdateSkinDiorama(SkinData skinData)
+    {
+        // 인스펙터 세팅이 누락되었는지 안전 검사
+        if (PreviewSlots == null || PreviewSlots.Length < 6)
+        {
+            Debug.LogWarning("CollectionUI: PreviewSlots 배열의 크기가 6이 아닙니다! 인스펙터를 확인해주세요.");
+            return;
+        }
+
+        //  3x2 체스판 패턴에 맞게 교차되는 타일 색상 배열 (Light, Dark 교대)
+        Sprite[] tiles = {
+            skinData.LightTileSprite, skinData.DarkTileSprite, skinData.LightTileSprite,
+            skinData.DarkTileSprite, skinData.LightTileSprite, skinData.DarkTileSprite
+        };
+
+        // 1. 첫 번째 슬롯 [0] : 플레이어 (King)
+        SetSlotUI(PreviewSlots[0], tiles[0], skinData.PlayerSprite, skinData.PlayerColor);
+
+        // 2. 나머지 슬롯 [1]~[5] : 적 기물들
+        // Enum 순서를 UI에 보여주고 싶은 순서대로 배치합니다.
+        EnemyPieceType[] enemyTypes = {
+            EnemyPieceType.Linear,   // [1] 폰
+            EnemyPieceType.Knight,   // [2] 나이트
+            EnemyPieceType.Dash,     // [3] 룩
+            EnemyPieceType.Diagonal, // [4] 비숍
+            EnemyPieceType.Queen     // [5] 퀸
+        };
+
+        for (int i = 0; i < enemyTypes.Length; i++)
+        {
+            // 스킨 데이터에서 해당 타입의 적 스프라이트를 찾아옵니다.
+            EnemySkinData enemySkin = skinData.GetEnemySkin(enemyTypes[i]);
+
+            // 플레이어가 0번이므로 적은 1번 인덱스부터 시작
+            int slotIndex = i + 1;
+
+            SetSlotUI(PreviewSlots[slotIndex], tiles[slotIndex], enemySkin.EnemySprite, skinData.EnemyColor);
+        }
+    }
+
+    private void SetSlotUI(PreviewSlotUI slot, Sprite tileSprite, Sprite pieceSprite, Color pieceColor)
+    {
+        // 타일 세팅
+        if (slot.TileImage != null)
+        {
+            slot.TileImage.sprite = tileSprite;
+            // 스프라이트가 비어있으면 투명하게, 있으면 원래 색상(하얀색)으로
+            slot.TileImage.color = (tileSprite != null) ? Color.white : Color.clear;
+        }
+
+        // 기물 세팅
+        if (slot.PieceImage != null)
+        {
+            slot.PieceImage.sprite = pieceSprite;
+            // 스프라이트가 비어있으면 투명하게, 있으면 지정된 틴트 컬러 적용
+            slot.PieceImage.color = (pieceSprite != null) ? pieceColor : Color.clear;
+            slot.PieceImage.preserveAspect = true; // 비율 유지
+        }
+    }
+
+    private void ClearPreviewSlots()
+    {
+        if (PreviewSlots == null) return;
+        foreach (var slot in PreviewSlots)
+        {
+            SetSlotUI(slot, null, null, Color.clear);
+        }
+    }
+
     // 유저의 현재 플레이 진척도(최고 점수 등)를 가져오는 함수
     private int GetCurrentProgress(AchievementType type)
     {
@@ -211,21 +288,14 @@ public class CollectionUIController : MonoBehaviour
     private void EquipCurrentItem()
     {
         AchievementEntry currentData = SkinList[CurrentIndex];
-
-        // 아이템이 SkinData일 경우에만 장착 처리
         if (currentData.RewardItem is SkinData skinData)
         {
-            PlayerPrefs.SetString("Equipped_Skin", skinData.ItemID);
-            PlayerPrefs.Save();
-
-            UpdateUI();
-
-            // 수집품 창에서 선택 시 즉시 플레이어 스킨 교체!
-            PlayerController player = FindFirstObjectByType<PlayerController>();
-            if (player != null)
+            // PlayerPrefs 직접 저장이 아닌 매니저의 이벤트 방송 함수 호출!
+            if (AchievementManager.Instance != null)
             {
-                player.ApplyEquippedSkin();
+                AchievementManager.Instance.EquipSkin(skinData.ItemID);
             }
+            UpdateUI();
         }
     }
 

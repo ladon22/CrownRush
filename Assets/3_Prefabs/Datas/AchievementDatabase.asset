@@ -22,7 +22,7 @@ MonoBehaviour:
     Type: 0
     TargetValue: 100
     TitleKey: achieve_score_100
-    RewardItem: {fileID: 11400000, guid: b194e0d611d62524eb6ee713d29a9131, type: 2}
+    RewardItem: {fileID: 11400000, guid: b4cff2338d9ea124a94b2b65a9a095a0, type: 2}
   - AchievementID: Unlock_testSkin
     Type: 0
     TargetValue: 50

@@ -114,6 +114,7 @@ MonoBehaviour:
   MoveSpeed: 15
   ScoreValue: 4
   IntentIndicator: {fileID: 3642752986216601965}
+  PieceType: 1
   MoveInterval: 2
   HopHeight: 0.5
   DashAmount: 7

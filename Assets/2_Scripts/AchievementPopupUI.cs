@@ -46,8 +46,11 @@ public class AchievementPopupUI : MonoBehaviour
 
         if (RewardPreviewImage != null && data.RewardItem is SkinData skinData)
         {
-            if (skinData.SkinSprite != null) RewardPreviewImage.sprite = skinData.SkinSprite;
-            RewardPreviewImage.color = skinData.SkinColor;
+            if (skinData.PlayerSprite != null) 
+            {
+                RewardPreviewImage.sprite = skinData.PlayerSprite;
+            }
+            RewardPreviewImage.color = skinData.PlayerColor;
             RewardPreviewImage.preserveAspect = true;
         }
 

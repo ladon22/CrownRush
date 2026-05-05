@@ -83,6 +83,18 @@ MonoBehaviour:
     m_Key: popup_label_reward
     m_Metadata:
       m_Items: []
+  - m_Id: 5182682432118784
+    m_Key: lobby_rank
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5182903379664896
+    m_Key: lobby_skins
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5182987680980992
+    m_Key: lobby_settings
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

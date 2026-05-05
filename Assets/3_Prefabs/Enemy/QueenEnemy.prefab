@@ -84,7 +84,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -4821530343430527414, guid: 13e92312fe451f34b923e3bcb4b6f01c, type: 3}
+  m_Sprite: {fileID: 7519753400087680208, guid: 828237c0987a82947a5cfe14bed3018d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -127,6 +127,7 @@ MonoBehaviour:
   MoveSpeed: 15
   ScoreValue: 2
   IntentIndicator: {fileID: 3319413469457181901}
+  PieceType: 4
   MoveInterval: 1
   HopHeight: 0.5
 --- !u!1001 &7808886143581401739

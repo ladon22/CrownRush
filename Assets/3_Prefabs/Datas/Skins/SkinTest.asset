@@ -13,5 +13,9 @@ MonoBehaviour:
   m_Name: SkinTest
   m_EditorClassIdentifier: Assembly-CSharp::SkinData
   ItemID: skin_test
-  SkinSprite: {fileID: -4821530343430527414, guid: 13e92312fe451f34b923e3bcb4b6f01c, type: 3}
-  SkinColor: {r: 0.043704987, g: 0, b: 1, a: 1}
+  SkinIcon: {fileID: 0}
+  LightTileSprite: {fileID: 0}
+  DarkTileSprite: {fileID: 0}
+  PlayerSprite: {fileID: 0}
+  PlayerColor: {r: 1, g: 1, b: 1, a: 1}
+  EnemySkins: []

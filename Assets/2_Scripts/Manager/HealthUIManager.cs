@@ -10,10 +10,10 @@ public class HealthUIManager : MonoBehaviour
     public GameObject HeartPrefab;
     public Transform HeartContainer;
 
-    public Sprite FullHeartSprite;
-    public Sprite EmptyHeartSprite;
+    public Sprite FullHealthSprite;
+    public Sprite EmptyHealthSprite;
 
-    private List<Image> HeartIcons = new List<Image>();
+    private List<Image> HealthIcons = new List<Image>();
 
     public void InitializeHealthUI(HealthComponent PlayerHealth)
     {
@@ -23,8 +23,8 @@ public class HealthUIManager : MonoBehaviour
         {
             InitializeHearts();
 
-            PlayerHealthComponent.OnHealthChanged += UpdateHearts;
-            UpdateHearts(PlayerHealthComponent.CurrentHealth);
+            PlayerHealthComponent.OnHealthChanged += UpdateIcons;
+            UpdateIcons(PlayerHealthComponent.CurrentHealth);
         }
     }
 
@@ -32,7 +32,7 @@ public class HealthUIManager : MonoBehaviour
     {
         if (PlayerHealthComponent != null)
         {
-            PlayerHealthComponent.OnHealthChanged -= UpdateHearts;
+            PlayerHealthComponent.OnHealthChanged -= UpdateIcons;
         }
     }
 
@@ -42,7 +42,7 @@ public class HealthUIManager : MonoBehaviour
         {
             Destroy(Child.gameObject);
         }
-        HeartIcons.Clear();
+        HealthIcons.Clear();
 
         for (int i = 0; i < PlayerHealthComponent.MaxHealth; i++)
         {
@@ -52,39 +52,56 @@ public class HealthUIManager : MonoBehaviour
             Image HeartImage = NewHeart.GetComponent<Image>();
             if (HeartImage != null)
             {
-                HeartIcons.Add(HeartImage);
+                HealthIcons.Add(HeartImage);
             }
         }
     }
-    private void UpdateHearts(int CurrentHealth)
+
+    private void UpdateIcons(int CurrentHealth)
     {
-        for (int i = 0; i < HeartIcons.Count; i++)
+        for (int i = 0; i < HealthIcons.Count; i++)
         {
-            Animator Anim = HeartIcons[i].GetComponent<Animator>();   
+            // ÇöÀç Ã¼·Âº¸´Ù ÀÎµ¦½º°¡ ³·À¸¸é ²Ë Âù ¿Õ°ü, ¾Æ´Ï¸é ºó ¿Õ°üÀ» º¸¿©ÁÝ´Ï´Ù.
             if (i < CurrentHealth)
             {
-                if (Anim != null && Anim.isActiveAndEnabled)
-                {
-                    Anim.SetBool("IsEmpty", false);
-                }
-                else if (Anim == null)
-                {
-                    HeartIcons[i].sprite = FullHeartSprite;
-                }
+                HealthIcons[i].sprite = FullHealthSprite;
             }
             else
             {
-                if (Anim != null && Anim.isActiveAndEnabled)
-                {
-                    Anim.SetBool("IsEmpty", true);
-                }
-                else if (Anim == null)
-                {
-                    HeartIcons[i].sprite = EmptyHeartSprite;
-                }
+                HealthIcons[i].sprite = EmptyHealthSprite;
             }
         }
     }
-    
-    
+
+    //private void UpdateHearts(int CurrentHealth)
+    //{
+    //    for (int i = 0; i < HeartIcons.Count; i++)
+    //    {
+    //        Animator Anim = HeartIcons[i].GetComponent<Animator>();   
+    //        if (i < CurrentHealth)
+    //        {
+    //            if (Anim != null && Anim.isActiveAndEnabled)
+    //            {
+    //                Anim.SetBool("IsEmpty", false);
+    //            }
+    //            else if (Anim == null)
+    //            {
+    //                HeartIcons[i].sprite = FullHeartSprite;
+    //            }
+    //        }
+    //        else
+    //        {
+    //            if (Anim != null && Anim.isActiveAndEnabled)
+    //            {
+    //                Anim.SetBool("IsEmpty", true);
+    //            }
+    //            else if (Anim == null)
+    //            {
+    //                HeartIcons[i].sprite = EmptyHeartSprite;
+    //            }
+    //        }
+    //    }
+    //}
+
+
 }

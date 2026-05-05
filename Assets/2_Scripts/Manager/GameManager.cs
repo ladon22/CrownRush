@@ -195,7 +195,7 @@ public class GameManager : MonoBehaviour
 
     public void OpenSettings()
     {
-        if (SettingsUI != null && !SettingsUI.isActiveAndEnabled) SettingsUI.Show();
+        if (SettingsUI != null) SettingsUI.Show();
 
         if (CurrentState != GameState.Lobby)
         {
