@@ -767,28 +767,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 377048671}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &653975603 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1169368333210517829, guid: db62deffaa6b4504dbeaf5b0c300f2ad, type: 3}
-  m_PrefabInstance: {fileID: 4473574653024689808}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
---- !u!114 &992851307 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8808836000531013517, guid: db62deffaa6b4504dbeaf5b0c300f2ad, type: 3}
-  m_PrefabInstance: {fileID: 4473574653024689808}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &1105136589
 GameObject:
   m_ObjectHideFlags: 0
@@ -1632,17 +1610,7 @@ MonoBehaviour:
   EnemyManager: {fileID: 466530478}
   ItemPrefabs:
   - {fileID: 7141382381004458382, guid: d7d24363705bc6046b08c0e7f58c8b14, type: 3}
---- !u!114 &1975692423 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3400565978919610176, guid: db62deffaa6b4504dbeaf5b0c300f2ad, type: 3}
-  m_PrefabInstance: {fileID: 4473574653024689808}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  ItemSpawnScoreThreshold: 200
 --- !u!1 &2123981348
 GameObject:
   m_ObjectHideFlags: 0
@@ -1766,50 +1734,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff40dd80bde51d3499cfd7a3dba65531, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScoreManager
-  CurrentScore: 0
-  ScoreText: {fileID: 653975603}
-  ScorePopScale: 1.5
   CurrentCombo: 0
   MaxComboTime: 5
+  CurrentComboTimer: 0
   Stage1Threshold: 5
   Stage1Multiplier: 1.5
   Stage2Threshold: 10
   Stage2Multiplier: 2
-  ComboText: {fileID: 992851307}
-  ComboGaugeImage: {fileID: 1975692423}
-  ComboOffset: {x: 30, y: 30}
-  ComboDuration: 0.1
-  ComboGaugeColorGradient:
-    serializedVersion: 2
-    key0: {r: 1, g: 0.16470589, b: 0.16470589, a: 1}
-    key1: {r: 1, g: 0.7019608, b: 0, a: 1}
-    key2: {r: 1, g: 0.9529412, b: 0.78039217, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 9830
-    ctime1: 32768
-    ctime2: 55898
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_ColorSpace: -1
-    m_NumColorKeys: 3
-    m_NumAlphaKeys: 2
-  ItemSpawnScoreThreshold: 100
 --- !u!224 &1399628253117713653 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3476480205594001348, guid: 6ca1c9fb9183601409d8dbce52c85773, type: 3}
@@ -1909,7 +1840,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7871037670897730368, guid: 88d149358ec8b534b965546f6dab7348, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

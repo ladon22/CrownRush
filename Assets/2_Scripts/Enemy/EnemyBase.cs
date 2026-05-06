@@ -14,8 +14,7 @@ public abstract class EnemyBase : MonoBehaviour
 
     private ItemManager _itemManager;
     private ItemManager CachedItemManager => _itemManager != null ? _itemManager : _itemManager = FindFirstObjectByType<ItemManager>();
-    private ScoreManager _scoreManager;
-    private ScoreManager CachedScoreManager => _scoreManager != null ? _scoreManager : _scoreManager = FindFirstObjectByType<ScoreManager>();
+
     public int CurrentX;
     public int CurrentY;
     public float MoveSpeed = 20f;
@@ -213,9 +212,9 @@ public abstract class EnemyBase : MonoBehaviour
     }
     public virtual void Die()
     {
-        if (CachedScoreManager != null)
+        if (ScoreManager.Instance != null)
         {
-            CachedScoreManager.AddScore(ScoreValue);
+            ScoreManager.Instance.AddScore(ScoreValue);
         }
         PoolManager.Instance.ReturnToPool(gameObject);
     }

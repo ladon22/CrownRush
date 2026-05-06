@@ -18,17 +18,16 @@ public class AchievementPopupUI : MonoBehaviour
     public LocalizeStringEvent TitleTextEvent; // "1,000점 달성!" 텍스트
     public LocalizeStringEvent ItemNameTextEvent; // "황금 기사 획득" 텍스트
 
-    private void Awake()
+    private void Start()
     {
+        // 팝업 "내용물"만 끕니다. (이 스크립트가 붙은 오브젝트는 켜져 있어야 합니다!)
         if (AchievementPopup != null) AchievementPopup.SetActive(false);
-    }
 
-    private void OnEnable()
-    {
+        // 시작할 때 무조건 방송을 구독합니다.
         AchievementManager.OnAchievementUnlocked += ShowPopup;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         AchievementManager.OnAchievementUnlocked -= ShowPopup;
     }
