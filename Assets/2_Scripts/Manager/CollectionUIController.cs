@@ -33,13 +33,9 @@ public class CollectionUIController : MonoBehaviour
     [Header("Unlock Status UI (잠금/진행도 박스)")]
     public GameObject LockOverlayPanel;
 
-    public Image LockIconImage;       // 자물쇠 이미지를 띄워주는 UI 컴포넌트
-    public Sprite LockedIconSprite;   // 닫힌 자물쇠 이미지 파일
-    public Sprite UnlockedIconSprite; // 열린 자물쇠 이미지 파일
-
     public LocalizeStringEvent UnlockConditionTextEvent;
     public TextMeshProUGUI ProgressText;
-    public Image ProgressFillBar;
+    public Slider ProgressSlider;
 
     [Header("Navigation & Action")]
     public Button LeftButton;
@@ -153,15 +149,8 @@ public class CollectionUIController : MonoBehaviour
             if (ProgressText != null)
                 ProgressText.text = $"{(currentProgress < currentData.TargetValue ? currentProgress : currentData.TargetValue)} / {currentData.TargetValue}";
 
-            if (ProgressFillBar != null)
-                ProgressFillBar.fillAmount = Mathf.Clamp01((float)currentProgress / currentData.TargetValue);
-
-            // 해금 상태에 따라 자물쇠 이미지를 바꾸고, 패널을 보여줍니다.
-            if (LockIconImage != null)
-            {
-                LockIconImage.sprite = isUnlocked ? UnlockedIconSprite : LockedIconSprite;
-                LockIconImage.preserveAspect = true;
-            }
+            if (ProgressSlider != null)
+                ProgressSlider.value = Mathf.Clamp01((float)currentProgress / currentData.TargetValue);
 
             // 해금 여부와 상관없이 오버레이 패널(조건 텍스트 등 포함)은 일단 켜둡니다! 
             // (그래야 "조건 달성", "열린 자물쇠" 등이 보이니까요)
