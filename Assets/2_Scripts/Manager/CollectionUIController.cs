@@ -43,6 +43,9 @@ public class CollectionUIController : MonoBehaviour
     public Button SelectButton;
     public LocalizeStringEvent SelectTextEvent;
 
+    [Header("Item Preview UI - Frame")]
+    public Image PreviewFrameImage;
+
     // 데이터베이스에서 스킨만 따로 모아둘 리스트
     private List<AchievementEntry> SkinList = new List<AchievementEntry>();
     private int CurrentIndex = 0;
@@ -113,6 +116,11 @@ public class CollectionUIController : MonoBehaviour
         if (currentData.RewardItem is SkinData skinData) // (기존 로직 유지)
         {
             UpdateSkinDiorama(skinData);
+
+            if (PreviewFrameImage != null)
+            {
+                PreviewFrameImage.color = skinData.FrameColor;
+            }
         }
         else
         {

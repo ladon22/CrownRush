@@ -95,6 +95,26 @@ MonoBehaviour:
     m_Key: lobby_settings
     m_Metadata:
       m_Items: []
+  - m_Id: 7406755581108224
+    m_Key: rank_refresh
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7413814204669952
+    m_Key: rank_rank_format
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7413980022284288
+    m_Key: rank_score_format
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7414074389929984
+    m_Key: rank_unranked
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7417633877630976
+    m_Key: rank_myrank
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

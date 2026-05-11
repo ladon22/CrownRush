@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.google.firebase</groupId>
   <artifactId>firebase-database-unity</artifactId>
-  <version>13.9.0</version>
+  <version>13.10.0</version>
   <packaging>aar</packaging>
   <dependencies></dependencies>
 </project>

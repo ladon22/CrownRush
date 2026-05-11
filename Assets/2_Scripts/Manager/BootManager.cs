@@ -22,8 +22,13 @@ public class BootManager : MonoBehaviour
         // 2단계: 파이어베이스 시스템 초기화 대기 (FireBaseManager에게 지시)
         if (FireBaseManager.Instance != null)
         {
+            // 2단계: 파이어베이스 시스템 초기화 대기
             yield return StartCoroutine(FireBaseManager.Instance.InitializeFirebaseRoutine());
-            Debug.Log("[BootManager] 2/2 파이어베이스 준비 완료");
+            Debug.Log("[BootManager] 2/3 파이어베이스 준비 완료");
+
+            // 3단계: 구글 로그인 완료 대기 (성공하든 취소하든 끝날 때까지 기다림)
+            yield return StartCoroutine(FireBaseManager.Instance.GoogleLoginRoutine());
+            Debug.Log("[BootManager] 3/3 구글 로그인 시퀀스 완료");
         }
 
         // 나중에 광고, 사운드, 로그인 등 새로운 매니저가 생기면 여기에 3단계, 4단계로 계속 추가만 하면 됩니다!

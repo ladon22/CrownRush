@@ -101,6 +101,26 @@ MonoBehaviour:
     m_Localized: Settings
     m_Metadata:
       m_Items: []
+  - m_Id: 7406755581108224
+    m_Localized: Refresh
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7413814204669952
+    m_Localized: Rank {0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7413980022284288
+    m_Localized: '{0} Pts'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7414074389929984
+    m_Localized: No Record
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7417633877630976
+    m_Localized: My Rank
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

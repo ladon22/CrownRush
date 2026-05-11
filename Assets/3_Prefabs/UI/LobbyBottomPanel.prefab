@@ -508,7 +508,7 @@ GameObject:
   - component: {fileID: 7115424759010709043}
   - component: {fileID: 6494962286267777413}
   m_Layer: 5
-  m_Name: Button
+  m_Name: RankButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
