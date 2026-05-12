@@ -2,6 +2,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Localization.Components;
+using UnityEngine.UI;
 
 public class GameOverUIController : MonoBehaviour
 {
@@ -16,6 +17,9 @@ public class GameOverUIController : MonoBehaviour
     public float PopDuration = 0.4f;
     public Ease PopEase = Ease.OutBack;
 
+    [Header("Revive System")]
+    public Button AdReviveButton;
+
     private const string BestScoreKey = "BestScore";
 
     private void Awake()
@@ -23,9 +27,15 @@ public class GameOverUIController : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public bool Show(int currentScore)
+    public bool Show(int currentScore, bool bCanRevive)
     {
         gameObject.SetActive(true);
+
+        if (AdReviveButton != null)
+        {
+            AdReviveButton.gameObject.SetActive(bCanRevive);
+        }
+
         bool bIsNewRecord = false;
         int BestScore = PlayerPrefs.GetInt(BestScoreKey, 0);
         if (currentScore > BestScore)

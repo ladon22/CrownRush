@@ -264,9 +264,9 @@ public class RankingUIController : MonoBehaviour
                 int.TryParse(data.Score, out parsedScore);
                 string formattedScore = parsedScore.ToString("N0");
 
-                PoolItems[i].transform.Find("RankText").GetComponent<TextMeshProUGUI>().text = string.Format(currentRankFormat, data.Rank);
-                PoolItems[i].transform.Find("NameText").GetComponent<TextMeshProUGUI>().text = data.Name;
                 PoolItems[i].transform.Find("RankText").GetComponent<TextMeshProUGUI>().text = data.Rank.ToString();
+                PoolItems[i].transform.Find("NameText").GetComponent<TextMeshProUGUI>().text = data.Name;
+                PoolItems[i].transform.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = string.Format(currentScoreFormat, formattedScore);
 
                 Image profileImage = PoolItems[i].transform.Find("ProfileImage").GetComponent<Image>();
                 profileImage.sprite = null;

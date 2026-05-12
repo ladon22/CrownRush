@@ -16,7 +16,7 @@ public class ItemManager : MonoBehaviour
     public int ItemSpawnScoreThreshold = 200;
     private int lastProcessedScore = 0;
 
-    private void OnEnable()
+    private void Start()
     {
         // 싱글톤 인스턴스에 접근하여 이벤트 구독
         if (ScoreManager.Instance != null)

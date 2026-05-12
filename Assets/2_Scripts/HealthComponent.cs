@@ -51,4 +51,13 @@ public class HealthComponent : MonoBehaviour
         CurrentHealth = MaxHealth;
         OnHealthChanged?.Invoke(CurrentHealth);
     }
+
+    public void Revive(int amount)
+    {
+        CurrentHealth = Mathf.Clamp(amount, 1, MaxHealth);
+        OnHealthChanged?.Invoke(CurrentHealth);
+
+        // 부활 시 특별한 이펙트나 처리가 필요하다면 이벤트를 추가할 수도 있습니다.
+        // OnRevived?.Invoke(); 
+    }
 }

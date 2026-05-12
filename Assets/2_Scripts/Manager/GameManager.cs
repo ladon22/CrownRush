@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public enum GameState
@@ -37,6 +38,7 @@ public class GameManager : MonoBehaviour
     private PlayerController CurrentPlayer;
 
     public CollectionUIController CollectionUI;
+    private bool bHasRevivedThisGame = false;
     void Start()
     {
         ChangeState(GameState.Lobby);
@@ -160,6 +162,8 @@ public class GameManager : MonoBehaviour
         {
             TurnManager.StartGameLoop();
         });
+
+        bHasRevivedThisGame = false;
     }
 
     public void GameOver()
@@ -180,12 +184,75 @@ public class GameManager : MonoBehaviour
         int CurrentScore = ScoreManager != null ? ScoreManager.CurrentScore : 0;
         bool bIsNewRecord = false;
         if (GameOverUI != null) 
-            bIsNewRecord = GameOverUI.Show(CurrentScore);
+            bIsNewRecord = GameOverUI.Show(CurrentScore, !bHasRevivedThisGame);
 
         if (bIsNewRecord && ScoreManager != null && FireBaseManager.Instance != null)
         {
             FireBaseManager.Instance.SaveScoreToDatabase(CurrentScore);
         }
+    }
+
+    public void OnClickAdReviveButton()
+    {
+        if (AdManager.Instance != null)
+        {
+            AdManager.Instance.ShowRewardedAd(OnReviveSuccess);
+        }
+        else
+        {
+            // 에디터 테스트 중이거나 AdManager가 없을 때는 그냥 즉시 부활 처리 (테스트용 방어 코드)
+            OnReviveSuccess();
+        }
+    }
+
+    private void OnReviveSuccess()
+    {
+        bHasRevivedThisGame = true; // 부활 기회 사용 완료
+
+        if (GameOverUI != null) GameOverUI.Hide();
+
+        if (CurrentPlayer != null && CurrentPlayer.HealthComponent != null)
+        {
+            CurrentPlayer.HealthComponent.Revive(1); // 하트 1개로 부활 (원한다면 MaxHealth로 부활 가능)
+        }
+
+        // 부활하자마자 끔살당하는 것을 막기 위해 플레이어 주변의 적을 날려버립니다.
+        ClearEnemiesNearPlayer();
+
+        // 상태를 다시 플레이어 턴으로 되돌립니다.
+        ChangeState(GameState.PlayerTurn);
+
+        // UI를 인게임 상태로 되돌립니다.
+        if (UITransition != null) UITransition.SlideToGame();
+    }
+
+    private void ClearEnemiesNearPlayer()
+    {
+        if (EnemyManager == null || CurrentPlayer == null) return;
+
+        List<EnemyBase> EnemiesToRemove = new List<EnemyBase>();
+
+        foreach (EnemyBase Enemy in EnemyManager.ActiveEnemies)
+        {
+            // 플레이어와 거리가 1 이내인 (상하좌우 및 대각선) 인접한 적들을 찾습니다.
+            int DistX = Mathf.Abs(Enemy.CurrentX - CurrentPlayer.CurrentX);
+            int DistY = Mathf.Abs(Enemy.CurrentY - CurrentPlayer.CurrentY);
+
+            if (DistX <= 2 && DistY <= 2)
+            {
+                EnemiesToRemove.Add(Enemy);
+            }
+        }
+
+        // 찾아낸 적들을 터뜨려줍니다.
+        foreach (EnemyBase Enemy in EnemiesToRemove)
+        {
+            Enemy.Die(); // (주의: Die 안에 EnemyManager.RemoveEnemy 처리가 되어있는지 확인 필요)
+            // 카메라 흔들림이나 폭발 이펙트를 주면 타격감이 훨씬 좋습니다!
+        }
+
+        // 필요하다면 폭발 이펙트 소리 재생
+        // if (AudioManager.Instance != null) AudioManager.Instance.PlaySFX(SfxType.EnemyDie);
     }
 
     public void RetryGame()

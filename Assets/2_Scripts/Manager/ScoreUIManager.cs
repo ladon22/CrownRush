@@ -24,7 +24,10 @@ public class ScoreUIManager : MonoBehaviour
 
     private RectTransform ComboGaugeRect;
     private Vector2 ComboGaugeOriginPos;
+    private Vector2 ComboTextOriginPos;
     private bool bIsGaugeAnimating = false;
+
+    private Sequence comboAnimSequence;
 
     private Tween shakeTween;
     private bool bIsShaking = false;
@@ -35,6 +38,11 @@ public class ScoreUIManager : MonoBehaviour
         {
             ComboGaugeRect = ComboGaugeSlider.GetComponent<RectTransform>();
             if (ComboGaugeRect != null) ComboGaugeOriginPos = ComboGaugeRect.anchoredPosition;
+        }
+
+        if (ComboText != null)
+        {
+            ComboTextOriginPos = ComboText.rectTransform.anchoredPosition;
         }
     }
 
@@ -111,16 +119,22 @@ public class ScoreUIManager : MonoBehaviour
 
             ComboText.text = $"{currentCombo} COMBO!{MultiplierText}";
 
+            if (comboAnimSequence != null && comboAnimSequence.IsActive())
+            {
+                comboAnimSequence.Kill();
+            }
+
             ComboText.DOKill();
             ComboText.transform.DOKill();
-            ComboText.transform.localScale = Vector3.one;
-            ComboText.transform.rotation = Quaternion.identity;
+            ComboText.rectTransform.DOKill();
+
+            ComboText.rectTransform.anchoredPosition = ComboTextOriginPos;
+            ComboText.rectTransform.localScale = Vector3.one;
+            ComboText.rectTransform.localRotation = Quaternion.identity; // 2D UI는 꼭 localRotation을 씁니다!
             ComboText.alpha = 1f;
 
-            Vector2 originPos = ComboText.rectTransform.anchoredPosition;
-
-            Sequence ComboSequence = DOTween.Sequence();
-            ComboSequence.Append(ComboText.rectTransform.DOAnchorPos(originPos, ComboDuration).From(originPos + ComboOffset))
+            comboAnimSequence = DOTween.Sequence();
+            comboAnimSequence.Append(ComboText.rectTransform.DOAnchorPos(ComboTextOriginPos, ComboDuration).From(ComboTextOriginPos + ComboOffset))
                 .Join(ComboText.transform.DOPunchScale(new Vector3(0.5f, 0.5f, 0f), ComboDuration * 2f, 5, 0.5f))
                 .Join(ComboText.transform.DOPunchRotation(new Vector3(0, 0, 15f), ComboDuration * 2f, 5, 0.5f));
         }
@@ -143,18 +157,26 @@ public class ScoreUIManager : MonoBehaviour
 
         if (ComboText != null)
         {
+            if (comboAnimSequence != null && comboAnimSequence.IsActive())
+            {
+                comboAnimSequence.Kill();
+            }
+
             ComboText.DOKill();
             ComboText.transform.DOKill();
-            Vector2 BeforeDropPos = ComboText.rectTransform.anchoredPosition;
+            ComboText.rectTransform.DOKill();
+
+            ComboText.transform.localScale = Vector3.one;
+            ComboText.transform.rotation = Quaternion.identity;
 
             Sequence BreakSequence = DOTween.Sequence();
-            BreakSequence.Append(ComboText.rectTransform.DOAnchorPosY(ComboText.rectTransform.anchoredPosition.y - 30f, 0.3f).SetEase(Ease.InBack))
+            BreakSequence.Append(ComboText.rectTransform.DOAnchorPosY(ComboTextOriginPos.y - 30f, 0.3f).SetEase(Ease.InBack))
                 .Join(ComboText.DOFade(0f, 0.3f))
                 .OnComplete(() =>
                 {
                     ComboText.gameObject.SetActive(false);
                     ComboText.alpha = 1f;
-                    ComboText.rectTransform.anchoredPosition = BeforeDropPos;
+                    ComboText.rectTransform.anchoredPosition = ComboTextOriginPos;
                 });
         }
     }
