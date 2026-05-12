@@ -121,6 +121,10 @@ MonoBehaviour:
     m_Localized: My Rank
     m_Metadata:
       m_Items: []
+  - m_Id: 7739717069676544
+    m_Localized: Loading Data
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

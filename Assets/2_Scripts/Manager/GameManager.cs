@@ -217,7 +217,12 @@ public class GameManager : MonoBehaviour
         }
 
         // 부활하자마자 끔살당하는 것을 막기 위해 플레이어 주변의 적을 날려버립니다.
-        ClearEnemiesNearPlayer();
+        //ClearEnemiesNearPlayer();
+
+        if (ScoreManager != null)
+        {
+            ScoreManager.ResetCombo();
+        }
 
         // 상태를 다시 플레이어 턴으로 되돌립니다.
         ChangeState(GameState.PlayerTurn);

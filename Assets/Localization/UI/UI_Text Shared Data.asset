@@ -115,6 +115,10 @@ MonoBehaviour:
     m_Key: rank_myrank
     m_Metadata:
       m_Items: []
+  - m_Id: 7739717069676544
+    m_Key: rank_loading
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

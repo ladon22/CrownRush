@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
@@ -19,6 +20,11 @@ public class RankData
 
 public class RankingUIController : MonoBehaviour
 {
+    [Header("Panel & Animation")]
+    [SerializeField] private RectTransform PanelRect; // 랭킹 창 전체를 감싸는 RectTransform
+    [SerializeField] private float PopDuration = 0.4f;
+    [SerializeField] private Ease PopEase = Ease.OutBack;
+
     [Header("UI 연결 (전체 랭킹)")]
     public ScrollRect RankingScrollRect;
     public Transform ContentTransform;
@@ -54,6 +60,13 @@ public class RankingUIController : MonoBehaviour
 
     private int LastTopIndex = -1;
 
+    [Header("Loading Animation")]
+    [SerializeField] private TextMeshProUGUI LoadingText; // "로딩 중" 글자가 써질 텍스트
+    [SerializeField] private LocalizedString LoadingBaseString; // "로딩 중"이라는 기본 다국어 키
+
+    private Tween loadingDotTween;
+    private string localizedLoadingText = "Loading"; // 캐싱용
+
     private void Awake()
     {
         ContentRect = ContentTransform.GetComponent<RectTransform>();
@@ -75,6 +88,13 @@ public class RankingUIController : MonoBehaviour
     {
         gameObject.SetActive(true);
 
+        if (PanelRect != null)
+        {
+            PanelRect.localScale = Vector3.zero;
+            PanelRect.DOKill();
+            PanelRect.DOScale(Vector3.one, PopDuration).SetEase(PopEase).SetUpdate(true);
+        }
+
         // 창이 열릴 때 다국어 텍스트를 딱 한 번만 가져옵니다 (최적화)
         if (!RankFormatString.IsEmpty) currentRankFormat = RankFormatString.GetLocalizedString();
         if (!ScoreFormatString.IsEmpty) currentScoreFormat = ScoreFormatString.GetLocalizedString();
@@ -85,7 +105,15 @@ public class RankingUIController : MonoBehaviour
 
     public void HideRanking()
     {
-        gameObject.SetActive(false);
+        if (PanelRect != null)
+        {
+            PanelRect.DOScale(Vector3.zero, PopDuration * 0.7f).SetEase(Ease.InBack).SetUpdate(true)
+                .OnComplete(() => gameObject.SetActive(false));
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     // 새로고침 버튼과 ShowRanking에서 공통으로 쓰는 함수
@@ -101,6 +129,8 @@ public class RankingUIController : MonoBehaviour
 
     private void LoadRankingData()
     {
+        StartLoadingAnimation();
+
         if (FireBaseManager.Instance != null && FireBaseManager.Instance.bUseFirebase == false)
         {
             Debug.Log("파이어베이스가 꺼져있어 테스트용 더미(Dummy) 데이터를 띄웁니다.");
@@ -164,6 +194,10 @@ public class RankingUIController : MonoBehaviour
                 {
                     LoadMyDataOutsideTop50(myUid, currentUser);
                 }
+                else
+                {
+                    StopLoadingAnimation();
+                }
 
                 ContentRect.sizeDelta = new Vector2(ContentRect.sizeDelta.x, RankDataList.Count * ItemHeight);
                 ContentRect.anchoredPosition = Vector2.zero;
@@ -202,6 +236,8 @@ public class RankingUIController : MonoBehaviour
                 string myPhoto = user.PhotoUrl != null ? user.PhotoUrl.ToString() : "";
                 UpdateMyRankUI(-1, user.DisplayName, "0", myPhoto);
             }
+
+            StopLoadingAnimation();
         });
     }
 
@@ -334,11 +370,48 @@ public class RankingUIController : MonoBehaviour
         }
 
         // 에디터 테스트 시 '내 순위'도 가짜로 띄워주기
-        UpdateMyRankUI(1234, "나 (ME)", "842", "");
+        DG.Tweening.DOVirtual.DelayedCall(2.0f, () =>
+        {
+            ContentRect.sizeDelta = new Vector2(ContentRect.sizeDelta.x, RankDataList.Count * ItemHeight);
+            ContentRect.anchoredPosition = Vector2.zero;
+            LastTopIndex = -1;
+            OnScroll(Vector2.zero);
 
-        ContentRect.sizeDelta = new Vector2(ContentRect.sizeDelta.x, RankDataList.Count * ItemHeight);
-        ContentRect.anchoredPosition = Vector2.zero;
-        LastTopIndex = -1;
-        OnScroll(Vector2.zero);
+            // 2초 뒤에 랭킹 리스트를 띄우면서 로딩 텍스트를 끕니다.
+            StopLoadingAnimation();
+        });
+    }
+
+
+    private void StartLoadingAnimation()
+    {
+        if (LoadingText == null) return;
+
+        LoadingText.gameObject.SetActive(true);
+
+        // 기존 애니메이션이 있다면 중복 실행 방지
+        loadingDotTween?.Kill();
+
+        // 로컬라이제이션 테이블에서 "로딩 중" 또는 "Loading" 문구를 가져옵니다.
+        localizedLoadingText = LoadingBaseString.GetLocalizedString();
+
+        // 2. 0부터 3까지 숫자를 변화시키며 점을 추가하는 DOTween 애니메이션
+        int dotCount = 0;
+        loadingDotTween = DOTween.To(() => dotCount, x => dotCount = x, 3, 1.5f)
+            .SetLoops(-1, LoopType.Restart) // 무한 반복
+            .SetEase(Ease.Linear)
+            .OnUpdate(() =>
+            {
+                // 점의 개수만큼 문자열을 생성합니다. (예: 1이면 ".", 3이면 "...")
+                string dots = new string('.', dotCount);
+                LoadingText.text = $"{localizedLoadingText}{dots}";
+            });
+    }
+
+    private void StopLoadingAnimation()
+    {
+        // 로딩이 끝나면 애니메이션을 끄고 오버레이를 숨깁니다.
+        loadingDotTween?.Kill();
+        if (LoadingText != null) LoadingText.gameObject.SetActive(false);
     }
 }

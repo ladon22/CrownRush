@@ -100,7 +100,7 @@ public class ScoreManager : MonoBehaviour
         OnComboChanged?.Invoke(CurrentCombo);
     }
 
-    private void ResetCombo()
+    public void ResetCombo()
     {
         CurrentCombo = 0;
         CurrentComboTimer = 0f;

@@ -1,41 +1,80 @@
+using DG.Tweening;
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class BootManager : MonoBehaviour
 {
+    [Header("Loading UI")]
+    public Slider LoadingProgressBar; // 오직 게이지바 하나만 사용합니다.
+
+    private class LoadingTask
+    {
+        public Func<IEnumerator> TaskRoutine;
+    }
+
+    private List<LoadingTask> loadingTasks = new List<LoadingTask>();
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        if (LoadingProgressBar != null) LoadingProgressBar.value = 0f;
+
+        RegisterTasks();
         StartCoroutine(BootSequenceRoutine());
+    }
+
+    private void RegisterTasks()
+    {
+        // 텍스트 키값 없이, '무엇을 실행할지'만 등록합니다.
+        loadingTasks.Add(new LoadingTask { TaskRoutine = InitLocalizationRoutine });
+
+        if (FireBaseManager.Instance != null)
+        {
+            loadingTasks.Add(new LoadingTask { TaskRoutine = FireBaseManager.Instance.InitializeFirebaseRoutine });
+            loadingTasks.Add(new LoadingTask { TaskRoutine = FireBaseManager.Instance.GoogleLoginRoutine });
+        }
     }
 
     private IEnumerator BootSequenceRoutine()
     {
-        Debug.Log("[BootManager] 부트 시퀀스 시작...");
+        int totalTasks = loadingTasks.Count;
 
-        // 1단계: 유니티 다국어 시스템 초기화 대기
-        yield return LocalizationSettings.InitializationOperation;
-        Debug.Log("[BootManager] 1/2 다국어 시스템 준비 완료");
-
-        // 2단계: 파이어베이스 시스템 초기화 대기 (FireBaseManager에게 지시)
-        if (FireBaseManager.Instance != null)
+        for (int i = 0; i < totalTasks; i++)
         {
-            // 2단계: 파이어베이스 시스템 초기화 대기
-            yield return StartCoroutine(FireBaseManager.Instance.InitializeFirebaseRoutine());
-            Debug.Log("[BootManager] 2/3 파이어베이스 준비 완료");
+            LoadingTask currentTask = loadingTasks[i];
 
-            // 3단계: 구글 로그인 완료 대기 (성공하든 취소하든 끝날 때까지 기다림)
-            yield return StartCoroutine(FireBaseManager.Instance.GoogleLoginRoutine());
-            Debug.Log("[BootManager] 3/3 구글 로그인 시퀀스 완료");
+            // 1. 실제 작업(코루틴)을 실행하고 기다림
+            yield return StartCoroutine(currentTask.TaskRoutine());
+
+            // 2. 퍼센트 갱신 (완료된 작업 / 전체 작업)
+            float progress = (float)(i + 1) / totalTasks;
+            UpdateProgress(progress);
+
+            // 게이지 차오르는 것을 살짝 보여줄 대기 시간
+            yield return new WaitForSeconds(0.3f);
         }
 
-        // 나중에 광고, 사운드, 로그인 등 새로운 매니저가 생기면 여기에 3단계, 4단계로 계속 추가만 하면 됩니다!
-
-        Debug.Log("[BootManager] 모든 시스템 초기화 완료. 로비 씬으로 이동합니다.");
-
-        // 최종 단계: 로비 씬으로 이동
+        // 모든 로딩이 끝나면 로비 씬(1번)으로 이동
         SceneManager.LoadScene(1);
+    }
+
+    private IEnumerator InitLocalizationRoutine()
+    {
+        yield return LocalizationSettings.InitializationOperation;
+    }
+
+    private void UpdateProgress(float value)
+    {
+        if (LoadingProgressBar != null)
+        {
+            // 부드럽게 게이지 상승
+            LoadingProgressBar.DOValue(value, 0.3f).SetEase(Ease.OutQuad);
+        }
     }
 }
