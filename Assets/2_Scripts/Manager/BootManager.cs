@@ -57,11 +57,18 @@ public class BootManager : MonoBehaviour
             UpdateProgress(progress);
 
             // 게이지 차오르는 것을 살짝 보여줄 대기 시간
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(1.5f);
         }
 
-        // 모든 로딩이 끝나면 로비 씬(1번)으로 이동
-        SceneManager.LoadScene(1);
+        // 수정: 씬을 바로 넘기지 않고 페이드 아웃 연출을 실행합니다.
+        if (SceneTransitionManager.Instance != null)
+        {
+            SceneTransitionManager.Instance.TransitionToScene(1);
+        }
+        else
+        {
+            SceneManager.LoadScene(1); // 매니저가 없을 때를 대비한 방어 코드
+        }
     }
 
     private IEnumerator InitLocalizationRoutine()

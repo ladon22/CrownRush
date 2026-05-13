@@ -14,6 +14,7 @@ public class ItemManager : MonoBehaviour
 
     [Header("Item Spawn Settings")]
     public int ItemSpawnScoreThreshold = 200;
+    public int MaxActiveItems = 2;
     private int lastProcessedScore = 0;
 
     private void Start()
@@ -71,7 +72,10 @@ public class ItemManager : MonoBehaviour
 
             for (int i = 0; i < spawnCount; i++)
             {
-                SpawnRandomItem();
+                if (ActiveItems.Count < MaxActiveItems)
+                {
+                    SpawnRandomItem();
+                }
             }
         }
     }

@@ -2461,6 +2461,7 @@ MonoBehaviour:
   ItemPrefabs:
   - {fileID: 7141382381004458382, guid: d7d24363705bc6046b08c0e7f58c8b14, type: 3}
   ItemSpawnScoreThreshold: 200
+  MaxActiveItems: 2
 --- !u!1 &2123981348
 GameObject:
   m_ObjectHideFlags: 0
@@ -2588,9 +2589,13 @@ MonoBehaviour:
   MaxComboTime: 5
   CurrentComboTimer: 0
   Stage1Threshold: 5
-  Stage1Multiplier: 1.5
+  Stage1Multiplier: 2
   Stage2Threshold: 10
-  Stage2Multiplier: 2
+  Stage2Multiplier: 3
+  Stage3Threshold: 15
+  Stage3Multiplier: 4
+  Stage4Threshold: 20
+  Stage4Multiplier: 5
 --- !u!224 &1399628253117713653 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3476480205594001348, guid: 6ca1c9fb9183601409d8dbce52c85773, type: 3}

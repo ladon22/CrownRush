@@ -19,6 +19,11 @@ public class ScoreManager : MonoBehaviour
     public float Stage1Multiplier = 1.5f;
     public int Stage2Threshold = 10;
     public float Stage2Multiplier = 2.0f;
+    public int Stage3Threshold = 15;
+    public float Stage3Multiplier = 3.0f;
+    public int Stage4Threshold = 20;
+    public float Stage4Multiplier = 5.0f; // 20콤보 달성 시 무려 5배!
+
 
     public Action<int> OnScoreChanged;
     public Action<int> OnComboChanged;
@@ -78,7 +83,15 @@ public class ScoreManager : MonoBehaviour
 
         float Multiplier = 1.0f;
 
-        if (CurrentCombo >= Stage2Threshold)
+        if (CurrentCombo >= Stage4Threshold)
+        {
+            Multiplier = Stage4Multiplier;
+        }
+        else if (CurrentCombo >= Stage3Threshold)
+        {
+            Multiplier = Stage3Multiplier;
+        }
+        else if (CurrentCombo >= Stage2Threshold)
         {
             Multiplier = Stage2Multiplier;
         }
@@ -86,6 +99,7 @@ public class ScoreManager : MonoBehaviour
         {
             Multiplier = Stage1Multiplier;
         }
+
         int FinalScore = Mathf.RoundToInt(ScoreToAdd * Multiplier);
         CurrentScore += FinalScore;
 

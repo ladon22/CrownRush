@@ -110,8 +110,14 @@ public class ScoreUIManager : MonoBehaviour
 
             string MultiplierText = "";
             // 싱글톤을 통해 변수 접근
-            if (currentCombo >= ScoreManager.Instance.Stage2Threshold) MultiplierText = " <color=#FF2A2A>[x2.0]</color>";
-            else if (currentCombo >= ScoreManager.Instance.Stage1Threshold) MultiplierText = " <color=#FFB300>[x1.5]</color>";
+            if (currentCombo >= ScoreManager.Instance.Stage4Threshold)
+                MultiplierText = $" <color=#B300FF>[x{ScoreManager.Instance.Stage4Multiplier:F1}]</color>"; // 보라색 (가장 화려함)
+            else if (currentCombo >= ScoreManager.Instance.Stage3Threshold)
+                MultiplierText = $" <color=#00EAFF>[x{ScoreManager.Instance.Stage3Multiplier:F1}]</color>"; // 민트/시안색
+            else if (currentCombo >= ScoreManager.Instance.Stage2Threshold)
+                MultiplierText = $" <color=#FF2A2A>[x{ScoreManager.Instance.Stage2Multiplier:F1}]</color>"; // 빨간색
+            else if (currentCombo >= ScoreManager.Instance.Stage1Threshold)
+                MultiplierText = $" <color=#FFB300>[x{ScoreManager.Instance.Stage1Multiplier:F1}]</color>"; // 노란색
 
             ComboText.text = $"{currentCombo} COMBO!{MultiplierText}";
 
