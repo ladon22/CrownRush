@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -22,19 +23,30 @@ public class PoolManager : MonoBehaviour
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
-        InitializePools();
+        //InitializePools();
     }
 
-    private void InitializePools()
+    private void Start()
     {
+        // 1. 씬이 켜지면(로비 진입 시) 백그라운드 코루틴으로 조용히 생성을 시작합니다.
+        StartCoroutine(InitializePoolsRoutine());
+    }
+
+    public IEnumerator InitializePoolsRoutine()
+    {
+        int countPerFrame = 0;
+
         foreach (PoolItem Item in ItemsToPrewarm)
         {
             if (Item.Prefab == null) continue;
 
             string Key = Item.Prefab.name;
+
+            if (PoolDictionary.ContainsKey(Key)) continue;
+
             PoolDictionary.Add(Key, new Queue<GameObject>());
 
-            // 🌟 하이어라키 창이 지저분해지지 않도록 묶어줄 빈 부모 오브젝트 생성 (예: "LinearEnemy_Pool")
+            // 하이어라키 창이 지저분해지지 않도록 묶어줄 빈 부모 오브젝트 생성 (예: "LinearEnemy_Pool")
             GameObject PoolParent = new GameObject($"{Key}_Pool");
             PoolParent.transform.SetParent(this.transform);
 
@@ -47,6 +59,14 @@ public class PoolManager : MonoBehaviour
                 NewObj.SetActive(false); // 꺼진 상태로 대기열에 추가
 
                 PoolDictionary[Key].Enqueue(NewObj);
+
+                countPerFrame++;
+
+                if (countPerFrame >= 3)
+                {
+                    countPerFrame = 0;
+                    yield return null;
+                }
             }
         }
     }

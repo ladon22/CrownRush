@@ -461,7 +461,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FireBaseManager
   bIsLoginSequenceFinished: 0
-  bUseFirebase: 1
+  bUseFirebase: 0
 --- !u!1 &1239357167
 GameObject:
   m_ObjectHideFlags: 0
@@ -629,8 +629,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 175, y: -14}
-  m_SizeDelta: {x: 340, y: 20}
+  m_AnchoredPosition: {x: 173.19, y: -14}
+  m_SizeDelta: {x: 339.63, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1501395750
 MonoBehaviour:
@@ -1209,7 +1209,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 7.5
+  orthographic size: 9.140625
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

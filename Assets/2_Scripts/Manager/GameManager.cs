@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
     public GameObject GameUIPanel;
     public GameOverUIController GameOverUI;
     public SettingsUIController SettingsUI;
+    public UpdateBestScoreUI LobbyUI;
 
     private bool IsInitialized = false;
     private PlayerController CurrentPlayer;
@@ -306,6 +307,8 @@ public class GameManager : MonoBehaviour
         if (GameOverUI != null) GameOverUI.Hide();
 
         if (ItemManager != null) ItemManager.ClearItem();
+
+        if (LobbyUI != null) LobbyUI.LoadBestScore();
     }
 
     private void ClearEnemies()

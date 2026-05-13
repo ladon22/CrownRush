@@ -44,11 +44,7 @@ public class ScoreUIManager : MonoBehaviour
         {
             ComboTextOriginPos = ComboText.rectTransform.anchoredPosition;
         }
-    }
 
-    private void OnEnable()
-    {
-        //싱글톤 인스턴스에 바로 접근하여 구독
         if (ScoreManager.Instance != null)
         {
             ScoreManager.Instance.OnScoreChanged += PlayScoreAnimation;
@@ -57,7 +53,7 @@ public class ScoreUIManager : MonoBehaviour
         }
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         shakeTween?.Kill();
 
