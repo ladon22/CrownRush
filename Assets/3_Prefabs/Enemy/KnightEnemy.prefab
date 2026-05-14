@@ -112,7 +112,7 @@ MonoBehaviour:
   CurrentX: 0
   CurrentY: 0
   MoveSpeed: 15
-  ScoreValue: 6
+  ScoreValue: 8
   IntentIndicator: {fileID: 3718674613359918198}
   PieceType: 3
   MoveInterval: 1

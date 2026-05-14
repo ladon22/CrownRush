@@ -112,8 +112,9 @@ MonoBehaviour:
   CurrentX: 0
   CurrentY: 0
   MoveSpeed: 15
-  ScoreValue: 2
+  ScoreValue: 3
   IntentIndicator: {fileID: 3319413469457181901}
+  PieceType: 0
   MoveInterval: 2
   HopHeight: 0.5
   QueenPrefab: {fileID: 1447372442310996781, guid: f10f5094320af344f91148cba1ae031a, type: 3}

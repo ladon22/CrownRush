@@ -24,6 +24,8 @@ public class ScoreManager : MonoBehaviour
     public int Stage4Threshold = 20;
     public float Stage4Multiplier = 5.0f; // 20콤보 달성 시 무려 5배!
 
+    [Header("Floating Text")]
+    public GameObject FloatingTextPrefab;
 
     public Action<int> OnScoreChanged;
     public Action<int> OnComboChanged;
@@ -76,7 +78,7 @@ public class ScoreManager : MonoBehaviour
         OnScoreChanged?.Invoke(CurrentScore);
     }
 
-    public void AddScore(int ScoreToAdd)
+    public void AddScore(int ScoreToAdd, Vector3 spawnPosition = default)
     {
         CurrentCombo++;
         CurrentComboTimer = MaxComboTime;
@@ -102,6 +104,18 @@ public class ScoreManager : MonoBehaviour
 
         int FinalScore = Mathf.RoundToInt(ScoreToAdd * Multiplier);
         CurrentScore += FinalScore;
+
+        // 플로팅 텍스트 스폰 로직 추가
+        if (FloatingTextPrefab != null && spawnPosition != default)
+        {
+            GameObject textObj = PoolManager.Instance.SpawnFromPool(FloatingTextPrefab, spawnPosition, Quaternion.identity);
+            FloatingText floatingText = textObj.GetComponent<FloatingText>();
+
+            if (floatingText != null)
+            {
+                floatingText.Show(FinalScore); // 최종 배수가 적용된 점수를 띄웁니다!
+            }
+        }
 
         // 업적 매니저에게 현재 점수와 콤보 상태를 실시간으로 보고
         if (AchievementManager.Instance != null)

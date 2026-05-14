@@ -204,6 +204,16 @@ public class PlayerController : MonoBehaviour
                     sr.sprite = skinData.PlayerSprite;
                 }
                 sr.color = skinData.PlayerColor;
+
+                if (PreviewIndicator != null)
+                {
+                    SpriteRenderer previewSR = PreviewIndicator.GetComponent<SpriteRenderer>();
+                    if (previewSR != null && skinData.LightTileSprite != null)
+                    {
+                        // 밝은 타일(LightTile) 또는 어두운 타일(DarkTile) 중 원하시는 모양을 넣으시면 됩니다.
+                        previewSR.sprite = skinData.LightTileSprite;
+                    }
+                }
                 break;
             }
         }

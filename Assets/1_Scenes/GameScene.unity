@@ -1498,6 +1498,8 @@ MonoBehaviour:
     InitialSize: 3
   - Prefab: {fileID: 1447372442310996781, guid: f10f5094320af344f91148cba1ae031a, type: 3}
     InitialSize: 3
+  - Prefab: {fileID: 830407063534799829, guid: c786a889e2e96af4899dc06b6b93cb83, type: 3}
+    InitialSize: 3
 --- !u!1 &1301762391
 GameObject:
   m_ObjectHideFlags: 0
@@ -2596,6 +2598,7 @@ MonoBehaviour:
   Stage3Multiplier: 4
   Stage4Threshold: 20
   Stage4Multiplier: 5
+  FloatingTextPrefab: {fileID: 830407063534799829, guid: c786a889e2e96af4899dc06b6b93cb83, type: 3}
 --- !u!224 &1399628253117713653 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3476480205594001348, guid: 6ca1c9fb9183601409d8dbce52c85773, type: 3}

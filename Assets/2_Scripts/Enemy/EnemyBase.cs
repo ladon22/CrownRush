@@ -214,7 +214,7 @@ public abstract class EnemyBase : MonoBehaviour
     {
         if (ScoreManager.Instance != null)
         {
-            ScoreManager.Instance.AddScore(ScoreValue);
+            ScoreManager.Instance.AddScore(ScoreValue, transform.position);
         }
         PoolManager.Instance.ReturnToPool(gameObject);
     }
