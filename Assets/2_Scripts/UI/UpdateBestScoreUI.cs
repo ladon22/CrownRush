@@ -19,7 +19,7 @@ public class UpdateBestScoreUI : MonoBehaviour
 
         if (BestScoreTextEvent != null)
         {
-            BestScoreTextEvent.StringReference.Arguments = new object[] { bestScore.ToString("N0") };
+            BestScoreTextEvent.StringReference.Arguments = new object[] { bestScore };
             BestScoreTextEvent.RefreshString();
         }
     }

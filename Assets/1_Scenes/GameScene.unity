@@ -178,7 +178,7 @@ MonoBehaviour:
   GameUIPanel: {fileID: 1301762391}
   GameOverUI: {fileID: 1178157895}
   SettingsUI: {fileID: 3994113562981135122}
-  LobbyUI: {fileID: 0}
+  LobbyUI: {fileID: 914623475}
   CollectionUI: {fileID: 8626353636029023805}
 --- !u!1 &262392195
 GameObject:

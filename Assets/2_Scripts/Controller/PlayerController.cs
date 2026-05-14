@@ -138,6 +138,9 @@ public class PlayerController : MonoBehaviour
         transform.position = TargetPosition;
         if (Sorter != null) Sorter.SortingOrderOffset -= 1000;
 
+        CurrentX = TargetX;
+        CurrentY = TargetY;
+
         if (TargetEnemy != null)
         {
             EnemyManager.RemoveEnemy(TargetEnemy);
@@ -163,8 +166,7 @@ public class PlayerController : MonoBehaviour
             TargetItem.Consume(this);
         }
 
-        CurrentX = TargetX;
-        CurrentY = TargetY;
+
         bIsMoving = false;
 
         if (TurnManager != null) TurnManager.EndPlayerTurn();

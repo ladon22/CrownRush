@@ -187,9 +187,18 @@ public class GameManager : MonoBehaviour
         if (GameOverUI != null) 
             bIsNewRecord = GameOverUI.Show(CurrentScore, !bHasRevivedThisGame);
 
-        if (bIsNewRecord && ScoreManager != null && FireBaseManager.Instance != null)
+        if (bIsNewRecord)
         {
-            FireBaseManager.Instance.SaveScoreToDatabase(CurrentScore);
+            if (ScoreManager != null && FireBaseManager.Instance != null)
+            {
+                FireBaseManager.Instance.SaveScoreToDatabase(CurrentScore);
+            }
+
+            // 핵심 추가: 게임 오버 화면에서 신기록이 찍히는 순간, 로비 UI의 최고 점수도 몰래 갱신해둡니다!
+            if (LobbyUI != null)
+            {
+                LobbyUI.LoadBestScore();
+            }
         }
     }
 
