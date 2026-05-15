@@ -49,7 +49,16 @@ public class CollectionUIController : MonoBehaviour
     // 데이터베이스에서 스킨만 따로 모아둘 리스트
     private List<AchievementEntry> SkinList = new List<AchievementEntry>();
     private int CurrentIndex = 0;
+    private Sprite defaultPreviewFrameSprite;
 
+    private void Awake()
+    {
+        // 시작할 때 원래 UI에 적용되어 있던 기본 이미지를 저장해둡니다.
+        if (PreviewFrameImage != null)
+        {
+            defaultPreviewFrameSprite = PreviewFrameImage.sprite;
+        }
+    }
     private void Start()
     {
         // 버튼 이벤트 연결
@@ -119,6 +128,16 @@ public class CollectionUIController : MonoBehaviour
 
             if (PreviewFrameImage != null)
             {
+                if (skinData.FrameSprite != null)
+                {
+                    PreviewFrameImage.sprite = skinData.FrameSprite;
+                }
+                else
+                {
+                    PreviewFrameImage.sprite = defaultPreviewFrameSprite;
+                }
+                PreviewFrameImage.type = Image.Type.Sliced;
+                PreviewFrameImage.pixelsPerUnitMultiplier = 0.65f;
                 PreviewFrameImage.color = skinData.FrameColor;
             }
         }

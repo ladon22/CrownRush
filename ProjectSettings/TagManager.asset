@@ -41,6 +41,9 @@ TagManager:
   - name: Background
     uniqueID: 2676846537
     locked: 0
+  - name: ChessFrame
+    uniqueID: 2971556703
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

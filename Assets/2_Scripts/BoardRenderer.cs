@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI; // [추가] UI 컴포넌트 사용을 위해 필수
 
 public class BoardRenderer : MonoBehaviour
 {
@@ -7,12 +8,22 @@ public class BoardRenderer : MonoBehaviour
     public GameObject BaseTilePrefab;
 
     [Header("Board Frame Settings")]
-    public SpriteRenderer BoardFrameRenderer; // 씬에 만들어둔 9-Slice 테두리 오브젝트
-    public float FramePaddingX = 1.0f; // 좌우 테두리 여백 (두께에 맞게 조절)
-    public float FramePaddingY = 1.0f; // 상하 테두리 여백
+    public Image BoardFrameImage; // [수정] SpriteRenderer -> Image로 변경
+    public float FramePaddingX = 1.0f;
+    public float FramePaddingY = 1.0f;
 
     private List<SpriteRenderer> lightTiles = new List<SpriteRenderer>();
     private List<SpriteRenderer> darkTiles = new List<SpriteRenderer>();
+    private Sprite defaultFrameSprite;
+
+    private void Awake()
+    {
+        // 시작할 때 원래 적용되어 있던 기본 이미지를 저장해둡니다.
+        if (BoardFrameImage != null)
+        {
+            defaultFrameSprite = BoardFrameImage.sprite;
+        }
+    }
 
     private void OnEnable()
     {
@@ -51,23 +62,19 @@ public class BoardRenderer : MonoBehaviour
 
                 SpriteRenderer sr = NewTile.GetComponent<SpriteRenderer>();
 
-                // 좌표에 따라 밝은 칸인지 어두운 칸인지 기억
                 if ((Y + X) % 2 == 0) lightTiles.Add(sr);
                 else darkTiles.Add(sr);
             }
         }
 
-        if (BoardFrameRenderer != null)
+        if (BoardFrameImage != null)
         {
-            // 1. 체스판 전체의 가로/세로 길이를 계산합니다.
             float totalWidth = (GridManager.Columns * tileSize.x) + FramePaddingX;
             float totalHeight = (GridManager.Rows * tileSize.y) + FramePaddingY;
 
-            // 2. 9-Slice Sprite의 모서리를 유지한 채로 크기를 변경합니다.
-            BoardFrameRenderer.size = new Vector2(totalWidth, totalHeight);
-
-            // 3. GridManager 로직상 보드의 중심이 (0,0)이므로 테두리도 (0,0)으로 이동시킵니다.
-            BoardFrameRenderer.transform.position = Vector3.zero;
+            // [수정] Image 컴포넌트는 size 대신 rectTransform.sizeDelta를 사용합니다.
+            BoardFrameImage.rectTransform.sizeDelta = new Vector2(totalWidth, totalHeight);
+            BoardFrameImage.transform.position = Vector3.zero;
         }
         UpdateBoardSkin();
     }
@@ -82,12 +89,24 @@ public class BoardRenderer : MonoBehaviour
             {
                 if (data.RewardItem is SkinData skinData && skinData.ItemID == equippedSkinID)
                 {
-                    // 방송이 울리면 저장된 리스트의 이미지를 순식간에 교체!
                     foreach (var sr in lightTiles) sr.sprite = skinData.LightTileSprite;
                     foreach (var sr in darkTiles) sr.sprite = skinData.DarkTileSprite;
-                    if (BoardFrameRenderer != null)
+
+                    if (BoardFrameImage != null)
                     {
-                        BoardFrameRenderer.color = skinData.FrameColor;
+                        if (skinData.FrameSprite != null)
+                        {
+                            BoardFrameImage.sprite = skinData.FrameSprite;
+                        }
+                        else
+                        {
+                            BoardFrameImage.sprite = defaultFrameSprite;
+                        }
+
+                        // [추가] 개발자님이 원하시던 설정 적용!
+                        BoardFrameImage.type = Image.Type.Sliced;
+                        BoardFrameImage.pixelsPerUnitMultiplier = 44f;
+                        BoardFrameImage.color = skinData.FrameColor;
                     }
                     break;
                 }

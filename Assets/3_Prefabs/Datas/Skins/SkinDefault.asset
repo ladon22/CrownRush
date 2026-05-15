@@ -15,7 +15,8 @@ MonoBehaviour:
   ItemID: skin_default
   LightTileSprite: {fileID: -8529257965362590198, guid: 322bc3b3ad2712f4f9002bc210be7fd6, type: 3}
   DarkTileSprite: {fileID: 5086472641762343364, guid: 44561f72001c93d4dac05755acc0651c, type: 3}
-  FrameColor: {r: 0.23584908, g: 0.14455187, b: 0.06786223, a: 1}
+  FrameSprite: {fileID: 1128249703004154318, guid: fe101db26dcc25e489632d49e8705512, type: 3}
+  FrameColor: {r: 1, g: 1, b: 1, a: 1}
   PlayerSprite: {fileID: -4821530343430527414, guid: 13e92312fe451f34b923e3bcb4b6f01c, type: 3}
   PlayerColor: {r: 0.21568628, g: 0.21568628, b: 0.21568628, a: 1}
   EnemyColor: {r: 1, g: 1, b: 1, a: 1}

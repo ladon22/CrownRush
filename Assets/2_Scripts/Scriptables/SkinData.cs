@@ -15,6 +15,7 @@ public class SkinData : ItemData
     [Header("Board Skin")]
     public Sprite LightTileSprite; // º¸µåÆÇ ¹àÀº Ä­
     public Sprite DarkTileSprite;  // º¸µåÆÇ ¾îµÎ¿î Ä­
+    public Sprite FrameSprite;
     public Color FrameColor = Color.white;
 
     [Header("Player Skin")]
