@@ -27,7 +27,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 323564580405248
-    m_Localized: Reach 100 Points
+    m_Localized: Reach 1000 Points
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6686417620672512
+    m_Localized: Reach 3000 Points
     m_Metadata:
       m_Items: []
   references:

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43e60c41f59998544aed8fe970f97a95, type: 3}
+  m_Name: SkinNeon
+  m_EditorClassIdentifier: Assembly-CSharp::SkinData
+  ItemID: skin_neon
+  LightTileSprite: {fileID: 3485413538816804172, guid: f5c29c05fee99df49892ebcac57f883f, type: 3}
+  DarkTileSprite: {fileID: 8460552075641727732, guid: 98f30f4c5569ec649b4e696c832b1652, type: 3}
+  FrameSprite: {fileID: -9068144955542874669, guid: c0b10f174b3c01a419fb84a3c53b6657, type: 3}
+  FrameColor: {r: 1, g: 1, b: 1, a: 1}
+  PlayerSprite: {fileID: 1474338839030089792, guid: 0f5d898cc35b8b94c9bf3cef8898e782, type: 3}
+  PlayerColor: {r: 1, g: 1, b: 1, a: 1}
+  EnemyColor: {r: 1, g: 1, b: 1, a: 1}
+  EnemySkins:
+  - Type: 0
+    EnemySprite: {fileID: -9072640324930771746, guid: 3c7842df32f437d40a084e957a98a49f, type: 3}
+  - Type: 1
+    EnemySprite: {fileID: 4470715603376260451, guid: 63564ba2b5358164483d88f7639ab6f4, type: 3}
+  - Type: 2
+    EnemySprite: {fileID: 3349027976491468942, guid: 633b252a41046b349b35e78476571705, type: 3}
+  - Type: 3
+    EnemySprite: {fileID: -8252856842458178826, guid: 2f11da13941879844b7debd627fe20c6, type: 3}
+  - Type: 4
+    EnemySprite: {fileID: 4693776786342749927, guid: 22371fa1fa7920b4d9b0ea1f173c65d6, type: 3}

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43e60c41f59998544aed8fe970f97a95, type: 3}
+  m_Name: SkinAncientRuins
+  m_EditorClassIdentifier: Assembly-CSharp::SkinData
+  ItemID: skin_ruin
+  LightTileSprite: {fileID: -3767660924086805162, guid: 61202686c3561314ba79961e4dcf2b50, type: 3}
+  DarkTileSprite: {fileID: -1869328153477114120, guid: b83c173696a40044ea4358052db081fd, type: 3}
+  FrameSprite: {fileID: 670131919807235199, guid: 8b44461d6395d724e88834b54c426910, type: 3}
+  FrameColor: {r: 1, g: 1, b: 1, a: 1}
+  PlayerSprite: {fileID: -5840464029760107125, guid: 42ca9661f7d6f35449922da0e505ec23, type: 3}
+  PlayerColor: {r: 1, g: 1, b: 1, a: 1}
+  EnemyColor: {r: 1, g: 1, b: 1, a: 1}
+  EnemySkins:
+  - Type: 0
+    EnemySprite: {fileID: 1924785752334856657, guid: b4a497804df69544eb673349c65dedef, type: 3}
+  - Type: 1
+    EnemySprite: {fileID: -2562205688565140200, guid: f7a3b319cb84df04799f6c9bc4055d4b, type: 3}
+  - Type: 2
+    EnemySprite: {fileID: -5341440611619059553, guid: 26eec240b449e384ba03ea6b89a4fcf8, type: 3}
+  - Type: 3
+    EnemySprite: {fileID: 3505571709813867436, guid: de4b9893e9e55c44e9a6cd0df8f79faf, type: 3}
+  - Type: 4
+    EnemySprite: {fileID: -459853027587190777, guid: 6a9e1e3f74d868b458a98bceb40409a6, type: 3}

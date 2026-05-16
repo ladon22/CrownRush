@@ -18,13 +18,18 @@ MonoBehaviour:
     TargetValue: 0
     TitleKey: achieve_default
     RewardItem: {fileID: 11400000, guid: 3c5f6f71e8c9a584eb9b033c95051e4c, type: 2}
+  - AchievementID: Unlock_NeonSkin
+    Type: 0
+    TargetValue: 50
+    TitleKey: achieve_score_1000
+    RewardItem: {fileID: 11400000, guid: 03b99faf148cc89498475c89a9f5773f, type: 2}
   - AchievementID: Unlock_GoldSkin
     Type: 0
     TargetValue: 100
     TitleKey: achieve_score_100
     RewardItem: {fileID: 11400000, guid: b4cff2338d9ea124a94b2b65a9a095a0, type: 2}
-  - AchievementID: Unlock_testSkin
+  - AchievementID: Unlock_RuinSkin
     Type: 0
-    TargetValue: 50
-    TitleKey: achieve_score_50
-    RewardItem: {fileID: 11400000, guid: 240c357fc1d31f143abc5914da7d63f5, type: 2}
+    TargetValue: 150
+    TitleKey: achieve_score_3000
+    RewardItem: {fileID: 11400000, guid: 702c53532f98915408eb6f927fad2277, type: 2}

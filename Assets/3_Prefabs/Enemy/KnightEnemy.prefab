@@ -139,14 +139,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 3533672915881870971}
     m_Modifications:
     - target: {fileID: 3927618878460790072, guid: b3e6da273dc569f498fcb647e6ffc387, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3927618878460790072, guid: b3e6da273dc569f498fcb647e6ffc387, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3927618878460790072, guid: b3e6da273dc569f498fcb647e6ffc387, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -189,10 +181,6 @@ PrefabInstance:
     - target: {fileID: 4777844652127018566, guid: b3e6da273dc569f498fcb647e6ffc387, type: 3}
       propertyPath: m_Name
       value: DangerTile
-      objectReference: {fileID: 0}
-    - target: {fileID: 5709367912076324242, guid: b3e6da273dc569f498fcb647e6ffc387, type: 3}
-      propertyPath: m_Color.a
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

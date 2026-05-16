@@ -19,12 +19,16 @@ MonoBehaviour:
     m_Key: skin_default
     m_Metadata:
       m_Items: []
+  - m_Id: 323098865860608
+    m_Key: skin_neon
+    m_Metadata:
+      m_Items: []
   - m_Id: 5871633465344
     m_Key: skin_gold
     m_Metadata:
       m_Items: []
-  - m_Id: 323098865860608
-    m_Key: skin_test
+  - m_Id: 6685517128769536
+    m_Key: skin_ruin
     m_Metadata:
       m_Items: []
   m_Metadata:
