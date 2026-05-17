@@ -31,6 +31,18 @@ MonoBehaviour:
     m_Key: skin_ruin
     m_Metadata:
       m_Items: []
+  - m_Id: 6892820872404992
+    m_Key: skin_catmouse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6983166897790976
+    m_Key: skin_rpg
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7044293866397696
+    m_Key: skin_jelly
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

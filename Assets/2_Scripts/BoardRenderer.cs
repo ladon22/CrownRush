@@ -104,7 +104,7 @@ public class BoardRenderer : MonoBehaviour
                         }
 
                         // [추가] 개발자님이 원하시던 설정 적용!
-                        BoardFrameImage.type = Image.Type.Sliced;
+                        BoardFrameImage.type = Image.Type.Tiled;
                         BoardFrameImage.pixelsPerUnitMultiplier = 24f;
                         BoardFrameImage.color = skinData.FrameColor;
                     }

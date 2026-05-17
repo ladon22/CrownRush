@@ -20,7 +20,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 1505186840576
-    m_Key: achieve_score_100
+    m_Key: achieve_score_500
     m_Metadata:
       m_Items: []
   - m_Id: 323564580405248
@@ -28,7 +28,15 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 6686417620672512
-    m_Key: achieve_score_3000
+    m_Key: achieve_score_2000
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6982493623918592
+    m_Key: achieve_score_3500
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6892838572367872
+    m_Key: achieve_score_5000
     m_Metadata:
       m_Items: []
   m_Metadata:

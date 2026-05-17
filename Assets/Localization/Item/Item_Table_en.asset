@@ -34,6 +34,18 @@ MonoBehaviour:
     m_Localized: Ancient Ruins
     m_Metadata:
       m_Items: []
+  - m_Id: 6892820872404992
+    m_Localized: Meowboard
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6983166897790976
+    m_Localized: Chess & Dungeons
+    m_Metadata:
+      m_Items: []
+  - m_Id: 7044293866397696
+    m_Localized: Jelly Pop
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

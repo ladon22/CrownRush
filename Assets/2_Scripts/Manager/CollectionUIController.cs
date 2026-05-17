@@ -136,7 +136,7 @@ public class CollectionUIController : MonoBehaviour
                 {
                     PreviewFrameImage.sprite = defaultPreviewFrameSprite;
                 }
-                PreviewFrameImage.type = Image.Type.Sliced;
+                PreviewFrameImage.type = Image.Type.Tiled;
                 PreviewFrameImage.pixelsPerUnitMultiplier = 0.29f;
                 PreviewFrameImage.color = skinData.FrameColor;
             }

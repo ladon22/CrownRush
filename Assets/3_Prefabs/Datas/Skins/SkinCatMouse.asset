@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43e60c41f59998544aed8fe970f97a95, type: 3}
+  m_Name: SkinCatMouse
+  m_EditorClassIdentifier: Assembly-CSharp::SkinData
+  ItemID: skin_catmouse
+  LightTileSprite: {fileID: 6075554352189598701, guid: 67c377950ce829546882a397e8376fe4, type: 3}
+  DarkTileSprite: {fileID: -6864517513723625958, guid: 24dbe0781b77bc5428a2453e99e6b808, type: 3}
+  FrameSprite: {fileID: -572330931388904250, guid: e9c7133e4b962064b956975126f5d3c4, type: 3}
+  FrameColor: {r: 1, g: 1, b: 1, a: 1}
+  PlayerSprite: {fileID: -3665067027847019728, guid: 4ee3376072d559e489e2ea93cc7ee733, type: 3}
+  PlayerColor: {r: 1, g: 1, b: 1, a: 1}
+  EnemyColor: {r: 1, g: 1, b: 1, a: 1}
+  EnemySkins:
+  - Type: 0
+    EnemySprite: {fileID: -3811629408404992160, guid: e978b846942a2ed4a9b800714c01f2b7, type: 3}
+  - Type: 1
+    EnemySprite: {fileID: 2024005608711786600, guid: 2531819f7e719324498e74dfd2dcaafc, type: 3}
+  - Type: 2
+    EnemySprite: {fileID: 848399336191872619, guid: 34e674f3a8aadbe4b817e3291fd7e988, type: 3}
+  - Type: 3
+    EnemySprite: {fileID: 8777825630832461635, guid: 659b437e0fdbbe346aca73f23ea9b794, type: 3}
+  - Type: 4
+    EnemySprite: {fileID: 1461132805971038629, guid: e52c0f912b3fe574eb8f883bcb30d91c, type: 3}

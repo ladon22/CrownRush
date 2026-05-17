@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43e60c41f59998544aed8fe970f97a95, type: 3}
+  m_Name: SkinJelly
+  m_EditorClassIdentifier: Assembly-CSharp::SkinData
+  ItemID: skin_jelly
+  LightTileSprite: {fileID: 8774271696348859406, guid: 72abf9aa9aad9294cbc01f9babc90e82, type: 3}
+  DarkTileSprite: {fileID: 1326077286958346822, guid: 465dddbe25de42b44b3c959a037b0191, type: 3}
+  FrameSprite: {fileID: -7031504408740494550, guid: f74ae7112b29587458db9fa3009173ee, type: 3}
+  FrameColor: {r: 1, g: 1, b: 1, a: 1}
+  PlayerSprite: {fileID: 8304381237430060702, guid: 8388fdd1c1a19414f930b2902403e5d3, type: 3}
+  PlayerColor: {r: 1, g: 1, b: 1, a: 1}
+  EnemyColor: {r: 1, g: 1, b: 1, a: 1}
+  EnemySkins:
+  - Type: 0
+    EnemySprite: {fileID: -6398706897883463611, guid: 5e8ef354745922c4e8e2f4e80435ec43, type: 3}
+  - Type: 1
+    EnemySprite: {fileID: -4380104881867064238, guid: 6631c2e881f915e41a26ae870839a052, type: 3}
+  - Type: 2
+    EnemySprite: {fileID: -6832591845769340605, guid: e6ea17d84b537db48a44a83b8fc97267, type: 3}
+  - Type: 3
+    EnemySprite: {fileID: -9175582855161990091, guid: 37b5b7b66e8313746bcdfa177e963e5f, type: 3}
+  - Type: 4
+    EnemySprite: {fileID: -3144922903613818611, guid: 533cc4f69b114d8428e313a21120514e, type: 3}
