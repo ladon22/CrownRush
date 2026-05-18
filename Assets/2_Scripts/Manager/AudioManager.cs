@@ -10,6 +10,7 @@ public enum BgmType
 public enum SfxType
 {
     Click,
+    Close,
     PlayerMove,
     PlayerAttack,
     PlayerHit,

@@ -701,7 +701,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FireBaseManager
   bIsLoginSequenceFinished: 0
-  bUseFirebase: 0
+  bUseFirebase: 1
 --- !u!1 &1239357167
 GameObject:
   m_ObjectHideFlags: 0
@@ -994,9 +994,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1731517518}
-  - component: {fileID: 1731517519}
   - component: {fileID: 1731517521}
   - component: {fileID: 1731517520}
+  - component: {fileID: 1731517519}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -1039,8 +1039,18 @@ MonoBehaviour:
   - Type: 1
     Clip: {fileID: 8300000, guid: 6bfab2f04e1e518449733bf7432cf91c, type: 3}
   SfxTracks:
+  - Type: 0
+    Clip: {fileID: 8300000, guid: 5dc4e5048573dfd4cb8927dddb144194, type: 3}
   - Type: 1
-    Clip: {fileID: 8300000, guid: d78a18ea6f485ce4392d462aac6d5543, type: 3}
+    Clip: {fileID: 8300000, guid: 925dd5ee37a69a74dbdd6533026088f6, type: 3}
+  - Type: 2
+    Clip: {fileID: 8300000, guid: 9a28fb59a9dcc8346ab2aa52c1470867, type: 3}
+  - Type: 3
+    Clip: {fileID: 8300000, guid: 3605505e6559bf24a8a5e47feeb0713e, type: 3}
+  - Type: 4
+    Clip: {fileID: 8300000, guid: c6e4fcb0083f7084fb6773c9709ac19b, type: 3}
+  - Type: 0
+    Clip: {fileID: 8300000, guid: c6e4fcb0083f7084fb6773c9709ac19b, type: 3}
 --- !u!82 &1731517520
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1526,7 +1536,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 9.140625
+  orthographic size: 7.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

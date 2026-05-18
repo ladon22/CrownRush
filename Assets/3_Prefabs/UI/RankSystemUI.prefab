@@ -731,6 +731,7 @@ GameObject:
   - component: {fileID: 8739161869718619030}
   - component: {fileID: 4993685853066513806}
   - component: {fileID: 1982727316191314984}
+  - component: {fileID: 8489240727232752951}
   m_Layer: 5
   m_Name: ExitButton
   m_TagString: Untagged
@@ -851,6 +852,19 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &8489240727232752951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5232024614236694370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff7901fd892cc17488fe7eae9516013d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonSound
+  ClickSound: 1
 --- !u!1 &5472565288479808265
 GameObject:
   m_ObjectHideFlags: 0
@@ -1042,6 +1056,7 @@ GameObject:
   - component: {fileID: 8519615496246625041}
   - component: {fileID: 7006774088822701322}
   - component: {fileID: 9174968467296383551}
+  - component: {fileID: 8820410696271804081}
   m_Layer: 5
   m_Name: Select_Btn
   m_TagString: Untagged
@@ -1176,6 +1191,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScaleEffect
   pressedScale: {x: 0.95, y: 0.95, z: 1}
+--- !u!114 &8820410696271804081
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5681471361358465065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff7901fd892cc17488fe7eae9516013d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonSound
+  ClickSound: 0
 --- !u!1 &6501276888066860022
 GameObject:
   m_ObjectHideFlags: 0

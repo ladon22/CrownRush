@@ -154,9 +154,13 @@ public class PlayerController : MonoBehaviour
             {
                 SettingsManager.Instance.Vibrate(VibrateType.Light);
             }
-        }
 
-        if (AudioManager.Instance != null)
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySFX(SfxType.PlayerAttack, true);
+            }
+        }
+        else if (AudioManager.Instance != null)
         {
             AudioManager.Instance.PlaySFX(SfxType.PlayerMove, true);
         }

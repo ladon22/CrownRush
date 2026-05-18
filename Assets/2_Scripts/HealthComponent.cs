@@ -31,6 +31,11 @@ public class HealthComponent : MonoBehaviour
         if (SettingsManager.Instance != null)
             SettingsManager.Instance.Vibrate(VibrateType.Heavy);
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(SfxType.PlayerHit, true);
+        }
+
         if (CurrentHealth <= 0)
         {
             OnDied?.Invoke();

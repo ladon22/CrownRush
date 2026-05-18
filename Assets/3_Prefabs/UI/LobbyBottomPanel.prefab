@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 294773777690148842}
   - component: {fileID: 4391112371831260369}
   - component: {fileID: 4967069378409232225}
+  - component: {fileID: 6634088240901390666}
   m_Layer: 5
   m_Name: SettingButton
   m_TagString: Untagged
@@ -136,6 +137,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScaleEffect
   pressedScale: {x: 0.95, y: 0.95, z: 1}
+--- !u!114 &6634088240901390666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 158558238743053815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff7901fd892cc17488fe7eae9516013d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonSound
+  ClickSound: 0
 --- !u!1 &464835384387111537
 GameObject:
   m_ObjectHideFlags: 0
@@ -507,6 +521,7 @@ GameObject:
   - component: {fileID: 1555466626895636623}
   - component: {fileID: 7115424759010709043}
   - component: {fileID: 6494962286267777413}
+  - component: {fileID: 2605169950833324713}
   m_Layer: 5
   m_Name: RankButton
   m_TagString: Untagged
@@ -630,6 +645,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScaleEffect
   pressedScale: {x: 0.95, y: 0.95, z: 1}
+--- !u!114 &2605169950833324713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3225224641282942382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff7901fd892cc17488fe7eae9516013d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonSound
+  ClickSound: 0
 --- !u!1 &3469510346562863438
 GameObject:
   m_ObjectHideFlags: 0
@@ -643,6 +671,7 @@ GameObject:
   - component: {fileID: 6395660522820510252}
   - component: {fileID: 3724621500456578865}
   - component: {fileID: 1705814967004410828}
+  - component: {fileID: 1534482236393838267}
   m_Layer: 5
   m_Name: GameStartButton
   m_TagString: Untagged
@@ -777,6 +806,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScaleEffect
   pressedScale: {x: 0.95, y: 0.95, z: 1}
+--- !u!114 &1534482236393838267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3469510346562863438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff7901fd892cc17488fe7eae9516013d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonSound
+  ClickSound: 0
 --- !u!1 &4008042804657125742
 GameObject:
   m_ObjectHideFlags: 0
@@ -790,6 +832,7 @@ GameObject:
   - component: {fileID: 519041344435127358}
   - component: {fileID: 4289111187189335730}
   - component: {fileID: 8380112085622437823}
+  - component: {fileID: 3704437891968734586}
   m_Layer: 5
   m_Name: ChessSkinButton
   m_TagString: Untagged
@@ -913,6 +956,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScaleEffect
   pressedScale: {x: 0.95, y: 0.95, z: 1}
+--- !u!114 &3704437891968734586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4008042804657125742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff7901fd892cc17488fe7eae9516013d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonSound
+  ClickSound: 0
 --- !u!1 &4240913073409079905
 GameObject:
   m_ObjectHideFlags: 0

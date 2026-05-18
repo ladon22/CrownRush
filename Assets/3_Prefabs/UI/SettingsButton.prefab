@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6027824308560143552}
   - component: {fileID: 1896262968991623740}
   - component: {fileID: 1835564997007964215}
+  - component: {fileID: 2786058198413977275}
   m_Layer: 5
   m_Name: SettingsButton
   m_TagString: Untagged
@@ -146,3 +147,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScaleEffect
   pressedScale: {x: 0.95, y: 0.95, z: 1}
+--- !u!114 &2786058198413977275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4203802862438624649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff7901fd892cc17488fe7eae9516013d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonSound
+  ClickSound: 0
