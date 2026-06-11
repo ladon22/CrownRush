@@ -29,7 +29,7 @@ public class ScoreUIManager : MonoBehaviour
 
     private Sequence comboAnimSequence;
 
-    private Tween shakeTween;
+    private Tween ShakeTween;
     private bool bIsShaking = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -50,28 +50,23 @@ public class ScoreUIManager : MonoBehaviour
             ScoreManager.Instance.OnScoreChanged += PlayScoreAnimation;
             ScoreManager.Instance.OnComboChanged += PlayComboAnimation;
             ScoreManager.Instance.OnComboReset += PlayComboBreakAnimation;
+            ScoreManager.Instance.OnComboTimerUpdated += UpdateComboGaugeUI;
         }
     }
 
     private void OnDestroy()
     {
-        shakeTween?.Kill();
+        ShakeTween?.Kill();
 
         if (ScoreManager.Instance != null)
         {
             ScoreManager.Instance.OnScoreChanged -= PlayScoreAnimation;
             ScoreManager.Instance.OnComboChanged -= PlayComboAnimation;
             ScoreManager.Instance.OnComboReset -= PlayComboBreakAnimation;
+            ScoreManager.Instance.OnComboTimerUpdated -= UpdateComboGaugeUI;
         }
     }
 
-    private void Update()
-    {
-        if (ScoreManager.Instance != null && ScoreManager.Instance.CurrentCombo > 0)
-        {
-            UpdateComboGaugeUI();
-        }
-    }
 
     private void PlayScoreAnimation(int newScore)
     {
@@ -147,7 +142,7 @@ public class ScoreUIManager : MonoBehaviour
         if (bIsShaking)
         {
             bIsShaking = false;
-            shakeTween?.Kill();
+            ShakeTween?.Kill();
         }
 
         if (ComboGaugeSlider != null)
@@ -183,44 +178,39 @@ public class ScoreUIManager : MonoBehaviour
         }
     }
 
-    private void UpdateComboGaugeUI()
+    private void UpdateComboGaugeUI(float currentTime, float maxTime)
     {
-        if (ComboGaugeSlider != null && !bIsGaugeAnimating && ScoreManager.Instance != null)
+        if (ComboGaugeSlider == null || bIsGaugeAnimating) return;
+
+        float ratio = currentTime / maxTime;
+        ComboGaugeSlider.value = ratio;
+
+        if (ComboGaugeFillImage != null)
         {
-            float ratio = ScoreManager.Instance.CurrentComboTimer / ScoreManager.Instance.MaxComboTime;
-            ComboGaugeSlider.value = ratio;
+            ComboGaugeFillImage.enabled = ratio > 0f;
+            ComboGaugeFillImage.color = ComboGaugeColorGradient.Evaluate(ratio);
+        }
 
-            if (ComboGaugeFillImage != null)
+        if (ComboGaugeRect == null) return;
+
+        if (ratio <= ShakeThreshold && ratio > 0f)
+        {
+            if (!bIsShaking)
             {
-                ComboGaugeFillImage.enabled = ratio > 0f;
-                ComboGaugeFillImage.color = ComboGaugeColorGradient.Evaluate(ratio);
+                bIsShaking = true;
+                ShakeTween = ComboGaugeRect
+                    .DOShakeAnchorPos(0.3f, new Vector2(0f, ShakeStrength),
+                        (int)ShakeSpeed, 0f, false, false)
+                    .SetLoops(-1);
             }
-
-            if (ComboGaugeRect != null)
+        }
+        else
+        {
+            if (bIsShaking)
             {
-                // 30% 이하일 때 한 번만 DOTween 쉐이크 실행
-                if (ratio <= ShakeThreshold && ratio > 0f)
-                {
-                    if (!bIsShaking)
-                    {
-                        bIsShaking = true;
-
-                        // DOShakeAnchorPos(시간, 강도, 진동수, 랜덤성, 스내핑, 페이드아웃)
-                        // fadeOut을 false로 꺼서 서서히 멈추지 않고 계속 동일한 강도로 떨리게 만듭니다.
-                        shakeTween = ComboGaugeRect.DOShakeAnchorPos(0.3f, new Vector2(0f, ShakeStrength), (int)ShakeSpeed, 0f, false, false)
-                            .SetLoops(-1); // 무한 반복
-                    }
-                }
-                else
-                {
-                    // 30%를 다시 넘기거나 0이 되면 쉐이크 종료 후 원위치
-                    if (bIsShaking)
-                    {
-                        bIsShaking = false;
-                        shakeTween?.Kill();
-                        ComboGaugeRect.anchoredPosition = ComboGaugeOriginPos;
-                    }
-                }
+                bIsShaking = false;
+                ShakeTween?.Kill();
+                ComboGaugeRect.anchoredPosition = ComboGaugeOriginPos;
             }
         }
     }

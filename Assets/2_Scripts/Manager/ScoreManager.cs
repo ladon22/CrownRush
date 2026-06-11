@@ -30,8 +30,8 @@ public class ScoreManager : MonoBehaviour
     public Action<int> OnScoreChanged;
     public Action<int> OnComboChanged;
     public Action OnComboReset;
+    public Action<float, float> OnComboTimerUpdated;
 
-    private GameManager GameManager;
     private PlayerController _player;
     private PlayerController Player => _player != null ? _player : _player = FindFirstObjectByType<PlayerController>();
 
@@ -47,28 +47,21 @@ public class ScoreManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    private void Start()
-    {
-        GameManager = FindFirstObjectByType<GameManager>();
-    }
 
     private void Update()
     {
-        if (CurrentCombo > 0)
-        {
-            if (GameManager != null && GameManager.CurrentState == GameState.PlayerTurn)
-            {
-                if (Player != null && !Player.bIsMoving)
-                {
-                    CurrentComboTimer -= Time.deltaTime;
+        if (GameManager.Instance == null || GameManager.Instance.CurrentState != GameState.PlayerTurn) return;
+        if (CurrentCombo <= 0) return;
+        if (Player == null || Player.bIsMoving) return;
 
-                    if (CurrentComboTimer <= 0)
-                    {
-                        ResetCombo();
-                    }
-                }
-            }
+        CurrentComboTimer -= Time.deltaTime;
+        OnComboTimerUpdated?.Invoke(CurrentComboTimer, MaxComboTime);
+
+        if (CurrentComboTimer <= 0)
+        {
+            ResetCombo();
         }
+
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void ResetScore()
@@ -83,38 +76,16 @@ public class ScoreManager : MonoBehaviour
         CurrentCombo++;
         CurrentComboTimer = MaxComboTime;
 
-        float Multiplier = 1.0f;
-
-        if (CurrentCombo >= Stage4Threshold)
-        {
-            Multiplier = Stage4Multiplier;
-        }
-        else if (CurrentCombo >= Stage3Threshold)
-        {
-            Multiplier = Stage3Multiplier;
-        }
-        else if (CurrentCombo >= Stage2Threshold)
-        {
-            Multiplier = Stage2Multiplier;
-        }
-        else if (CurrentCombo >= Stage1Threshold)
-        {
-            Multiplier = Stage1Multiplier;
-        }
-
-        int FinalScore = Mathf.RoundToInt(ScoreToAdd * Multiplier);
-        CurrentScore += FinalScore;
+        float multiplier = GetMultiplier(CurrentCombo);
+        int finalScore = Mathf.RoundToInt(ScoreToAdd * multiplier);
+        CurrentScore += finalScore;
 
         // 플로팅 텍스트 스폰 로직 추가
         if (FloatingTextPrefab != null && spawnPosition != default)
         {
             GameObject textObj = PoolManager.Instance.SpawnFromPool(FloatingTextPrefab, spawnPosition, Quaternion.identity);
             FloatingText floatingText = textObj.GetComponent<FloatingText>();
-
-            if (floatingText != null)
-            {
-                floatingText.Show(FinalScore); // 최종 배수가 적용된 점수를 띄웁니다!
-            }
+            floatingText?.Show(finalScore);
         }
 
         // 업적 매니저에게 현재 점수와 콤보 상태를 실시간으로 보고
@@ -135,5 +106,14 @@ public class ScoreManager : MonoBehaviour
 
         // 콤보가 깨졌다고 방송합니다.
         OnComboReset?.Invoke();
+    }
+
+    private float GetMultiplier(int combo)
+    {
+        if (combo >= Stage4Threshold) return Stage4Multiplier;
+        if (combo >= Stage3Threshold) return Stage3Multiplier;
+        if (combo >= Stage2Threshold) return Stage2Multiplier;
+        if (combo >= Stage1Threshold) return Stage1Multiplier;
+        return 1.0f;
     }
 }

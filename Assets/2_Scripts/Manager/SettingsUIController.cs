@@ -32,6 +32,11 @@ public class SettingsUIController : MonoBehaviour
 
     public void Show()
     {
+        if (gameObject.activeInHierarchy) return;
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.InputController.PushUIBlock();
+
         gameObject.SetActive(true);
         // 1. 오디오 토글 UI 초기화 (AudioManager 연동)
         if (AudioManager.Instance != null)
@@ -73,6 +78,8 @@ public class SettingsUIController : MonoBehaviour
             .OnComplete(() => {
                 gameObject.SetActive(false);
                 Time.timeScale = 1.0f;
+                if (GameManager.Instance != null)
+                    GameManager.Instance.InputController.PopUIBlock();
             });
 
     }

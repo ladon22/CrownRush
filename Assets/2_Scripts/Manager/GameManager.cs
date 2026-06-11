@@ -13,6 +13,8 @@ public enum GameState
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance { get; private set; }
+
     public GameState CurrentState;
 
     public GridManager GridManager;
@@ -40,6 +42,14 @@ public class GameManager : MonoBehaviour
 
     public CollectionUIController CollectionUI;
     private bool bHasRevivedThisGame = false;
+    private const string BestScoreKey = "BestScore";
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
+
     void Start()
     {
         ChangeState(GameState.Lobby);
@@ -182,24 +192,26 @@ public class GameManager : MonoBehaviour
         }
 
 
-        int CurrentScore = ScoreManager != null ? ScoreManager.CurrentScore : 0;
-        bool bIsNewRecord = false;
-        if (GameOverUI != null) 
-            bIsNewRecord = GameOverUI.Show(CurrentScore, !bHasRevivedThisGame);
+        int currentScore = ScoreManager != null ? ScoreManager.CurrentScore : 0;
 
-        if (bIsNewRecord)
+        int bestScore = PlayerPrefs.GetInt(BestScoreKey, 0);
+        bool isNewRecord = currentScore > bestScore;
+
+        if (isNewRecord)
         {
-            if (ScoreManager != null && FireBaseManager.Instance != null)
-            {
-                FireBaseManager.Instance.SaveScoreToDatabase(CurrentScore);
-            }
+            bestScore = currentScore;
+            PlayerPrefs.SetInt(BestScoreKey, bestScore);
+            PlayerPrefs.Save();
 
-            // 핵심 추가: 게임 오버 화면에서 신기록이 찍히는 순간, 로비 UI의 최고 점수도 몰래 갱신해둡니다!
+            if (FireBaseManager.Instance != null)
+                FireBaseManager.Instance.SaveScoreToDatabase(currentScore);
+
             if (LobbyUI != null)
-            {
                 LobbyUI.LoadBestScore();
-            }
         }
+
+        if (GameOverUI != null)
+            GameOverUI.Show(currentScore, bestScore, !bHasRevivedThisGame);
     }
 
     public void OnClickAdReviveButton()

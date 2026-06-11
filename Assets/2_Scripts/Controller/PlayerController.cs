@@ -59,7 +59,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleSwipeUpdate(Vector2Int Direction)
     {
-        if (TurnManager.GameManager.CurrentState == GameState.EnemyTurn || HealthComponent.CurrentHealth <= 0) return;
+        if (GameManager.Instance.CurrentState == GameState.EnemyTurn || HealthComponent.CurrentHealth <= 0) return;
 
         if (bIsMoving) return;
 
@@ -79,7 +79,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleSwipeEnd(Vector2Int Direction)
     {
-        if (TurnManager.GameManager.CurrentState == GameState.EnemyTurn || HealthComponent.CurrentHealth <= 0) return;
+        if (GameManager.Instance.CurrentState == GameState.EnemyTurn || HealthComponent.CurrentHealth <= 0) return;
         HidePreview();
 
         if (bIsMoving) return;

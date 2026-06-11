@@ -27,25 +27,17 @@ public class GameOverUIController : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public bool Show(int currentScore, bool bCanRevive)
+    public void Show(int currentScore, int bestScore, bool bCanRevive)
     {
+        if (gameObject.activeInHierarchy) return;
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.InputController.PushUIBlock();
+
         gameObject.SetActive(true);
 
         if (AdReviveButton != null)
-        {
             AdReviveButton.gameObject.SetActive(bCanRevive);
-        }
-
-        bool bIsNewRecord = false;
-        int BestScore = PlayerPrefs.GetInt(BestScoreKey, 0);
-        if (currentScore > BestScore)
-        {
-            BestScore = currentScore;
-            PlayerPrefs.SetInt(BestScoreKey, BestScore);
-            PlayerPrefs.Save();
-            bIsNewRecord = true;
-        }
-
 
         if (ScoreTextEvent != null)
         {
@@ -53,17 +45,15 @@ public class GameOverUIController : MonoBehaviour
             ScoreTextEvent.RefreshString(); // "단어장 새로고침 해줘!" 라고 명령
         }
 
-        // 최고 점수 업데이트
         if (BestScoreTextEvent != null)
         {
-            BestScoreTextEvent.StringReference.Arguments = new object[] { BestScore };
+            BestScoreTextEvent.StringReference.Arguments = new object[] { bestScore };
             BestScoreTextEvent.RefreshString();
         }
 
         PanelRect.localScale = Vector3.zero;
         PanelRect.DOKill();
         PanelRect.DOScale(Vector3.one, PopDuration).SetEase(PopEase);
-        return bIsNewRecord;
     }
 
     public void Hide()
@@ -71,5 +61,8 @@ public class GameOverUIController : MonoBehaviour
         PanelRect.DOKill();
         PanelRect.localScale = Vector3.one;
         gameObject.SetActive(false);
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.InputController.PopUIBlock();
     }
 }

@@ -1,4 +1,4 @@
-using DG.Tweening;
+ï»¿using DG.Tweening;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
@@ -13,6 +13,7 @@ using UnityEngine.UI;
 public class RankData
 {
     public int Rank;
+    public string Uid;
     public string Name;
     public string Score;
     public string PhotoUrl;
@@ -21,27 +22,27 @@ public class RankData
 public class RankingUIController : MonoBehaviour
 {
     [Header("Panel & Animation")]
-    [SerializeField] private RectTransform PanelRect; // ·©Å· Ã¢ ÀüÃ¼¸¦ °¨½Î´Â RectTransform
+    [SerializeField] private RectTransform PanelRect; // ë­í‚¹ ì°½ ì „ì²´ë¥¼ ê°ì‹¸ëŠ” RectTransform
     [SerializeField] private float PopDuration = 0.4f;
     [SerializeField] private Ease PopEase = Ease.OutBack;
 
-    [Header("UI ¿¬°á (ÀüÃ¼ ·©Å·)")]
+    [Header("UI ì—°ê²° (ì „ì²´ ë­í‚¹)")]
     public ScrollRect RankingScrollRect;
     public Transform ContentTransform;
     public GameObject RankEntryPrefab;
 
-    [Header("UI ¿¬°á (³» ¼øÀ§)")]
-    public TextMeshProUGUI MyRankScoreText; // "24À§ ¡¤ 342Á¡"À» ¶ç¿ï ÅØ½ºÆ®
+    [Header("UI ì—°ê²° (ë‚´ ìˆœìœ„)")]
+    public TextMeshProUGUI MyRankScoreText; // "24ìœ„ Â· 342ì "ì„ ë„ìš¸ í…ìŠ¤íŠ¸
 
-    [Header("Localization (´Ù±¹¾î Æ÷¸Ë)")]
-    public LocalizedString RankFormatString;  // ¿¹: "{0}À§" ¶Ç´Â "Rank {0}"
-    public LocalizedString ScoreFormatString; // ¿¹: "{0}Á¡" ¶Ç´Â "{0} Pts"
-    public LocalizedString UnrankedString;    // ¿¹: "50À§ ¹Û" ¶Ç´Â "Unranked"
+    [Header("Localization (ë‹¤êµ­ì–´ í¬ë§·)")]
+    public LocalizedString RankFormatString;  // ì˜ˆ: "{0}ìœ„" ë˜ëŠ” "Rank {0}"
+    public LocalizedString ScoreFormatString; // ì˜ˆ: "{0}ì " ë˜ëŠ” "{0} Pts"
+    public LocalizedString UnrankedString;    // ì˜ˆ: "50ìœ„ ë°–" ë˜ëŠ” "Unranked"
 
-    // Ä³½ÌÇØµÑ ´Ù±¹¾î ¹®ÀÚ¿­ º¯¼ö
-    private string currentRankFormat = "{0}À§";
-    private string currentScoreFormat = "{0}Á¡";
-    private string currentUnrankedText = "50À§ ¹Û";
+    // ìºì‹±í•´ë‘˜ ë‹¤êµ­ì–´ ë¬¸ìì—´ ë³€ìˆ˜
+    private string currentRankFormat = "{0}ìœ„";
+    private string currentScoreFormat = "{0}ì ";
+    private string currentUnrankedText = "50ìœ„ ë°–";
 
     [Header("Recycling Settings")]
     public float ItemHeight = 101f;
@@ -51,21 +52,20 @@ public class RankingUIController : MonoBehaviour
     public Color OddRowColor = Color.white;
     public Color EvenRowColor = Color.white;
 
+    [Header("Loading Animation")]
+    [SerializeField] private TextMeshProUGUI LoadingText; // "ë¡œë”© ì¤‘" ê¸€ìê°€ ì¨ì§ˆ í…ìŠ¤íŠ¸
+    [SerializeField] private LocalizedString LoadingBaseString; // "ë¡œë”© ì¤‘"ì´ë¼ëŠ” ê¸°ë³¸ ë‹¤êµ­ì–´ í‚¤
+
     private RectTransform ContentRect;
-    private List<GameObject> PoolItems = new List<GameObject>();
+    private List<RankEntryView> PoolItems = new List<RankEntryView>();
 
     private List<RankData> RankDataList = new List<RankData>();
     private Dictionary<string, Sprite> ImageCache = new Dictionary<string, Sprite>();
     private HashSet<string> DownloadingUrls = new HashSet<string>();
-
     private int LastTopIndex = -1;
 
-    [Header("Loading Animation")]
-    [SerializeField] private TextMeshProUGUI LoadingText; // "·Îµù Áß" ±ÛÀÚ°¡ ½áÁú ÅØ½ºÆ®
-    [SerializeField] private LocalizedString LoadingBaseString; // "·Îµù Áß"ÀÌ¶ó´Â ±âº» ´Ù±¹¾î Å°
-
     private Tween loadingDotTween;
-    private string localizedLoadingText = "Loading"; // Ä³½Ì¿ë
+    private string localizedLoadingText = "Loading"; // ìºì‹±ìš©
 
     private void Awake()
     {
@@ -79,13 +79,19 @@ public class RankingUIController : MonoBehaviour
         for (int i = 0; i < VisibleItemCount; i++)
         {
             GameObject obj = Instantiate(RankEntryPrefab, ContentTransform);
+            RankEntryView entry = obj.GetComponent<RankEntryView>();
             obj.SetActive(false);
-            PoolItems.Add(obj);
+            PoolItems.Add(entry);
         }
     }
 
     public void ShowRanking()
     {
+        if (gameObject.activeInHierarchy) return;
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.InputController.PushUIBlock();
+
         gameObject.SetActive(true);
 
         if (PanelRect != null)
@@ -95,7 +101,6 @@ public class RankingUIController : MonoBehaviour
             PanelRect.DOScale(Vector3.one, PopDuration).SetEase(PopEase).SetUpdate(true);
         }
 
-        // Ã¢ÀÌ ¿­¸± ¶§ ´Ù±¹¾î ÅØ½ºÆ®¸¦ µü ÇÑ ¹ø¸¸ °¡Á®¿É´Ï´Ù (ÃÖÀûÈ­)
         if (!RankFormatString.IsEmpty) currentRankFormat = RankFormatString.GetLocalizedString();
         if (!ScoreFormatString.IsEmpty) currentScoreFormat = ScoreFormatString.GetLocalizedString();
         if (!UnrankedString.IsEmpty) currentUnrankedText = UnrankedString.GetLocalizedString();
@@ -108,152 +113,98 @@ public class RankingUIController : MonoBehaviour
         if (PanelRect != null)
         {
             PanelRect.DOScale(Vector3.zero, PopDuration * 0.7f).SetEase(Ease.InBack).SetUpdate(true)
-                .OnComplete(() => gameObject.SetActive(false));
+                .OnComplete(() =>
+                {
+                    gameObject.SetActive(false);
+                    if (GameManager.Instance != null)
+                        GameManager.Instance.InputController.PopUIBlock();
+                });
         }
         else
         {
             gameObject.SetActive(false);
+            if (GameManager.Instance != null)
+                GameManager.Instance.InputController.PopUIBlock();
         }
     }
 
-    // »õ·Î°íÄ§ ¹öÆ°°ú ShowRanking¿¡¼­ °øÅëÀ¸·Î ¾²´Â ÇÔ¼ö
+    // ìƒˆë¡œê³ ì¹¨ ë²„íŠ¼ê³¼ ShowRankingì—ì„œ ê³µí†µìœ¼ë¡œ ì“°ëŠ” í•¨ìˆ˜
     public void RefreshRanking()
     {
         RankDataList.Clear();
         LastTopIndex = -1;
         ContentRect.anchoredPosition = Vector2.zero;
-        foreach (var item in PoolItems) item.SetActive(false);
+        foreach (var item in PoolItems) item.gameObject.SetActive(false);
 
         LoadRankingData();
     }
 
-    private void LoadRankingData()
+    private async void LoadRankingData()
     {
         StartLoadingAnimation();
 
         if (FireBaseManager.Instance != null && FireBaseManager.Instance.bUseFirebase == false)
         {
-            Debug.Log("ÆÄÀÌ¾îº£ÀÌ½º°¡ ²¨Á®ÀÖ¾î Å×½ºÆ®¿ë ´õ¹Ì(Dummy) µ¥ÀÌÅÍ¸¦ ¶ç¿ó´Ï´Ù.");
             LoadDummyDataForEditor();
             return;
         }
 
-        // ·Î±×ÀÎµÈ ³» Á¤º¸ °¡Á®¿À±â
-        FirebaseAuth auth = FirebaseAuth.DefaultInstance;
-        FirebaseUser currentUser = auth?.CurrentUser;
-        string myUid = currentUser != null ? currentUser.UserId : "";
+        RankDataList = await FireBaseManager.Instance.GetTopRankingsAsync(50);
 
-        FirebaseDatabase.DefaultInstance.RootReference.Child("Leaderboard")
-            .OrderByChild("Score")
-            .LimitToLast(50)
-            .GetValueAsync().ContinueWithOnMainThread(task =>
-            {
-                if (task.IsFaulted)
-                {
-                    Debug.LogError("·©Å· µ¥ÀÌÅÍ¸¦ ºÒ·¯¿À´Âµ¥ ½ÇÆĞÇß½À´Ï´Ù.");
-                    return;
-                }
+        string myUid = FireBaseManager.Instance.GetCurrentUserUid();
+        bool amIinTop50 = RankDataList.Exists(r => r.Uid == myUid);
 
-                RankDataList.Clear();
-                List<DataSnapshot> snapshots = new List<DataSnapshot>();
-                foreach (DataSnapshot child in task.Result.Children) snapshots.Add(child);
-                snapshots.Reverse();
-
-                bool bAmIInTop50 = false;
-
-                for (int i = 0; i < snapshots.Count; i++)
-                {
-                    DataSnapshot data = snapshots[i];
-                    RankData newRankData = new RankData
-                    {
-                        Rank = i + 1,
-                        Name = data.Child("Name").Value.ToString(),
-                        Score = data.Child("Score").Value.ToString(),
-                        PhotoUrl = data.HasChild("PhotoUrl") ? data.Child("PhotoUrl").Value.ToString() : ""
-                    };
-                    RankDataList.Add(newRankData);
-
-                    // ³»°¡ 50À§ ¾È¿¡ ÀÖ´ÂÁö Ã¼Å©
-                    if (data.Key == myUid)
-                    {
-                        bAmIInTop50 = true;
-                        UpdateMyRankUI(newRankData.Rank, newRankData.Name, newRankData.Score, newRankData.PhotoUrl);
-                    }
-
-                    if (!string.IsNullOrEmpty(newRankData.PhotoUrl))
-                    {
-                        if (!ImageCache.ContainsKey(newRankData.PhotoUrl) && !DownloadingUrls.Contains(newRankData.PhotoUrl))
-                        {
-                            StartCoroutine(LoadProfileImageRoutine(newRankData.PhotoUrl));
-                        }
-                    }
-                }
-
-                // ³»°¡ 50À§ ¹Û¿¡ ÀÖ´Ù¸é ³» Á¡¼ö¸¸ µû·Î °Ë»öÇÕ´Ï´Ù.
-                if (!bAmIInTop50 && !string.IsNullOrEmpty(myUid))
-                {
-                    LoadMyDataOutsideTop50(myUid, currentUser);
-                }
-                else
-                {
-                    StopLoadingAnimation();
-                }
-
-                ContentRect.sizeDelta = new Vector2(ContentRect.sizeDelta.x, RankDataList.Count * ItemHeight);
-                ContentRect.anchoredPosition = Vector2.zero;
-                LastTopIndex = -1;
-                OnScroll(Vector2.zero);
-            });
-    }
-
-    // 50À§ ¹Û ÁøÂ¥ ¼øÀ§ °è»ê ·ÎÁ÷
-    private void LoadMyDataOutsideTop50(string myUid, FirebaseUser user)
-    {
-        FirebaseDatabase.DefaultInstance.RootReference.Child("Leaderboard").Child(myUid).GetValueAsync().ContinueWithOnMainThread(task =>
+        if (amIinTop50)
         {
-            if (task.IsCompleted && task.Result.Exists)
-            {
-                DataSnapshot myData = task.Result;
-                int myScore = int.Parse(myData.Child("Score").Value.ToString());
-                string myName = myData.Child("Name").Value.ToString();
-                string myPhoto = myData.HasChild("PhotoUrl") ? myData.Child("PhotoUrl").Value.ToString() : "";
-
-                // ³ªº¸´Ù Á¡¼ö°¡ ³ôÀº »ç¶÷ÀÌ ¸î ¸íÀÎÁö ¼Á´Ï´Ù.
-                FirebaseDatabase.DefaultInstance.RootReference.Child("Leaderboard")
-                    .OrderByChild("Score")
-                    .StartAt(myScore)
-                    .GetValueAsync().ContinueWithOnMainThread(countTask =>
-                    {
-                        if (countTask.IsCompleted)
-                        {
-                            int myActualRank = (int)countTask.Result.ChildrenCount;
-                            UpdateMyRankUI(myActualRank, myName, myScore.ToString(), myPhoto);
-                        }
-                    });
-            }
+            RankData myData = RankDataList.Find(r => r.Uid == myUid);
+            UpdateMyRankUI(myData.Rank, myData.Name, myData.Score, myData.PhotoUrl);
+        }
+        else
+        {
+            // 50ìœ„ ë°– â€” ë³„ë„ ì¡°íšŒ
+            RankData myRank = await FireBaseManager.Instance.GetMyRankAsync();
+            if (myRank != null)
+                UpdateMyRankUI(myRank.Rank, myRank.Name, myRank.Score, myRank.PhotoUrl);
             else
-            {
-                string myPhoto = user.PhotoUrl != null ? user.PhotoUrl.ToString() : "";
-                UpdateMyRankUI(-1, user.DisplayName, "0", myPhoto);
-            }
+                UpdateMyRankUI(-1, "", "0", "");
+        }
 
-            StopLoadingAnimation();
-        });
+        // 3. í”„ë¡œí•„ ì´ë¯¸ì§€ ìºì‹± ì‹œì‘
+        foreach (RankData data in RankDataList)
+        {
+            if (!string.IsNullOrEmpty(data.PhotoUrl)
+                && !ImageCache.ContainsKey(data.PhotoUrl)
+                && !DownloadingUrls.Contains(data.PhotoUrl))
+            {
+                StartCoroutine(LoadProfileImageRoutine(data.PhotoUrl));
+            }
+        }
+
+        // 4. ìŠ¤í¬ë¡¤ ë·° ê°±ì‹ 
+        ContentRect.sizeDelta = new Vector2(
+            ContentRect.sizeDelta.x,
+            RankDataList.Count * ItemHeight);
+        ContentRect.anchoredPosition = Vector2.zero;
+        LastTopIndex = -1;
+        OnScroll(Vector2.zero);
+        StopLoadingAnimation();
     }
 
-    // ³» »ó´Ü UI °»½Å (Á¡¡¤ÄŞ¸¶¡¤´Ù±¹¾î Àû¿ë)
+    // ë‚´ ìƒë‹¨ UI ê°±ì‹  (ì Â·ì½¤ë§ˆÂ·ë‹¤êµ­ì–´ ì ìš©)
     private void UpdateMyRankUI(int rank, string name, string score, string photoUrl)
     {
+        if (MyRankScoreText == null) return;
+
         int parsedScore = 0;
         int.TryParse(score, out parsedScore);
-        string formattedScore = parsedScore.ToString("N0"); // Ãµ ´ÜÀ§ ÄŞ¸¶ Ãß°¡
+        string formattedScore = parsedScore.ToString("N0"); // ì²œ ë‹¨ìœ„ ì½¤ë§ˆ ì¶”ê°€
 
         if (MyRankScoreText != null)
         {
             string rankStr = rank > 0 ? string.Format(currentRankFormat, rank) : currentUnrankedText;
             string scoreStr = string.Format(currentScoreFormat, formattedScore);
 
-            // "24À§ ¡¤ 342Á¡" ÇüÅÂ·Î °áÇÕ
+            // "24ìœ„ Â· 342ì " í˜•íƒœë¡œ ê²°í•©
             MyRankScoreText.text = $"{rankStr} <color=#AAAAAA>/</color> {scoreStr}";
         }
     }
@@ -281,43 +232,24 @@ public class RankingUIController : MonoBehaviour
 
             if (dataIndex < RankDataList.Count)
             {
-                PoolItems[i].SetActive(true);
+                RankEntryView entry = PoolItems[i];
+                entry.gameObject.SetActive(true);
 
-                RectTransform rt = PoolItems[i].GetComponent<RectTransform>();
+                // ìœ„ì¹˜ ë°°ì¹˜
+                RectTransform rt = entry.GetComponent<RectTransform>();
                 rt.anchoredPosition = new Vector2(0, -dataIndex * ItemHeight);
 
+                // [ìˆ˜ì •] transform.Find() ì œê±° â†’ RankEntryView.Bind() í˜¸ì¶œ
                 RankData data = RankDataList[dataIndex];
+                Sprite cachedSprite = ImageCache.TryGetValue(data.PhotoUrl, out Sprite sp) ? sp : null;
+                entry.Bind(data, currentScoreFormat, cachedSprite);
 
-                // ¹è°æ»ö ±³Â÷
-                Image bgImage = PoolItems[i].GetComponent<Image>();
-                if (bgImage != null)
-                {
-                    bgImage.color = (dataIndex % 2 == 0) ? OddRowColor : EvenRowColor;
-                }
-
-                // Á¡¼ö ÄŞ¸¶ & ´Ù±¹¾î Æ÷¸ËÆÃ
-                int parsedScore = 0;
-                int.TryParse(data.Score, out parsedScore);
-                string formattedScore = parsedScore.ToString("N0");
-
-                PoolItems[i].transform.Find("RankText").GetComponent<TextMeshProUGUI>().text = data.Rank.ToString();
-                PoolItems[i].transform.Find("NameText").GetComponent<TextMeshProUGUI>().text = data.Name;
-                PoolItems[i].transform.Find("ScoreText").GetComponent<TextMeshProUGUI>().text = string.Format(currentScoreFormat, formattedScore);
-
-                Image profileImage = PoolItems[i].transform.Find("ProfileImage").GetComponent<Image>();
-                profileImage.sprite = null;
-
-                if (!string.IsNullOrEmpty(data.PhotoUrl))
-                {
-                    if (ImageCache.ContainsKey(data.PhotoUrl))
-                    {
-                        profileImage.sprite = ImageCache[data.PhotoUrl];
-                    }
-                }
+                // í™€ì§ ë°°ê²½ìƒ‰
+                entry.SetBackgroundColor(dataIndex % 2 == 0 ? OddRowColor : EvenRowColor);
             }
             else
             {
-                PoolItems[i].SetActive(false);
+                PoolItems[i].gameObject.SetActive(false);
             }
         }
     }
@@ -341,20 +273,6 @@ public class RankingUIController : MonoBehaviour
         DownloadingUrls.Remove(url);
     }
 
-    // ³» ¼øÀ§ Àü¿ë ÀÌ¹ÌÁö ·Î´õ
-    //private IEnumerator LoadSingleImageRoutine(string url, Image targetImage)
-    //{
-    //    UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
-    //    yield return request.SendWebRequest();
-
-    //    if (request.result == UnityWebRequest.Result.Success && targetImage != null)
-    //    {
-    //        Texture2D texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
-    //        targetImage.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-    //        if (!ImageCache.ContainsKey(url)) ImageCache.Add(url, targetImage.sprite);
-    //    }
-    //}
-
     private void LoadDummyDataForEditor()
     {
         RankDataList.Clear();
@@ -363,13 +281,13 @@ public class RankingUIController : MonoBehaviour
             RankDataList.Add(new RankData
             {
                 Rank = i + 1,
-                Name = "Å×½ºÅÍ " + (i + 1),
+                Name = "í…ŒìŠ¤í„° " + (i + 1),
                 Score = (9999 - (i * 150)).ToString(),
                 PhotoUrl = ""
             });
         }
 
-        // ¿¡µğÅÍ Å×½ºÆ® ½Ã '³» ¼øÀ§'µµ °¡Â¥·Î ¶ç¿öÁÖ±â
+        // ì—ë””í„° í…ŒìŠ¤íŠ¸ ì‹œ 'ë‚´ ìˆœìœ„'ë„ ê°€ì§œë¡œ ë„ì›Œì£¼ê¸°
         DG.Tweening.DOVirtual.DelayedCall(2.0f, () =>
         {
             ContentRect.sizeDelta = new Vector2(ContentRect.sizeDelta.x, RankDataList.Count * ItemHeight);
@@ -377,7 +295,7 @@ public class RankingUIController : MonoBehaviour
             LastTopIndex = -1;
             OnScroll(Vector2.zero);
 
-            // 2ÃÊ µÚ¿¡ ·©Å· ¸®½ºÆ®¸¦ ¶ç¿ì¸é¼­ ·Îµù ÅØ½ºÆ®¸¦ ²ü´Ï´Ù.
+            // 2ì´ˆ ë’¤ì— ë­í‚¹ ë¦¬ìŠ¤íŠ¸ë¥¼ ë„ìš°ë©´ì„œ ë¡œë”© í…ìŠ¤íŠ¸ë¥¼ ë•ë‹ˆë‹¤.
             StopLoadingAnimation();
         });
     }
@@ -389,20 +307,20 @@ public class RankingUIController : MonoBehaviour
 
         LoadingText.gameObject.SetActive(true);
 
-        // ±âÁ¸ ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ÀÖ´Ù¸é Áßº¹ ½ÇÇà ¹æÁö
+        // ê¸°ì¡´ ì• ë‹ˆë©”ì´ì…˜ì´ ìˆë‹¤ë©´ ì¤‘ë³µ ì‹¤í–‰ ë°©ì§€
         loadingDotTween?.Kill();
 
-        // ·ÎÄÃ¶óÀÌÁ¦ÀÌ¼Ç Å×ÀÌºí¿¡¼­ "·Îµù Áß" ¶Ç´Â "Loading" ¹®±¸¸¦ °¡Á®¿É´Ï´Ù.
+        // ë¡œì»¬ë¼ì´ì œì´ì…˜ í…Œì´ë¸”ì—ì„œ "ë¡œë”© ì¤‘" ë˜ëŠ” "Loading" ë¬¸êµ¬ë¥¼ ê°€ì ¸ì˜µë‹ˆë‹¤.
         localizedLoadingText = LoadingBaseString.GetLocalizedString();
 
-        // 2. 0ºÎÅÍ 3±îÁö ¼ıÀÚ¸¦ º¯È­½ÃÅ°¸ç Á¡À» Ãß°¡ÇÏ´Â DOTween ¾Ö´Ï¸ŞÀÌ¼Ç
+        // 2. 0ë¶€í„° 3ê¹Œì§€ ìˆ«ìë¥¼ ë³€í™”ì‹œí‚¤ë©° ì ì„ ì¶”ê°€í•˜ëŠ” DOTween ì• ë‹ˆë©”ì´ì…˜
         int dotCount = 0;
         loadingDotTween = DOTween.To(() => dotCount, x => dotCount = x, 3, 1.5f)
-            .SetLoops(-1, LoopType.Restart) // ¹«ÇÑ ¹İº¹
+            .SetLoops(-1, LoopType.Restart) // ë¬´í•œ ë°˜ë³µ
             .SetEase(Ease.Linear)
             .OnUpdate(() =>
             {
-                // Á¡ÀÇ °³¼ö¸¸Å­ ¹®ÀÚ¿­À» »ı¼ºÇÕ´Ï´Ù. (¿¹: 1ÀÌ¸é ".", 3ÀÌ¸é "...")
+                // ì ì˜ ê°œìˆ˜ë§Œí¼ ë¬¸ìì—´ì„ ìƒì„±í•©ë‹ˆë‹¤. (ì˜ˆ: 1ì´ë©´ ".", 3ì´ë©´ "...")
                 string dots = new string('.', dotCount);
                 LoadingText.text = $"{localizedLoadingText}{dots}";
             });
@@ -410,7 +328,7 @@ public class RankingUIController : MonoBehaviour
 
     private void StopLoadingAnimation()
     {
-        // ·ÎµùÀÌ ³¡³ª¸é ¾Ö´Ï¸ŞÀÌ¼ÇÀ» ²ô°í ¿À¹ö·¹ÀÌ¸¦ ¼û±é´Ï´Ù.
+        // ë¡œë”©ì´ ëë‚˜ë©´ ì• ë‹ˆë©”ì´ì…˜ì„ ë„ê³  ì˜¤ë²„ë ˆì´ë¥¼ ìˆ¨ê¹ë‹ˆë‹¤.
         loadingDotTween?.Kill();
         if (LoadingText != null) LoadingText.gameObject.SetActive(false);
     }

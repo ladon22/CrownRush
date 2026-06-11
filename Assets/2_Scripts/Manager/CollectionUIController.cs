@@ -69,6 +69,11 @@ public class CollectionUIController : MonoBehaviour
 
     public void Show()
     {
+        if (gameObject.activeInHierarchy) return;
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.InputController.PushUIBlock();
+
         gameObject.SetActive(true);
 
         // 1. 데이터베이스에서 스킨 목록만 가져와서 리스트 세팅
@@ -319,6 +324,12 @@ public class CollectionUIController : MonoBehaviour
     {
         PanelRect.DOKill();
         PanelRect.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InBack).SetUpdate(true)
-            .OnComplete(() => gameObject.SetActive(false));
+            .OnComplete(() =>
+            {
+                gameObject.SetActive(false);
+
+                if (GameManager.Instance != null)
+                    GameManager.Instance.InputController.PopUIBlock();
+            });
     }
 }

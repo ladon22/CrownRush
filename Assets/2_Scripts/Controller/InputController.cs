@@ -15,8 +15,16 @@ public class InputController : MonoBehaviour
     public float SwipeThreshold = 50f;
     //public float LongSwipeThreshold = 150f;
 
+    private int UIOpenCount = 0;
+    public bool bIsInputBlocked => UIOpenCount > 0;
+
+    public void PushUIBlock() { UIOpenCount++; }
+    public void PopUIBlock() { UIOpenCount = Mathf.Max(0, UIOpenCount - 1); }
+
     void Update()
     {
+        if (bIsInputBlocked) return;
+
         if (Pointer.current == null) return;
 
         if (Pointer.current.press.wasPressedThisFrame)
@@ -59,37 +67,5 @@ public class InputController : MonoBehaviour
 
         if (IsEnded) OnSwipeEnd?.Invoke(GridDirection);
         else OnSwipeUpdate?.Invoke(GridDirection);
-
-        //float Distance = SwipeDelta.magnitude;
-
-        //int MoveCount = 0;
-        //if (Mathf.Abs(SwipeDelta.x) > Math.Abs(SwipeDelta.y) || SwipeDelta.y < 0)
-        //{
-        //    Direction = SwipeDelta.x > 0 ? SwipeDirection.Right : SwipeDirection.Left;
-        //    float DistanceX = Mathf.Abs(SwipeDelta.x);
-
-        //    if (DistanceX >= LongSwipeThreshold) MoveCount = 2;
-        //    else if (DistanceX >= ShortSwipeThreshold) MoveCount = 1;
-        //}
-        //else
-        //{
-        //    if (SwipeDelta.y > 0)
-        //    {
-        //        Direction = SwipeDirection.Up;
-
-        //        float DistanceY = SwipeDelta.y;
-        //        if (DistanceY >= ShortSwipeThreshold) MoveCount = 1;
-        //    }
-        //}
-
-
-        //if (MoveCount == 0)
-        //{
-        //    OnSwipeCanceled?.Invoke();
-        //    return;
-        //}
-
-        //if (IsEnded) OnSwipeEnd?.Invoke(Direction, MoveCount);
-        //else OnSwipeUpdate?.Invoke(Direction, MoveCount);
     }
 }

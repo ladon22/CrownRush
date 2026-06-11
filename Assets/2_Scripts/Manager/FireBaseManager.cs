@@ -1,12 +1,13 @@
 using Firebase;
 using Firebase.Auth;
-using Firebase.Extensions;
 using Firebase.Database;
+using Firebase.Extensions;
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class FireBaseManager : MonoBehaviour
 {
@@ -31,7 +32,6 @@ public class FireBaseManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
-            return;
         }
     }
 
@@ -67,59 +67,149 @@ public class FireBaseManager : MonoBehaviour
 
     public void SaveScoreToDatabase(int FinalScore)
     {
-        if (bUseFirebase == false)
+        if (!bUseFirebase || !bIsFireBaseReady || DBReference == null || user == null)
         {
-            Debug.Log("파이어베이스를 사용하지 않아 점수를 저장하지 않습니다.");
-            return;
-        }
-        if (!bIsFireBaseReady || DBReference == null)
-        {
-            Debug.LogWarning("파이어베이스가 준비되지 않아 점수를 저장할 수 없습니다.");
+            Debug.LogWarning("[FireBaseManager] 점수 저장 불가 상태.");
             return;
         }
 
-        // 추가됨: 로그인된 유저가 있는지 확인
-        if (user == null)
-        {
-            Debug.LogWarning("유저 정보가 없습니다. 구글 로그인이 정상적으로 완료되었는지 확인하세요.");
-            return;
-        }
+        string uid = user.UserId;
+        DatabaseReference userRef = DBReference.Child("Leaderboard").Child(uid);
 
-        string currentUserId = user.UserId;       // 구글에서 발급한 고유 ID
-        string currentUserName = user.DisplayName; // 구글 닉네임 (랭킹 표시용)
-
-        string currentPhotoUrl = user.PhotoUrl != null ? user.PhotoUrl.ToString() : "";
-
-        // 1. 해당 유저의 기존 점수를 서버에서 먼저 읽어옵니다. (비동기 처리)
-        DBReference.Child("Leaderboard").Child(currentUserId).Child("Score").GetValueAsync().ContinueWithOnMainThread(task =>
+        userRef.Child("Score").GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsFaulted)
             {
-                Debug.LogError("기존 점수를 불러오는데 실패했습니다: " + task.Exception);
+                Debug.LogError("[FireBaseManager] 점수 조회 실패: " + task.Exception);
                 return;
             }
-
             int existingScore = 0;
-            DataSnapshot snapshot = task.Result;
+            if(task.Result.Exists && task.Result.Value != null)
+                int.TryParse(task.Result.Value.ToString(), out existingScore);
 
-            // 서버에 이미 저장된 기록이 있다면 값을 가져옵니다.
-            if (snapshot.Exists && snapshot.Value != null)
+            if (FinalScore <= existingScore) return;
+
+            Dictionary<string, object> updates = new Dictionary<string, object>
             {
-                existingScore = int.Parse(snapshot.Value.ToString());
-            }
+                ["Score"] = FinalScore,
+                ["Name"] = user.DisplayName ?? "",
+                ["PhotoUrl"] = user.PhotoUrl != null ? user.PhotoUrl.ToString() : ""
+            };
 
-            // 2. 이번 판 점수(FinalScore)가 서버 점수(existingScore)보다 높을 때만 덮어씁니다!
-            if (FinalScore > existingScore)
+            userRef.UpdateChildrenAsync(updates).ContinueWithOnMainThread(updateTask => 
             {
-                DBReference.Child("Leaderboard").Child(currentUserId).Child("Score").SetValueAsync(FinalScore);
-                DBReference.Child("Leaderboard").Child(currentUserId).Child("Name").SetValueAsync(currentUserName);
-
-                //프로필 사진 URL도 같이 저장!
-                DBReference.Child("Leaderboard").Child(currentUserId).Child("PhotoUrl").SetValueAsync(currentPhotoUrl);
-
-                Debug.Log("서버 점수 갱신 완료!");
-            }
+                if (updateTask.IsFaulted)
+                    Debug.LogError("[FireBaseManager] 점수 저장 실패: " + updateTask.Exception);
+                else
+                    Debug.Log("[FireBaseManager] 신기록 저장 완료!");
+            });
         });
+    }
+
+    public Task<List<RankData>> GetTopRankingsAsync(int limit = 50)
+    {
+        var tcs = new TaskCompletionSource<List<RankData>>();
+
+        if (!bUseFirebase || !bIsFireBaseReady)
+        {
+            tcs.SetResult(new List<RankData>());
+            return tcs.Task;
+        }
+
+        FirebaseDatabase.DefaultInstance.RootReference
+            .Child("Leaderboard")
+            .OrderByChild("Score")
+            .LimitToLast(limit)
+            .GetValueAsync()
+            .ContinueWithOnMainThread(task =>
+            {
+                if (task.IsFaulted)
+                {
+                    Debug.LogError("[FireBaseManager] 랭킹 조회 실패.");
+                    tcs.SetResult(new List<RankData>());
+                    return;
+                }
+
+                var snapshots = new List<DataSnapshot>();
+                foreach (DataSnapshot child in task.Result.Children)
+                    snapshots.Add(child);
+                snapshots.Reverse(); // 높은 점수 순 정렬
+
+                var result = new List<RankData>();
+                for (int i = 0; i < snapshots.Count; i++)
+                {
+                    DataSnapshot data = snapshots[i];
+                    result.Add(new RankData
+                    {
+                        Rank = i + 1,
+                        Uid = data.Key,
+                        Name = data.Child("Name").Value?.ToString() ?? "",
+                        Score = data.Child("Score").Value?.ToString() ?? "0",
+                        PhotoUrl = data.HasChild("PhotoUrl")
+                            ? data.Child("PhotoUrl").Value?.ToString() ?? ""
+                            : ""
+                    });
+                }
+
+                tcs.SetResult(result);
+            });
+
+        return tcs.Task;
+    }
+
+    public Task<RankData> GetMyRankAsync()
+    {
+        var tcs = new TaskCompletionSource<RankData>();
+
+        if (!bUseFirebase || !bIsFireBaseReady || user == null)
+        {
+            tcs.SetResult(null);
+            return tcs.Task;
+        }
+
+        string myUid = user.UserId;
+
+        DBReference.Child("Leaderboard").Child(myUid)
+            .GetValueAsync()
+            .ContinueWithOnMainThread(task =>
+            {
+                if (!task.IsCompletedSuccessfully || !task.Result.Exists)
+                {
+                    tcs.SetResult(null);
+                    return;
+                }
+
+                DataSnapshot myData = task.Result;
+                int myScore = 0;
+                int.TryParse(myData.Child("Score").Value?.ToString(), out myScore);
+                string myName = myData.Child("Name").Value?.ToString() ?? "";
+                string myPhoto = myData.HasChild("PhotoUrl")
+                    ? myData.Child("PhotoUrl").Value?.ToString() ?? ""
+                    : "";
+
+                // 내 점수 이상인 사람 수 = 내 순위
+                DBReference.Child("Leaderboard")
+                    .OrderByChild("Score")
+                    .StartAt(myScore)
+                    .GetValueAsync()
+                    .ContinueWithOnMainThread(countTask =>
+                    {
+                        int myRank = countTask.IsCompletedSuccessfully
+                            ? (int)countTask.Result.ChildrenCount
+                            : -1;
+
+                        tcs.SetResult(new RankData
+                        {
+                            Rank = myRank,
+                            Uid = myUid,
+                            Name = myName,
+                            Score = myScore.ToString(),
+                            PhotoUrl = myPhoto
+                        });
+                    });
+            });
+
+        return tcs.Task;
     }
 
     public IEnumerator GoogleLoginRoutine()
@@ -173,4 +263,7 @@ public class FireBaseManager : MonoBehaviour
             bIsLoginSequenceFinished = true; // 성공/실패 여부 상관없이 씬을 넘기기 위해 종료
         });
     }
+
+    public string GetCurrentUserUid() => user?.UserId ?? "";
+    public bool IsLoggedIn => user != null;
 }

@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
-    public GameManager GameManager;
     public EnemyManager EnemyManager;
     public float TurnDelay = 0.5f;
     public void StartGameLoop()
@@ -20,7 +19,7 @@ public class TurnManager : MonoBehaviour
 
     public void EndPlayerTurn()
     {
-        if (GameManager.CurrentState == GameState.PlayerTurn)
+        if (GameManager.Instance.CurrentState == GameState.PlayerTurn)
         {
             StartCoroutine(EnemyTurnRoutine());
         }
@@ -28,7 +27,7 @@ public class TurnManager : MonoBehaviour
 
     private IEnumerator EnemyTurnRoutine()
     {
-        GameManager.ChangeState(GameState.EnemyTurn);
+        GameManager.Instance.ChangeState(GameState.EnemyTurn);
         if (EnemyManager != null) EnemyManager.ClearAllIntents();
         yield return new WaitForSeconds(TurnDelay);
         Debug.Log("--- 적 턴 시작 (이동 및 스폰) ---");
@@ -39,7 +38,7 @@ public class TurnManager : MonoBehaviour
 
     private IEnumerator DelayStartPlayerTurn()
     {
-        GameManager.ChangeState(GameState.PlayerTurn);
+        GameManager.Instance.ChangeState(GameState.PlayerTurn);
         if (EnemyManager != null) EnemyManager.UpdateEnemyIntents();
         yield return new WaitForSeconds(TurnDelay);
     }
