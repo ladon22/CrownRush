@@ -38,6 +38,7 @@ public class BootManager : MonoBehaviour
         {
             loadingTasks.Add(new LoadingTask { TaskRoutine = FireBaseManager.Instance.InitializeFirebaseRoutine });
             loadingTasks.Add(new LoadingTask { TaskRoutine = FireBaseManager.Instance.GoogleLoginRoutine });
+            loadingTasks.Add(new LoadingTask { TaskRoutine = FireBaseManager.Instance.LoadAndRestoreUserDataRoutine });
         }
     }
 
@@ -57,7 +58,7 @@ public class BootManager : MonoBehaviour
             UpdateProgress(progress);
 
             // 게이지 차오르는 것을 살짝 보여줄 대기 시간
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(1.0f);
         }
 
         // 수정: 씬을 바로 넘기지 않고 페이드 아웃 연출을 실행합니다.

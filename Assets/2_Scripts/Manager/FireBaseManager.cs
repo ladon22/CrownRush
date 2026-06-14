@@ -1,4 +1,4 @@
-using Firebase;
+ï»¿using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Extensions;
@@ -39,8 +39,8 @@ public class FireBaseManager : MonoBehaviour
     {
         if (bUseFirebase == false)
         {
-            Debug.Log("[FireBaseManager] ÆÄÀÌ¾îº£ÀÌ½º¸¦ »ç¿ëÇÏÁö ¾ÊÀ½ ¼³Á¤.");
-            yield break; // ÄÚ·çÆ¾ Áï½Ã Á¾·á
+            Debug.Log("[FireBaseManager] íŒŒì´ì–´ë² ì´ìŠ¤ë¥¼ ì‚¬ìš©í•˜ì§€ ì•ŠìŒ ì„¤ì •.");
+            yield break; // ì½”ë£¨í‹´ ì¦‰ì‹œ ì¢…ë£Œ
         }
 
         bool bWaitFirebase = true;
@@ -51,59 +51,98 @@ public class FireBaseManager : MonoBehaviour
             {
                 DBReference = FirebaseDatabase.DefaultInstance.RootReference;
                 bIsFireBaseReady = true;
-                Debug.Log("[FireBaseManager] ÃÊ±âÈ­ ¼º°ø ¹× ¿¬°á ¿Ï·á");
+                Debug.Log("[FireBaseManager] ì´ˆê¸°í™” ì„±ê³µ ë° ì—°ê²° ì™„ë£Œ");
             }
             else
             {
-                Debug.LogError($"[FireBaseManager] ÃÊ±âÈ­ ½ÇÆĞ: {task.Result}");
+                Debug.LogError($"[FireBaseManager] ì´ˆê¸°í™” ì‹¤íŒ¨: {task.Result}");
             }
 
             bWaitFirebase = false;
         });
 
-        // ºñµ¿±â ÀÛ¾÷ÀÌ ³¡³¯ ¶§±îÁö ´ë±â
+        // ë¹„ë™ê¸° ì‘ì—…ì´ ëë‚  ë•Œê¹Œì§€ ëŒ€ê¸°
         yield return new WaitUntil(() => bWaitFirebase == false);
     }
 
-    public void SaveScoreToDatabase(int FinalScore)
+    public void SaveScoreToDatabase(int finalScore)
     {
-        if (!bUseFirebase || !bIsFireBaseReady || DBReference == null || user == null)
-        {
-            Debug.LogWarning("[FireBaseManager] Á¡¼ö ÀúÀå ºÒ°¡ »óÅÂ.");
-            return;
-        }
+        if (!IsAvailable()) return;
 
         string uid = user.UserId;
-        DatabaseReference userRef = DBReference.Child("Leaderboard").Child(uid);
+        DatabaseReference leaderboardRef = DBReference.Child("Leaderboard").Child(uid);
 
-        userRef.Child("Score").GetValueAsync().ContinueWithOnMainThread(task =>
+        leaderboardRef.GetValueAsync().ContinueWithOnMainThread(task =>
         {
             if (task.IsFaulted)
             {
-                Debug.LogError("[FireBaseManager] Á¡¼ö Á¶È¸ ½ÇÆĞ: " + task.Exception);
+                Debug.LogError("[FireBaseManager] ê¸°ì¡´ ì ìˆ˜ ì¡°íšŒ ì‹¤íŒ¨: " + task.Exception);
                 return;
             }
+
             int existingScore = 0;
-            if(task.Result.Exists && task.Result.Value != null)
+            if (task.Result.Exists && task.Result.Value != null)
                 int.TryParse(task.Result.Value.ToString(), out existingScore);
 
-            if (FinalScore <= existingScore) return;
+            if (finalScore <= existingScore) return;
 
-            Dictionary<string, object> updates = new Dictionary<string, object>
+            // 1. Leaderboard â€” Score ìˆ«ìê°’ í•˜ë‚˜ë§Œ ì €ì¥
+            leaderboardRef.SetValueAsync(finalScore).ContinueWithOnMainThread(t =>
             {
-                ["Score"] = FinalScore,
+                if (t.IsFaulted)
+                    Debug.LogError("[FireBaseManager] Leaderboard ì €ì¥ ì‹¤íŒ¨: " + t.Exception);
+            });
+
+            // 2. Users â€” Score + Name + PhotoUrl ì €ì¥
+            var updates = new Dictionary<string, object>
+            {
+                ["Score"] = finalScore,
                 ["Name"] = user.DisplayName ?? "",
                 ["PhotoUrl"] = user.PhotoUrl != null ? user.PhotoUrl.ToString() : ""
             };
 
-            userRef.UpdateChildrenAsync(updates).ContinueWithOnMainThread(updateTask => 
-            {
-                if (updateTask.IsFaulted)
-                    Debug.LogError("[FireBaseManager] Á¡¼ö ÀúÀå ½ÇÆĞ: " + updateTask.Exception);
-                else
-                    Debug.Log("[FireBaseManager] ½Å±â·Ï ÀúÀå ¿Ï·á!");
-            });
+            DBReference.Child("Users").Child(uid)
+                .UpdateChildrenAsync(updates)
+                .ContinueWithOnMainThread(t =>
+                {
+                    if (t.IsFaulted)
+                        Debug.LogError("[FireBaseManager] Users ì ìˆ˜ ì €ì¥ ì‹¤íŒ¨: " + t.Exception);
+                    else
+                        Debug.Log($"[FireBaseManager] ì‹ ê¸°ë¡ ì €ì¥ ì™„ë£Œ: {finalScore}ì ");
+                });
         });
+    }
+
+    public void SavePlayCount(int playCount)
+    {
+        if (!IsAvailable()) return;
+
+        DBReference.Child("Users").Child(user.UserId)
+            .Child("TotalPlayCount")
+            .SetValueAsync(playCount)
+            .ContinueWithOnMainThread(task =>
+            {
+                if (task.IsFaulted)
+                    Debug.LogError("[FireBaseManager] PlayCount ì €ì¥ ì‹¤íŒ¨: " + task.Exception);
+                else
+                    Debug.Log($"[FireBaseManager] PlayCount ì €ì¥ ì™„ë£Œ: {playCount}íšŒ");
+            });
+    }
+
+    public void SaveAchievement(string skinID)
+    {
+        if (!IsAvailable()) return;
+
+        DBReference.Child("Users").Child(user.UserId)
+            .Child("Achievements").Child(skinID)
+            .SetValueAsync(true)
+            .ContinueWithOnMainThread(task =>
+            {
+                if (task.IsFaulted)
+                    Debug.LogError($"[FireBaseManager] ì—…ì  ì €ì¥ ì‹¤íŒ¨ ({skinID}): " + task.Exception);
+                else
+                    Debug.Log($"[FireBaseManager] ì—…ì  ì €ì¥ ì™„ë£Œ: {skinID}");
+            });
     }
 
     public Task<List<RankData>> GetTopRankingsAsync(int limit = 50)
@@ -117,7 +156,7 @@ public class FireBaseManager : MonoBehaviour
         }
 
         FirebaseDatabase.DefaultInstance.RootReference
-            .Child("Leaderboard")
+            .Child("Users")
             .OrderByChild("Score")
             .LimitToLast(limit)
             .GetValueAsync()
@@ -125,7 +164,7 @@ public class FireBaseManager : MonoBehaviour
             {
                 if (task.IsFaulted)
                 {
-                    Debug.LogError("[FireBaseManager] ·©Å· Á¶È¸ ½ÇÆĞ.");
+                    Debug.LogError("[FireBaseManager] ë­í‚¹ ì¡°íšŒ ì‹¤íŒ¨.");
                     tcs.SetResult(new List<RankData>());
                     return;
                 }
@@ -133,7 +172,7 @@ public class FireBaseManager : MonoBehaviour
                 var snapshots = new List<DataSnapshot>();
                 foreach (DataSnapshot child in task.Result.Children)
                     snapshots.Add(child);
-                snapshots.Reverse(); // ³ôÀº Á¡¼ö ¼ø Á¤·Ä
+                snapshots.Reverse(); // ë†’ì€ ì ìˆ˜ ìˆœ ì •ë ¬
 
                 var result = new List<RankData>();
                 for (int i = 0; i < snapshots.Count; i++)
@@ -179,18 +218,13 @@ public class FireBaseManager : MonoBehaviour
                     return;
                 }
 
-                DataSnapshot myData = task.Result;
                 int myScore = 0;
-                int.TryParse(myData.Child("Score").Value?.ToString(), out myScore);
-                string myName = myData.Child("Name").Value?.ToString() ?? "";
-                string myPhoto = myData.HasChild("PhotoUrl")
-                    ? myData.Child("PhotoUrl").Value?.ToString() ?? ""
-                    : "";
+                int.TryParse(task.Result.Value?.ToString(), out myScore);
 
-                // ³» Á¡¼ö ÀÌ»óÀÎ »ç¶÷ ¼ö = ³» ¼øÀ§
+                // 2ë‹¨ê³„: ë‚´ ì ìˆ˜ ì´ìƒì¸ ìœ ì € ìˆ˜ ì¹´ìš´íŠ¸ (ì´ˆê²½ëŸ‰ ë…¸ë“œë¼ ë¶€ë‹´ ì—†ìŒ)
                 DBReference.Child("Leaderboard")
-                    .OrderByChild("Score")
-                    .StartAt(myScore)
+                    .OrderByValue()
+                    .StartAt((double)myScore)
                     .GetValueAsync()
                     .ContinueWithOnMainThread(countTask =>
                     {
@@ -198,20 +232,162 @@ public class FireBaseManager : MonoBehaviour
                             ? (int)countTask.Result.ChildrenCount
                             : -1;
 
-                        tcs.SetResult(new RankData
-                        {
-                            Rank = myRank,
-                            Uid = myUid,
-                            Name = myName,
-                            Score = myScore.ToString(),
-                            PhotoUrl = myPhoto
-                        });
+                        // 3ë‹¨ê³„: í‘œì‹œìš© Name/PhotoUrlì€ Usersì—ì„œ ê°€ì ¸ì˜¤ê¸°
+                        DBReference.Child("Users").Child(myUid)
+                            .GetValueAsync()
+                            .ContinueWithOnMainThread(userTask =>
+                            {
+                                string name = "";
+                                string photoUrl = "";
+
+                                if (userTask.IsCompletedSuccessfully
+                                    && userTask.Result.Exists)
+                                {
+                                    name = userTask.Result.Child("Name").Value?.ToString() ?? "";
+                                    photoUrl = userTask.Result.HasChild("PhotoUrl")
+                                        ? userTask.Result.Child("PhotoUrl").Value?.ToString() ?? ""
+                                        : "";
+                                }
+
+                                tcs.SetResult(new RankData
+                                {
+                                    Rank = myRank,
+                                    Uid = myUid,
+                                    Name = name,
+                                    Score = myScore.ToString(),
+                                    PhotoUrl = photoUrl
+                                });
+                            });
                     });
             });
 
         return tcs.Task;
     }
 
+    public IEnumerator LoadAndRestoreUserDataRoutine()
+    {
+        if (!bUseFirebase || !bIsFireBaseReady || user == null)
+        {
+            Debug.Log("[FireBaseManager] Firebase ë¯¸ì‚¬ìš© ë˜ëŠ” ë¹„ë¡œê·¸ì¸ â€” ë¡œì»¬ ë°ì´í„° ì‚¬ìš©.");
+            yield break;
+        }
+
+        bool isDone = false;
+
+        DBReference.Child("Users").Child(user.UserId)
+            .GetValueAsync()
+            .ContinueWithOnMainThread(task =>
+            {
+                if (task.IsFaulted)
+                {
+                    Debug.LogError("[FireBaseManager] ë°ì´í„° ë¶ˆëŸ¬ì˜¤ê¸° ì‹¤íŒ¨: " + task.Exception);
+                    isDone = true;
+                    return;
+                }
+
+                DataSnapshot snapshot = task.Result;
+
+                if (!snapshot.Exists)
+                {
+                    // ì²« ì„¤ì¹˜ â†’ ë¡œì»¬ ë°ì´í„°ë¡œ ì²« ë°±ì—… ìƒì„±
+                    Debug.Log("[FireBaseManager] í´ë¼ìš°ë“œ ë°ì´í„° ì—†ìŒ â†’ ì²« ë°±ì—… ìƒì„±.");
+                    RestoreFirstBackup();
+                    isDone = true;
+                    return;
+                }
+
+                // í´ë¼ìš°ë“œ ë°ì´í„° íŒŒì‹±
+                UserCloudData cloudData = ParseUserCloudData(snapshot);
+
+                // ë¡œì»¬ ë°ì´í„° ìˆ˜ì§‘
+                AchievementDatabase db = AchievementManager.Instance?.Database;
+                UserCloudData local = UserCloudData.FromLocalPrefs(db);
+
+                // ë³‘í•© í›„ ë¡œì»¬ ë°˜ì˜
+                UserCloudData merged = UserCloudData.Merge(local, cloudData);
+                merged.ApplyToLocalPrefs();
+
+                // ë³‘í•© ê²°ê³¼ë¥¼ í´ë¼ìš°ë“œì—ë„ ë™ê¸°í™” (ë‘ ê¸°ê¸° ê°„ ìµœì‹ í™”)
+                SyncMergedData(merged);
+
+                Debug.Log($"[FireBaseManager] ë³µì› ì™„ë£Œ â€” " +
+                          $"BestScore: {merged.BestScore} / " +
+                          $"PlayCount: {merged.TotalPlayCount}");
+
+                isDone = true;
+            });
+
+        yield return new WaitUntil(() => isDone);
+    }
+
+    private void RestoreFirstBackup()
+    {
+        AchievementDatabase db = AchievementManager.Instance?.Database;
+        UserCloudData local = UserCloudData.FromLocalPrefs(db);
+        SyncMergedData(local);
+    }
+
+    private void SyncMergedData(UserCloudData data)
+    {
+        if (!IsAvailable()) return;
+
+        string uid = user.UserId;
+        var userRef = DBReference.Child("Users").Child(uid);
+
+        var updates = new Dictionary<string, object>
+        {
+            ["Score"] = data.BestScore,
+            ["TotalPlayCount"] = data.TotalPlayCount
+        };
+
+        userRef.UpdateChildrenAsync(updates).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsFaulted)
+            {
+                Debug.LogError("[FireBaseManager] ë™ê¸°í™” ì‹¤íŒ¨: " + task.Exception);
+                return;
+            }
+
+            if (data.Achievements.Count == 0) return;
+
+            var achievementUpdates = new Dictionary<string, object>();
+            foreach (var kv in data.Achievements)
+                achievementUpdates[kv.Key] = kv.Value;
+
+            userRef.Child("Achievements")
+                .UpdateChildrenAsync(achievementUpdates)
+                .ContinueWithOnMainThread(achTask =>
+                {
+                    if (achTask.IsFaulted)
+                        Debug.LogError("[FireBaseManager] ì—…ì  ë™ê¸°í™” ì‹¤íŒ¨: " + achTask.Exception);
+                    else
+                        Debug.Log("[FireBaseManager] í´ë¼ìš°ë“œ ë™ê¸°í™” ì™„ë£Œ!");
+                });
+        });
+    }
+
+    private UserCloudData ParseUserCloudData(DataSnapshot snapshot)
+    {
+        var data = new UserCloudData();
+
+        if (snapshot.HasChild("Score"))
+            int.TryParse(snapshot.Child("Score").Value?.ToString(), out data.BestScore);
+
+        if (snapshot.HasChild("TotalPlayCount"))
+            int.TryParse(snapshot.Child("TotalPlayCount").Value?.ToString(), out data.TotalPlayCount);
+
+        if (snapshot.HasChild("Achievements"))
+        {
+            foreach (DataSnapshot achievement in snapshot.Child("Achievements").Children)
+            {
+                bool isUnlocked = false;
+                bool.TryParse(achievement.Value?.ToString(), out isUnlocked);
+                data.Achievements[achievement.Key] = isUnlocked;
+            }
+        }
+
+        return data;
+    }
     public IEnumerator GoogleLoginRoutine()
     {
         if (bUseFirebase == false)
@@ -220,13 +396,13 @@ public class FireBaseManager : MonoBehaviour
             yield break;
         }
 
-        bIsLoginSequenceFinished = false; // ·Î±×ÀÎ ÁøÇà Áß »óÅÂ·Î ¼³Á¤
+        bIsLoginSequenceFinished = false; // ë¡œê·¸ì¸ ì§„í–‰ ì¤‘ ìƒíƒœë¡œ ì„¤ì •
         auth = FirebaseAuth.DefaultInstance;
 
-        Debug.Log("[FireBaseManager] ±¸±Û ·Î±×ÀÎÀ» ½ÃµµÇÕ´Ï´Ù...");
+        Debug.Log("[FireBaseManager] êµ¬ê¸€ ë¡œê·¸ì¸ì„ ì‹œë„í•©ë‹ˆë‹¤...");
         PlayGamesPlatform.Instance.Authenticate(ProcessAuthentication);
 
-        // ·Î±×ÀÎÀÌ ¼º°øÇÏµç ½ÇÆĞÇÏµç ¿ÏÀüÈ÷ ³¡³¯ ¶§±îÁö BootManagerÀÇ ÁøÇàÀ» ¸ØÃã
+        // ë¡œê·¸ì¸ì´ ì„±ê³µí•˜ë“  ì‹¤íŒ¨í•˜ë“  ì™„ì „íˆ ëë‚  ë•Œê¹Œì§€ BootManagerì˜ ì§„í–‰ì„ ë©ˆì¶¤
         yield return new WaitUntil(() => bIsLoginSequenceFinished == true);
     }
 
@@ -241,8 +417,8 @@ public class FireBaseManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("GPGS ·Î±×ÀÎ ½ÇÆĞ ¶Ç´Â Ãë¼ÒµÊ: " + status);
-            bIsLoginSequenceFinished = true; // ½ÇÆĞÇØµµ ·Îºñ·Î´Â °¡¾ß ÇÏ¹Ç·Î ½ÃÄö½º Á¾·á
+            Debug.LogError("GPGS ë¡œê·¸ì¸ ì‹¤íŒ¨ ë˜ëŠ” ì·¨ì†Œë¨: " + status);
+            bIsLoginSequenceFinished = true; // ì‹¤íŒ¨í•´ë„ ë¡œë¹„ë¡œëŠ” ê°€ì•¼ í•˜ë¯€ë¡œ ì‹œí€€ìŠ¤ ì¢…ë£Œ
         }
     }
 
@@ -253,15 +429,25 @@ public class FireBaseManager : MonoBehaviour
         {
             if (task.IsCanceled || task.IsFaulted)
             {
-                Debug.LogError("ÆÄÀÌ¾îº£ÀÌ½º ¿¬µ¿ ¿¡·¯: " + task.Exception);
+                Debug.LogError("íŒŒì´ì–´ë² ì´ìŠ¤ ì—°ë™ ì—ëŸ¬: " + task.Exception);
             }
             else
             {
                 user = task.Result;
-                Debug.Log($"ÆÄÀÌ¾îº£ÀÌ½º ·Î±×ÀÎ ÃÖÁ¾ ¼º°ø! È¯¿µÇÕ´Ï´Ù: {user.DisplayName}");
+                Debug.Log($"íŒŒì´ì–´ë² ì´ìŠ¤ ë¡œê·¸ì¸ ìµœì¢… ì„±ê³µ! í™˜ì˜í•©ë‹ˆë‹¤: {user.DisplayName}");
             }
-            bIsLoginSequenceFinished = true; // ¼º°ø/½ÇÆĞ ¿©ºÎ »ó°ü¾øÀÌ ¾ÀÀ» ³Ñ±â±â À§ÇØ Á¾·á
+            bIsLoginSequenceFinished = true; // ì„±ê³µ/ì‹¤íŒ¨ ì—¬ë¶€ ìƒê´€ì—†ì´ ì”¬ì„ ë„˜ê¸°ê¸° ìœ„í•´ ì¢…ë£Œ
         });
+    }
+
+    private bool IsAvailable()
+    {
+        if (!bUseFirebase || !bIsFireBaseReady || user == null)
+        {
+            Debug.LogWarning("[FireBaseManager] Firebase ì‚¬ìš© ë¶ˆê°€ ìƒíƒœ.");
+            return false;
+        }
+        return true;
     }
 
     public string GetCurrentUserUid() => user?.UserId ?? "";

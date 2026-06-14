@@ -22,7 +22,7 @@ public class RankData
 public class RankingUIController : MonoBehaviour
 {
     [Header("Panel & Animation")]
-    [SerializeField] private RectTransform PanelRect; // 랭킹 창 전체를 감싸는 RectTransform
+    [SerializeField] private GameObject RankingPanel; // 랭킹 창 전체를 감싸는 RectTransform
     [SerializeField] private float PopDuration = 0.4f;
     [SerializeField] private Ease PopEase = Ease.OutBack;
 
@@ -56,8 +56,12 @@ public class RankingUIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI LoadingText; // "로딩 중" 글자가 써질 텍스트
     [SerializeField] private LocalizedString LoadingBaseString; // "로딩 중"이라는 기본 다국어 키
 
+    [Header("Offline Warning")]
+    [SerializeField] private ToastUI OfflineWarningPanel;
+
     private RectTransform ContentRect;
     private List<RankEntryView> PoolItems = new List<RankEntryView>();
+    private List<RectTransform> PoolItemRects = new List<RectTransform>();
 
     private List<RankData> RankDataList = new List<RankData>();
     private Dictionary<string, Sprite> ImageCache = new Dictionary<string, Sprite>();
@@ -79,26 +83,37 @@ public class RankingUIController : MonoBehaviour
         for (int i = 0; i < VisibleItemCount; i++)
         {
             GameObject obj = Instantiate(RankEntryPrefab, ContentTransform);
+
             RankEntryView entry = obj.GetComponent<RankEntryView>();
-            obj.SetActive(false);
             PoolItems.Add(entry);
+
+            RectTransform rect = obj.GetComponent<RectTransform>();
+            PoolItemRects.Add(rect);
+
+            obj.SetActive(false);
         }
     }
 
     public void ShowRanking()
     {
-        if (gameObject.activeInHierarchy) return;
+        if (RankingPanel.activeInHierarchy) return;
+
+        gameObject.SetActive(true);
+        if (/*!FireBaseManager.Instance.bUseFirebase ||*/ !IsNetworkAvailable())
+        {
+            ShowOfflineWarning();
+            return;
+        }
 
         if (GameManager.Instance != null)
             GameManager.Instance.InputController.PushUIBlock();
-
-        gameObject.SetActive(true);
-
-        if (PanelRect != null)
+            
+        if (RankingPanel != null)
         {
-            PanelRect.localScale = Vector3.zero;
-            PanelRect.DOKill();
-            PanelRect.DOScale(Vector3.one, PopDuration).SetEase(PopEase).SetUpdate(true);
+            RankingPanel.gameObject.SetActive(true);
+            RankingPanel.transform.localScale = Vector3.zero;
+            RankingPanel.transform.DOKill();
+            RankingPanel.transform.DOScale(Vector3.one, PopDuration).SetEase(PopEase).SetUpdate(true);
         }
 
         if (!RankFormatString.IsEmpty) currentRankFormat = RankFormatString.GetLocalizedString();
@@ -110,9 +125,9 @@ public class RankingUIController : MonoBehaviour
 
     public void HideRanking()
     {
-        if (PanelRect != null)
+        if (RankingPanel != null)
         {
-            PanelRect.DOScale(Vector3.zero, PopDuration * 0.7f).SetEase(Ease.InBack).SetUpdate(true)
+            RankingPanel.transform.DOScale(Vector3.zero, PopDuration * 0.7f).SetEase(Ease.InBack).SetUpdate(true)
                 .OnComplete(() =>
                 {
                     gameObject.SetActive(false);
@@ -139,13 +154,40 @@ public class RankingUIController : MonoBehaviour
         LoadRankingData();
     }
 
+    private bool IsNetworkAvailable()
+    {
+        return Application.internetReachability != NetworkReachability.NotReachable;
+    }
+
+    private void ShowOfflineWarning()
+    {
+        if (RankingPanel != null)
+            RankingPanel.gameObject.SetActive(false);
+
+        if (OfflineWarningPanel == null) return;
+        OfflineWarningPanel.Show(() =>
+        { 
+            gameObject.SetActive(false);
+        });
+    }
+
     private async void LoadRankingData()
     {
         StartLoadingAnimation();
 
-        if (FireBaseManager.Instance != null && FireBaseManager.Instance.bUseFirebase == false)
+        if (FireBaseManager.Instance == null || !FireBaseManager.Instance.bUseFirebase)
         {
             LoadDummyDataForEditor();
+            return;
+        }
+
+        if (!IsNetworkAvailable())
+        {
+            if (LoadingText != null)
+            {
+                loadingDotTween?.Kill();
+                LoadingText.text = "인터넷 연결을 확인해주세요.";
+            }
             return;
         }
 
@@ -236,15 +278,12 @@ public class RankingUIController : MonoBehaviour
                 entry.gameObject.SetActive(true);
 
                 // 위치 배치
-                RectTransform rt = entry.GetComponent<RectTransform>();
-                rt.anchoredPosition = new Vector2(0, -dataIndex * ItemHeight);
+                PoolItemRects[i].anchoredPosition = new Vector2(0, -dataIndex * ItemHeight);
 
                 // [수정] transform.Find() 제거 → RankEntryView.Bind() 호출
                 RankData data = RankDataList[dataIndex];
                 Sprite cachedSprite = ImageCache.TryGetValue(data.PhotoUrl, out Sprite sp) ? sp : null;
                 entry.Bind(data, currentScoreFormat, cachedSprite);
-
-                // 홀짝 배경색
                 entry.SetBackgroundColor(dataIndex % 2 == 0 ? OddRowColor : EvenRowColor);
             }
             else
@@ -257,7 +296,7 @@ public class RankingUIController : MonoBehaviour
     private IEnumerator LoadProfileImageRoutine(string url)
     {
         DownloadingUrls.Add(url);
-        UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
+        using UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)

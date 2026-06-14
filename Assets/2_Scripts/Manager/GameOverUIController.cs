@@ -19,9 +19,6 @@ public class GameOverUIController : MonoBehaviour
 
     [Header("Revive System")]
     public Button AdReviveButton;
-
-    private const string BestScoreKey = "BestScore";
-
     private void Awake()
     {
         gameObject.SetActive(false);
@@ -37,7 +34,10 @@ public class GameOverUIController : MonoBehaviour
         gameObject.SetActive(true);
 
         if (AdReviveButton != null)
-            AdReviveButton.gameObject.SetActive(bCanRevive);
+        {
+            bool adReady = AdManager.Instance != null && AdManager.Instance.bIsAdReady;
+            AdReviveButton.gameObject.SetActive(bCanRevive && adReady);
+        }
 
         if (ScoreTextEvent != null)
         {

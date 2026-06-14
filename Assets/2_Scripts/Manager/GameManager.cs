@@ -182,18 +182,14 @@ public class GameManager : MonoBehaviour
         ChangeState(GameState.GameOver);
 
         // 게임 오버가 될 때마다 누적 플레이 횟수를 증가시키고 보고합니다.
-        int PlayCount = PlayerPrefs.GetInt("TotalPlayCount", 0) + 1;
-        PlayerPrefs.SetInt("TotalPlayCount", PlayCount);
+        int playCount = PlayerPrefs.GetInt("TotalPlayCount", 0) + 1;
+        PlayerPrefs.SetInt("TotalPlayCount", playCount);
         PlayerPrefs.Save();
 
         if (AchievementManager.Instance != null)
-        {
-            AchievementManager.Instance.ReportProgress(AchievementType.PlayCount, PlayCount);
-        }
-
+            AchievementManager.Instance.ReportProgress(AchievementType.PlayCount, playCount);
 
         int currentScore = ScoreManager != null ? ScoreManager.CurrentScore : 0;
-
         int bestScore = PlayerPrefs.GetInt(BestScoreKey, 0);
         bool isNewRecord = currentScore > bestScore;
 
@@ -209,6 +205,9 @@ public class GameManager : MonoBehaviour
             if (LobbyUI != null)
                 LobbyUI.LoadBestScore();
         }
+
+        if (FireBaseManager.Instance != null)
+            FireBaseManager.Instance.SavePlayCount(playCount);
 
         if (GameOverUI != null)
             GameOverUI.Show(currentScore, bestScore, !bHasRevivedThisGame);

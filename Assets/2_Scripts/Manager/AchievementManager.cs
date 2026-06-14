@@ -54,9 +54,12 @@ public class AchievementManager : MonoBehaviour
         // 기기에 "이 스킨 해금됨(1)" 이라고 저장
         PlayerPrefs.SetInt(UnlockKey, 1);
         PlayerPrefs.Save();
-
-        // 팝업 UI 등에게 해금 사실을 알림
+        
         OnAchievementUnlocked?.Invoke(data);
+       
+        if (FireBaseManager.Instance != null && FireBaseManager.Instance.IsLoggedIn)
+            FireBaseManager.Instance.SaveAchievement(data.RewardItem.ItemID);
+        // 팝업 UI 등에게 해금 사실을 알림
     }
 
     public void EquipSkin(string skinID)

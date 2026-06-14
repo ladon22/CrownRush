@@ -533,7 +533,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d39a692491d473145b0fbdcafb9d1833, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnManager
-  GameManager: {fileID: 105234643}
   EnemyManager: {fileID: 466530478}
   TurnDelay: 0.2
 --- !u!1 &440288954
@@ -748,7 +747,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 9.140625
+  orthographic size: 7.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2204,6 +2203,30 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: StartGame
       objectReference: {fileID: 0}
+    - target: {fileID: 4066447041741487750, guid: 97b1352966365134d8512b0f22cffd53, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4066447041741487750, guid: 97b1352966365134d8512b0f22cffd53, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4066447041741487750, guid: 97b1352966365134d8512b0f22cffd53, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4066447041741487750, guid: 97b1352966365134d8512b0f22cffd53, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4066447041741487750, guid: 97b1352966365134d8512b0f22cffd53, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4066447041741487750, guid: 97b1352966365134d8512b0f22cffd53, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4289111187189335730, guid: 97b1352966365134d8512b0f22cffd53, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -2379,6 +2402,22 @@ PrefabInstance:
     - target: {fileID: 8085604656751617372, guid: 97b1352966365134d8512b0f22cffd53, type: 3}
       propertyPath: m_TextStyleHashCode
       value: -1183493901
+      objectReference: {fileID: 0}
+    - target: {fileID: 8168628115569648911, guid: 97b1352966365134d8512b0f22cffd53, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8168628115569648911, guid: 97b1352966365134d8512b0f22cffd53, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8168628115569648911, guid: 97b1352966365134d8512b0f22cffd53, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8168628115569648911, guid: 97b1352966365134d8512b0f22cffd53, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8699439224581967229, guid: 97b1352966365134d8512b0f22cffd53, type: 3}
       propertyPath: m_AnchorMax.y
