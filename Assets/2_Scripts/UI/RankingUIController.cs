@@ -1,7 +1,4 @@
 ﻿using DG.Tweening;
-using Firebase.Auth;
-using Firebase.Database;
-using Firebase.Extensions;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -9,15 +6,6 @@ using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-
-public class RankData
-{
-    public int Rank;
-    public string Uid;
-    public string Name;
-    public string Score;
-    public string PhotoUrl;
-}
 
 public class RankingUIController : MonoBehaviour
 {
@@ -96,10 +84,10 @@ public class RankingUIController : MonoBehaviour
 
     public void ShowRanking()
     {
-        if (RankingPanel.activeInHierarchy) return;
+        if (RankingPanel != null && RankingPanel.activeInHierarchy) return;
 
         gameObject.SetActive(true);
-        if (/*!FireBaseManager.Instance.bUseFirebase ||*/ !IsNetworkAvailable())
+        if (!FireBaseManager.Instance.bUseFirebase || !IsNetworkAvailable())
         {
             ShowOfflineWarning();
             return;

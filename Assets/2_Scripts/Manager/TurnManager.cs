@@ -14,7 +14,6 @@ public class TurnManager : MonoBehaviour
     public void StartPlayerTurn()
     {
         StartCoroutine(DelayStartPlayerTurn());
-        Debug.Log("----플레이어 턴----");
     }
 
     public void EndPlayerTurn()
@@ -30,7 +29,6 @@ public class TurnManager : MonoBehaviour
         GameManager.Instance.ChangeState(GameState.EnemyTurn);
         if (EnemyManager != null) EnemyManager.ClearAllIntents();
         yield return new WaitForSeconds(TurnDelay);
-        Debug.Log("--- 적 턴 시작 (이동 및 스폰) ---");
 
         yield return StartCoroutine(EnemyManager.ProcessEnemiesTurnRoutine());
         StartPlayerTurn();

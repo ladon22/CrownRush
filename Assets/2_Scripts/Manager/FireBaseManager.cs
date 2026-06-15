@@ -337,7 +337,9 @@ public class FireBaseManager : MonoBehaviour
         var updates = new Dictionary<string, object>
         {
             ["Score"] = data.BestScore,
-            ["TotalPlayCount"] = data.TotalPlayCount
+            ["TotalPlayCount"] = data.TotalPlayCount,
+            ["Name"] = user.DisplayName ?? "",
+            ["PhotoUrl"] = user.PhotoUrl != null ? user.PhotoUrl.ToString() : ""
         };
 
         userRef.UpdateChildrenAsync(updates).ContinueWithOnMainThread(task =>
@@ -396,14 +398,29 @@ public class FireBaseManager : MonoBehaviour
             yield break;
         }
 
+        if (Application.internetReachability == NetworkReachability.NotReachable)
+        {
+            bIsLoginSequenceFinished = true;
+            yield break;
+        }
+
         bIsLoginSequenceFinished = false; // 로그인 진행 중 상태로 설정
         auth = FirebaseAuth.DefaultInstance;
-
-        Debug.Log("[FireBaseManager] 구글 로그인을 시도합니다...");
         PlayGamesPlatform.Instance.Authenticate(ProcessAuthentication);
 
-        // 로그인이 성공하든 실패하든 완전히 끝날 때까지 BootManager의 진행을 멈춤
-        yield return new WaitUntil(() => bIsLoginSequenceFinished == true);
+        float elapsed = 0f;                        // 1. 경과 시간 초기화
+        while (!bIsLoginSequenceFinished)          // 2. 로그인 완료될 때까지 반복
+        {
+            elapsed += Time.unscaledDeltaTime;     // 3. 매 프레임 경과 시간 누적
+
+            if (elapsed >= 10f)                    // 4. 10초 초과 시
+            {
+                Debug.LogWarning("타임아웃");
+                bIsLoginSequenceFinished = true;   // 5. 강제로 완료 처리
+            }
+
+            yield return null;                     // 6. 다음 프레임까지 대기
+        }
     }
 
     internal void ProcessAuthentication(SignInStatus status)
@@ -434,10 +451,32 @@ public class FireBaseManager : MonoBehaviour
             else
             {
                 user = task.Result;
-                Debug.Log($"파이어베이스 로그인 최종 성공! 환영합니다: {user.DisplayName}");
+                Debug.Log($"파이어베이스 로그인 최종 성공!: {user.DisplayName}");
+                SaveUserProfile();
             }
             bIsLoginSequenceFinished = true; // 성공/실패 여부 상관없이 씬을 넘기기 위해 종료
         });
+    }
+
+    private void SaveUserProfile()
+    {
+        if (!IsAvailable()) return;
+
+        var updates = new Dictionary<string, object>
+        {
+            ["Name"] = user.DisplayName ?? "",
+            ["PhotoUrl"] = user.PhotoUrl != null ? user.PhotoUrl.ToString() : ""
+        };
+
+        DBReference.Child("Users").Child(user.UserId)
+            .UpdateChildrenAsync(updates)
+            .ContinueWithOnMainThread(task =>
+            {
+                if (task.IsFaulted)
+                    Debug.LogError("[FireBaseManager] 프로필 저장 실패: " + task.Exception);
+                else
+                    Debug.Log($"[FireBaseManager] 프로필 저장 완료: {user.DisplayName}");
+            });
     }
 
     private bool IsAvailable()
