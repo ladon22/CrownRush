@@ -34,7 +34,7 @@ MonoBehaviour:
       m_Items:
       - rid: 2870879215130509650
   - m_Id: 1304216764416
-    m_Localized: Continue
+    m_Localized: Watch Ad & Revive
     m_Metadata:
       m_Items: []
   - m_Id: 1446185566208
@@ -123,6 +123,56 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 7739717069676544
     m_Localized: Loading Data
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20283397143896064
+    m_Localized: Queen alert!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20283431977590784
+    m_Localized: How to move
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20283443461595136
+    m_Localized: Swipe to move your King one square. Move onto an enemy to capture
+      it!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20283410544697344
+    m_Localized: "When a Pawn reaches the other end, it becomes a powerful Queen.
+      Queens move in all directions \u2014 take it out first!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20284520999264256
+    m_Localized: Item appeared!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20283341154131968
+    m_Localized: An item has appeared on the board. Move onto it to pick it up. It
+      restores your health!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20283235780632576
+    m_Localized: Enemy turns
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20283325597458432
+    m_Localized: Each piece moves on its own turn. Pieces with an arrow will move
+      this turn. No arrow means they're waiting!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20283042519687168
+    m_Localized: Combo bonus!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20283224984494080
+    m_Localized: "Chain captures to boost your score multiplier. 5 combo x1.5 \u2192
+      10 combo x2.0 \u2192 20 combo x5.0! Capture within 5 seconds to keep the chain
+      going!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20287839469674496
+    m_Localized: Got it!
     m_Metadata:
       m_Items: []
   references:

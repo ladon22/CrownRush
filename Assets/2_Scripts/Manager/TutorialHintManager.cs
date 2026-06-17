@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -22,8 +23,10 @@ public class TutorialHintManager : MonoBehaviour
     // TutorialHintPanel이 구독해서 표시 처리를 담당합니다.
     // Manager는 누가 구독하는지 알 필요가 없습니다.
     public static event Action<TutorialHintData> OnHintRequested;
-
     private const string PrefKeyPrefix = "Hint_";
+
+    private Queue<TutorialHintData> _hintQueue = new Queue<TutorialHintData>();
+    private bool _isShowing = false;
 
     private void Awake()
     {
@@ -53,12 +56,36 @@ public class TutorialHintManager : MonoBehaviour
         PlayerPrefs.SetInt(prefKey, 1);
         PlayerPrefs.Save();
 
-        // 이벤트 발행 — 패널은 이 이벤트를 받아 스스로 표시
-        OnHintRequested?.Invoke(data);
+        if (_isShowing)
+        {
+            // 현재 힌트 표시 중 → 대기열에 추가
+            _hintQueue.Enqueue(data);
+            Debug.Log($"[TutorialHintManager] 힌트 대기열 추가: {hintID} (대기 {_hintQueue.Count}개)");
+        }
+        else
+        {
+            // 표시 중인 힌트 없음 → 바로 표시
+            ShowHint(data);
+        }
+    }
+    public void OnHintConfirmed()
+    {
+        _isShowing = false;
 
-        Debug.Log($"[TutorialHintManager] 힌트 요청: {hintID}");
+        if (_hintQueue.Count > 0)
+        {
+            TutorialHintData next = _hintQueue.Dequeue();
+            ShowHint(next);
+            Debug.Log($"[TutorialHintManager] 다음 힌트 표시 (남은 대기 {_hintQueue.Count}개)");
+        }
     }
 
+    private void ShowHint(TutorialHintData data)
+    {
+        _isShowing = true;
+        OnHintRequested?.Invoke(data);
+        Debug.Log($"[TutorialHintManager] 힌트 표시: {data.HintID}");
+    }
     // ── 유틸 ─────────────────────────────────────────────────
 
     /// <summary>특정 힌트의 표시 기록을 초기화합니다.</summary>

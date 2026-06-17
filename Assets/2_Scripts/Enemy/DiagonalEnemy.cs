@@ -3,52 +3,59 @@ using UnityEngine;
 
 public class DiagonalEnemy : EnemyBase
 {
-    public int MoveAmount = 3;
+    private static readonly Vector2Int[] Diagonals = new Vector2Int[]
+    {
+        new Vector2Int( 1,  1),
+        new Vector2Int( 1, -1),
+        new Vector2Int(-1,  1),
+        new Vector2Int(-1, -1)
+    };
 
     public override void CalculateNextPosition()
     {
-        PlayerController Player = FindFirstObjectByType<PlayerController>();
         if (Player == null) return;
 
-        int DiffX = Player.CurrentX - CurrentX;
-        int DiffY = Player.CurrentY - CurrentY;
+        Vector2Int bestMove = new Vector2Int(CurrentX, CurrentY);
+        float minDistance = float.MaxValue;
 
-        int MoveDirX = DiffX == 0 ? (Random.value > 0.5f ? 1 : -1) : (int)Mathf.Sign(DiffX);
-        int MoveDirY = DiffY == 0 ? (Random.value > 0.5f ? 1 : -1) : (int)Mathf.Sign(DiffY);
-
-        Vector2Int BestMove = new Vector2Int(CurrentX, CurrentY);
-        float MinDistance = Vector2.Distance(new Vector2(CurrentX, CurrentY), new Vector2(Player.CurrentX, Player.CurrentY));
-
-        int CheckX = CurrentX;
-        int CheckY = CurrentY;
-
-        for (int i = 0; i < MoveAmount; i++)
+        foreach (Vector2Int dir in Diagonals)
         {
-            CheckX += MoveDirX;
-            CheckY += MoveDirY;
+            int checkX = CurrentX;
+            int checkY = CurrentY;
 
-            if (!GridManager.IsValidGridPosition(CheckX, CheckY)) break;
-
-            if (IsPositionOccupied(CheckX, CheckY))
+            // [수정] for(MoveAmount) → while(true) : 보드 끝까지 이동
+            while (true)
             {
-                if (Player.CurrentX == CheckX && Player.CurrentY == CheckY)
+                checkX += dir.x;
+                checkY += dir.y;
+
+                if (!GridManager.IsValidGridPosition(checkX, checkY)) break;
+
+                if (IsPositionOccupied(checkX, checkY))
                 {
-                    BestMove = new Vector2Int(CheckX, CheckY);
-                    MinDistance = 0;
+                    if (Player.CurrentX == checkX && Player.CurrentY == checkY)
+                    {
+                        bestMove = new Vector2Int(checkX, checkY);
+                        minDistance = 0;
+                    }
+                    break;
                 }
-                break;
+
+                float dist = Vector2.Distance(
+                    new Vector2(checkX, checkY),
+                    new Vector2(Player.CurrentX, Player.CurrentY));
+
+                if (dist < minDistance)
+                {
+                    minDistance = dist;
+                    bestMove = new Vector2Int(checkX, checkY);
+                }
             }
 
-            // 핵심: 대각선으로 움직이다가 플레이어를 스쳐 멀어지기 전에 멈춥니다.
-            float Dist = Vector2.Distance(new Vector2(CheckX, CheckY), new Vector2(Player.CurrentX, Player.CurrentY));
-            if (Dist < MinDistance)
-            {
-                MinDistance = Dist;
-                BestMove = new Vector2Int(CheckX, CheckY);
-            }
+            if (minDistance == 0) break;
         }
 
-        CurrentX = BestMove.x;
-        CurrentY = BestMove.y;
+        CurrentX = bestMove.x;
+        CurrentY = bestMove.y;
     }
 }

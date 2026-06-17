@@ -12,7 +12,6 @@ public class QueenEnemy : EnemyBase
 
     public override void CalculateNextPosition()
     {
-        PlayerController Player = FindFirstObjectByType<PlayerController>();
         if (Player == null) return;
 
         Vector2Int BestMove = new Vector2Int(CurrentX, CurrentY);

@@ -43,7 +43,7 @@ public class CameraController : MonoBehaviour
 
             transform.position = new Vector3(OriginalPosition.x + X, OriginalPosition.y + Y, OriginalPosition.z);
 
-            Elapsed += Time.deltaTime;
+            Elapsed += Time.unscaledDeltaTime;
             yield return null;
         }
 

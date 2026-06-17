@@ -51,6 +51,9 @@ public class ItemManager : MonoBehaviour
             {
                 NewItem.Initialize(this, SpawnX, SpawnY, SpawnPos);
                 ActiveItems.Add(NewItem);
+
+                if (TutorialHintManager.Instance != null)
+                    TutorialHintManager.Instance.TryShowHint(TutorialHintID.Item);
             }
         }
     }

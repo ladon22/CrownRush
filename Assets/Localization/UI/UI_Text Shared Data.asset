@@ -119,6 +119,50 @@ MonoBehaviour:
     m_Key: rank_loading
     m_Metadata:
       m_Items: []
+  - m_Id: 20283042519687168
+    m_Key: hint_combo_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20283224984494080
+    m_Key: hint_combo_desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20283235780632576
+    m_Key: hint_intent_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20283325597458432
+    m_Key: hint_intent_desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20284520999264256
+    m_Key: hint_item_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20283341154131968
+    m_Key: hint_item_desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20283397143896064
+    m_Key: hint_queen_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20283410544697344
+    m_Key: hint_queen_desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20283431977590784
+    m_Key: hint_swipe_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20283443461595136
+    m_Key: hint_swipe_desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20287839469674496
+    m_Key: hint_confirm
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

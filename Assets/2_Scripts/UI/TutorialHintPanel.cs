@@ -28,12 +28,14 @@ public class TutorialHintPanel : MonoBehaviour
 
     // ── 이벤트 구독 / 해제 ───────────────────────────────────
 
-    private void OnEnable()
+    private void Awake()
     {
         TutorialHintManager.OnHintRequested += Show;
+        gameObject.SetActive(false);
     }
 
-    private void OnDisable()
+
+    private void OnDestroy()
     {
         TutorialHintManager.OnHintRequested -= Show;
     }
@@ -67,11 +69,11 @@ public class TutorialHintPanel : MonoBehaviour
             GameManager.Instance.InputController.PushUIBlock();
 
         gameObject.SetActive(true);
-
+        Time.timeScale = 0f;
         // 등장 애니메이션 (크기 0 → 1)
         PanelRect.DOKill();
         PanelRect.localScale = Vector3.zero;
-        PanelRect.DOScale(Vector3.one, PopDuration).SetEase(PopInEase);
+        PanelRect.DOScale(Vector3.one, PopDuration).SetEase(PopInEase).SetUpdate(true); ;
     }
 
     /// <summary>확인 버튼에 연결합니다.</summary>
@@ -80,12 +82,18 @@ public class TutorialHintPanel : MonoBehaviour
         PanelRect.DOKill();
         PanelRect.DOScale(Vector3.zero, PopDuration * 0.7f)
             .SetEase(PopOutEase)
+            .SetUpdate(true)
             .OnComplete(() =>
             {
                 gameObject.SetActive(false);
 
+                Time.timeScale = 1f;
+
                 if (GameManager.Instance != null)
                     GameManager.Instance.InputController.PopUIBlock();
+
+                if (TutorialHintManager.Instance != null)
+                    TutorialHintManager.Instance.OnHintConfirmed();
             });
     }
 }

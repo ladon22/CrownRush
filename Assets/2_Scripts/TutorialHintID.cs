@@ -12,7 +12,6 @@ public static class TutorialHintID
     public const string Intent = "intent";  // ±â¹° ÀÌµ¿ ÅÏ
     public const string Combo = "combo";   // ÄÞº¸ ½Ã½ºÅÛ
     public const string Item = "item";    // ¾ÆÀÌÅÛ È¹µæ
-    public const string Revive = "revive";  // ±¤°í ºÎÈ°
     public const string Queen = "queen";   // Äý ½Â°Ý
 
     // ¦¡¦¡ »õ ÈùÆ® Ãß°¡ ¿¹½Ã ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡

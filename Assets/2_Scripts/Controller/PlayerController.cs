@@ -145,6 +145,10 @@ public class PlayerController : MonoBehaviour
         {
             EnemyManager.RemoveEnemy(TargetEnemy);
             TargetEnemy.Die();
+
+            if (TutorialHintManager.Instance != null)
+                TutorialHintManager.Instance.TryShowHint(TutorialHintID.Combo);
+
             if (CameraController.Instance != null)
             {
                 CameraController.Instance.ShakeForAttack();

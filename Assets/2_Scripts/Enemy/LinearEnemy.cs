@@ -71,6 +71,9 @@ public class LinearEnemy : EnemyBase
 
         yield return new WaitForSeconds(0.35f);
 
+        if (TutorialHintManager.Instance != null)
+            TutorialHintManager.Instance.TryShowHint(TutorialHintID.Queen);
+
         EnemyManager.RemoveEnemy(this);
         PoolManager.Instance.ReturnToPool(gameObject);
     }

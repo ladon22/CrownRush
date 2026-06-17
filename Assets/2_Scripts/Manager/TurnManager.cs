@@ -31,6 +31,8 @@ public class TurnManager : MonoBehaviour
         yield return new WaitForSeconds(TurnDelay);
 
         yield return StartCoroutine(EnemyManager.ProcessEnemiesTurnRoutine());
+        if (TutorialHintManager.Instance != null)
+            TutorialHintManager.Instance.TryShowHint(TutorialHintID.Intent);
         StartPlayerTurn();
     }
 
@@ -39,6 +41,8 @@ public class TurnManager : MonoBehaviour
         GameManager.Instance.ChangeState(GameState.PlayerTurn);
         if (EnemyManager != null) EnemyManager.UpdateEnemyIntents();
         yield return new WaitForSeconds(TurnDelay);
-    }
 
+        if (TutorialHintManager.Instance != null)
+            TutorialHintManager.Instance.TryShowHint(TutorialHintID.Swipe);
+    }
 }

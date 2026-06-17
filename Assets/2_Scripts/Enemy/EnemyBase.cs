@@ -32,6 +32,8 @@ public abstract class EnemyBase : MonoBehaviour
     public float HopHeight = 0.5f;
     protected int CurrentWaitCount = 0;
 
+    protected HashSet<Vector2Int> TemporaryBlocked = new HashSet<Vector2Int>();
+
     public virtual void Initialize(EnemyManager EnemyManager, GridManager GridManager, int StartX, int StartY)
     {
         this.EnemyManager = EnemyManager;
@@ -90,7 +92,7 @@ public abstract class EnemyBase : MonoBehaviour
         transform.position = new Vector3(TargetPosition.x, TargetPosition.y + DropHeight, 0f);
 
         // 떨어지는 시간
-        float Duration = 0.35f;
+        float Duration = 0.25f;
         float Elapsed = 0f;
         SpriteDepthSorter Sorter = GetComponent<SpriteDepthSorter>();
         if (Sorter != null) Sorter.SortingOrderOffset += 2000;
@@ -119,6 +121,9 @@ public abstract class EnemyBase : MonoBehaviour
 
     public bool IsPositionOccupied(int TargetX, int TargetY)
     {
+        if (TemporaryBlocked.Contains(new Vector2Int(TargetX, TargetY)))
+            return true;
+
         if (EnemyManager != null)
         {
             EnemyBase OtherEnemy = EnemyManager.GetEnemyAtPosition(TargetX, TargetY);
@@ -154,12 +159,44 @@ public abstract class EnemyBase : MonoBehaviour
         CurrentX = Mathf.Clamp(CurrentX, 0, GridManager.Columns - 1);
         CurrentY = Mathf.Clamp(CurrentY, 0, GridManager.Rows - 1);
 
-        bool bIsAttacking = false;
-        if (Player != null && Player.CurrentX == CurrentX && Player.CurrentY == CurrentY)
+        const int MaxRetries = 8;
+        for (int attempt = 0; attempt < MaxRetries; attempt++)
         {
-            bIsAttacking = true;
+            // 플레이어 위치면 공격 → 통과
+            if (Player != null
+                && Player.CurrentX == CurrentX
+                && Player.CurrentY == CurrentY)
+                break;
+
+            // 빈 칸이면 통과
+            if (!IsPositionOccupied(CurrentX, CurrentY))
+                break;
+
+            // 제자리면 이미 모든 방향이 막힌 것 → 포기
+            if (CurrentX == PreviousX && CurrentY == PreviousY)
+                break;
+
+            // 막힌 칸을 임시 차단에 추가
+            TemporaryBlocked.Add(new Vector2Int(CurrentX, CurrentY));
+
+            // 원래 위치로 되돌리고 재탐색
+            CurrentX = PreviousX;
+            CurrentY = PreviousY;
+            CalculateNextPosition();
+            CurrentX = Mathf.Clamp(CurrentX, 0, GridManager.Columns - 1);
+            CurrentY = Mathf.Clamp(CurrentY, 0, GridManager.Rows - 1);
         }
-        else if (IsPositionOccupied(CurrentX, CurrentY))
+
+        // 임시 차단 목록 초기화
+        TemporaryBlocked.Clear();
+
+        // 공격 여부 확인
+        bool bIsAttacking = Player != null
+            && Player.CurrentX == CurrentX
+            && Player.CurrentY == CurrentY;
+
+        // 재탐색 후에도 막혀 있으면 제자리
+        if (!bIsAttacking && IsPositionOccupied(CurrentX, CurrentY))
         {
             CurrentX = PreviousX;
             CurrentY = PreviousY;
@@ -167,15 +204,10 @@ public abstract class EnemyBase : MonoBehaviour
 
         yield return StartCoroutine(AnimateMove(PreviousX, PreviousY, CurrentX, CurrentY));
 
-
         if (bIsAttacking)
         {
             ApplyDamage();
-
-            if (EnemyManager != null)
-            {
-                EnemyManager.RemoveEnemy(this);
-            }
+            if (EnemyManager != null) EnemyManager.RemoveEnemy(this);
             PoolManager.Instance.ReturnToPool(gameObject);
         }
     }
