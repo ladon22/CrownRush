@@ -4,8 +4,12 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
+    public static EnemyManager Instance;
+
     public GridManager GridManager;
     public GameObject[] EnemyPrefabs;
+    [Header("적 정보 패널 전용")]
+    public GameObject QueenPrefabForDisplay;
 
     [Header("Spawn Settings")]
     public int MaxEnemyCount = 4;
@@ -25,6 +29,12 @@ public class EnemyManager : MonoBehaviour
     private PlayerController CachedPlayer => _player != null ? _player : _player = FindFirstObjectByType<PlayerController>();
     private ItemManager _itemManager;
     private ItemManager CachedItemManager => _itemManager != null ? _itemManager : _itemManager = FindFirstObjectByType<ItemManager>();
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
 
     public void SpawnEnemy()
     {

@@ -169,6 +169,9 @@ public class GameManager : MonoBehaviour
 
         if (AudioManager.Instance != null) AudioManager.Instance.PlayBGM(BgmType.InGame);
 
+        if (InputController != null)
+            InputController.PushUIBlock();
+
         DOVirtual.DelayedCall(StartDelay, () =>
         {
             TurnManager.StartGameLoop();

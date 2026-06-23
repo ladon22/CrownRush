@@ -15,4 +15,4 @@ MonoBehaviour:
   HintID: item
   TitleKey: hint_item_title
   DescKey: hint_item_desc
-  Illustration: {fileID: 0}
+  Illustration: {fileID: 4698763875328618531, guid: e8c2c5a79b94145488f7150524a66b95, type: 3}

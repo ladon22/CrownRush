@@ -15,7 +15,7 @@ public class InputController : MonoBehaviour
     public float SwipeThreshold = 50f;
     //public float LongSwipeThreshold = 150f;
 
-    private int UIOpenCount = 0;
+    public int UIOpenCount = 0;
     public bool bIsInputBlocked => UIOpenCount > 0;
 
     public void PushUIBlock() { UIOpenCount++; }
@@ -23,7 +23,11 @@ public class InputController : MonoBehaviour
 
     void Update()
     {
-        if (bIsInputBlocked) return;
+        if (bIsInputBlocked)
+        {
+            IsDragging = false;
+            return;
+        }
 
         if (Pointer.current == null) return;
 

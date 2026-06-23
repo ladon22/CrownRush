@@ -61,7 +61,11 @@ public class TutorialHintPanel : MonoBehaviour
             bool hasIllustration = data.Illustration != null;
             IllustrationImage.gameObject.SetActive(hasIllustration);
             if (hasIllustration)
+            {
                 IllustrationImage.sprite = data.Illustration;
+                IllustrationImage.type = Image.Type.Simple;
+                IllustrationImage.preserveAspect = true;
+            }
         }
 
         // 입력 차단

@@ -27,20 +27,28 @@ public class TurnManager : MonoBehaviour
     private IEnumerator EnemyTurnRoutine()
     {
         GameManager.Instance.ChangeState(GameState.EnemyTurn);
+
         if (EnemyManager != null) EnemyManager.ClearAllIntents();
         yield return new WaitForSeconds(TurnDelay);
 
         yield return StartCoroutine(EnemyManager.ProcessEnemiesTurnRoutine());
+
         if (TutorialHintManager.Instance != null)
             TutorialHintManager.Instance.TryShowHint(TutorialHintID.Intent);
+
         StartPlayerTurn();
     }
 
     private IEnumerator DelayStartPlayerTurn()
     {
+
         GameManager.Instance.ChangeState(GameState.PlayerTurn);
         if (EnemyManager != null) EnemyManager.UpdateEnemyIntents();
+
         yield return new WaitForSeconds(TurnDelay);
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.InputController.PopUIBlock();
 
         if (TutorialHintManager.Instance != null)
             TutorialHintManager.Instance.TryShowHint(TutorialHintID.Swipe);

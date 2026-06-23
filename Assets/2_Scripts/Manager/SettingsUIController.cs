@@ -9,6 +9,7 @@ public class SettingsUIController : MonoBehaviour
 {
     [Header("Panel")]
     [SerializeField] private RectTransform PanelRect;
+    [SerializeField] private GameObject Overlay;
 
     [Header("Audio")]
     [SerializeField] private Toggle BGMToggle;
@@ -25,14 +26,21 @@ public class SettingsUIController : MonoBehaviour
     public float PopDuration = 0.4f;
     public Ease PopEase = Ease.OutBack;
 
+    private bool bManageGameState = true;
+
     private void Awake()
     {
         gameObject.SetActive(false);
     }
 
-    public void Show()
+    public void Show(bool manageGameState = true)
     {
         if (gameObject.activeInHierarchy) return;
+
+        bManageGameState = manageGameState;
+
+        if (Overlay != null)
+            Overlay.SetActive(manageGameState);
 
         if (GameManager.Instance != null)
             GameManager.Instance.InputController.PushUIBlock();
@@ -77,9 +85,12 @@ public class SettingsUIController : MonoBehaviour
             .SetUpdate(true)
             .OnComplete(() => {
                 gameObject.SetActive(false);
-                Time.timeScale = 1.0f;
-                if (GameManager.Instance != null)
-                    GameManager.Instance.InputController.PopUIBlock();
+                if (bManageGameState)
+                {
+                    Time.timeScale = 1.0f;
+                    if (GameManager.Instance != null)
+                        GameManager.Instance.InputController.PopUIBlock();
+                }
             });
 
     }

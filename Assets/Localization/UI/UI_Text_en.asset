@@ -148,8 +148,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 20283341154131968
-    m_Localized: An item has appeared on the board. Move onto it to pick it up. It
-      restores your health!
+    m_Localized: An item appears every 200 points. Up to 2 items can be on the board
+      at once. Move onto one to restore your health!
     m_Metadata:
       m_Items: []
   - m_Id: 20283235780632576
@@ -157,8 +157,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 20283325597458432
-    m_Localized: Each piece moves on its own turn. Pieces with an arrow will move
-      this turn. No arrow means they're waiting!
+    m_Localized: Some pieces move every turn, others rest every other turn. A sword
+      icon means it will attack this turn!
     m_Metadata:
       m_Items: []
   - m_Id: 20283042519687168
@@ -166,13 +166,86 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 20283224984494080
-    m_Localized: "Chain captures to boost your score multiplier. 5 combo x1.5 \u2192
-      10 combo x2.0 \u2192 20 combo x5.0! Capture within 5 seconds to keep the chain
-      going!"
+    m_Localized: Chain captures to boost your score multiplier. Capture within 5
+      seconds to keep the combo going!
     m_Metadata:
       m_Items: []
   - m_Id: 20287839469674496
     m_Localized: Got it!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22213932665643008
+    m_Localized: Enemy Info
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216453933080576
+    m_Localized: Pawn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216499822960640
+    m_Localized: Rook
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216520601542656
+    m_Localized: Knight
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216535248052224
+    m_Localized: Bishop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216542906851328
+    m_Localized: Queen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216799958966272
+    m_Localized: '{0} pts'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216699778015232
+    m_Localized: Moves in a line, rests every other turn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216684384919552
+    m_Localized: Moves forward, attacks diagonally, rests every other turn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216713950568448
+    m_Localized: Moves diagonally, rests every other turn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216760691892224
+    m_Localized: Moves in an L-shape, every turn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216775661363200
+    m_Localized: Moves in any direction, every turn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22568582690480128
+    m_Localized: Paused
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22568598339428352
+    m_Localized: Continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22570006912540672
+    m_Localized: Enemy Info
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22570087157964800
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22570161246150656
+    m_Localized: Exit to Lobby
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22832140070264832
+    m_Localized: 'No internet
+
+      connection'
     m_Metadata:
       m_Items: []
   references:

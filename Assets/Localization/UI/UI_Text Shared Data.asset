@@ -163,6 +163,78 @@ MonoBehaviour:
     m_Key: hint_confirm
     m_Metadata:
       m_Items: []
+  - m_Id: 22213932665643008
+    m_Key: piece_info_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216453933080576
+    m_Key: piece_name_pawn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216499822960640
+    m_Key: piece_name_rook
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216520601542656
+    m_Key: piece_name_knight
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216535248052224
+    m_Key: piece_name_bishop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216542906851328
+    m_Key: piece_name_queen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216684384919552
+    m_Key: piece_move_pawn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216699778015232
+    m_Key: piece_move_rook
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216713950568448
+    m_Key: piece_move_bishop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216760691892224
+    m_Key: piece_move_knight
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216775661363200
+    m_Key: piece_move_queen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22216799958966272
+    m_Key: piece_score_format
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22568582690480128
+    m_Key: pause_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22568598339428352
+    m_Key: pause_continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22570006912540672
+    m_Key: pause_piece_info
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22570087157964800
+    m_Key: pause_settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22570161246150656
+    m_Key: pause_exit_lobby
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22832140070264832
+    m_Key: toast_offline_desc
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

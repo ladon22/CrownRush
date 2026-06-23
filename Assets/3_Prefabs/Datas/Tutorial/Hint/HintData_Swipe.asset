@@ -15,4 +15,4 @@ MonoBehaviour:
   HintID: swipe
   TitleKey: hint_swipe_title
   DescKey: hint_swipe_desc
-  Illustration: {fileID: 0}
+  Illustration: {fileID: -7723929981511612337, guid: 9212c12e8ee49ae4ebc6ba5b71e7f754, type: 3}
