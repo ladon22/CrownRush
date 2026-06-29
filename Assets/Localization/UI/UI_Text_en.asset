@@ -248,6 +248,18 @@ MonoBehaviour:
       connection'
     m_Metadata:
       m_Items: []
+  - m_Id: 24350971552964608
+    m_Localized: Quit the game?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24351012015415296
+    m_Localized: Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24351033246982144
+    m_Localized: Cancel
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

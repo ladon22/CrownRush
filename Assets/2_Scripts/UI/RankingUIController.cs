@@ -109,6 +109,9 @@ public class RankingUIController : MonoBehaviour
         if (!UnrankedString.IsEmpty) currentUnrankedText = UnrankedString.GetLocalizedString();
 
         RefreshRanking();
+
+        if (UIBackHandler.Instance != null)
+            UIBackHandler.Instance.Push(HideRanking);
     }
 
     public void HideRanking()
@@ -129,6 +132,9 @@ public class RankingUIController : MonoBehaviour
             if (GameManager.Instance != null)
                 GameManager.Instance.InputController.PopUIBlock();
         }
+
+        if (UIBackHandler.Instance != null)
+            UIBackHandler.Instance.Pop();
     }
 
     // 새로고침 버튼과 ShowRanking에서 공통으로 쓰는 함수

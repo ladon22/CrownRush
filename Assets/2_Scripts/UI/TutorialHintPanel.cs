@@ -78,6 +78,9 @@ public class TutorialHintPanel : MonoBehaviour
         PanelRect.DOKill();
         PanelRect.localScale = Vector3.zero;
         PanelRect.DOScale(Vector3.one, PopDuration).SetEase(PopInEase).SetUpdate(true); ;
+
+        if (UIBackHandler.Instance != null)
+            UIBackHandler.Instance.Push(() => { });
     }
 
     /// <summary>확인 버튼에 연결합니다.</summary>
@@ -98,6 +101,9 @@ public class TutorialHintPanel : MonoBehaviour
 
                 if (TutorialHintManager.Instance != null)
                     TutorialHintManager.Instance.OnHintConfirmed();
+
+                if (UIBackHandler.Instance != null)
+                    UIBackHandler.Instance.Pop();
             });
     }
 }

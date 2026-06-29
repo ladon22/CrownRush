@@ -338,6 +338,7 @@ public class FireBaseManager : MonoBehaviour
         {
             ["Score"] = data.BestScore,
             ["TotalPlayCount"] = data.TotalPlayCount,
+            ["BestCombo"] = data.BestCombo,
             ["Name"] = user.DisplayName ?? "",
             ["PhotoUrl"] = user.PhotoUrl != null ? user.PhotoUrl.ToString() : ""
         };
@@ -377,6 +378,9 @@ public class FireBaseManager : MonoBehaviour
 
         if (snapshot.HasChild("TotalPlayCount"))
             int.TryParse(snapshot.Child("TotalPlayCount").Value?.ToString(), out data.TotalPlayCount);
+
+        if (snapshot.HasChild("BestCombo"))
+            int.TryParse(snapshot.Child("BestCombo").Value?.ToString(), out data.BestCombo);
 
         if (snapshot.HasChild("Achievements"))
         {
@@ -476,6 +480,22 @@ public class FireBaseManager : MonoBehaviour
                     Debug.LogError("[FireBaseManager] 프로필 저장 실패: " + task.Exception);
                 else
                     Debug.Log($"[FireBaseManager] 프로필 저장 완료: {user.DisplayName}");
+            });
+    }
+
+    public void SaveBestCombo(int bestCombo)
+    {
+        if (!IsAvailable()) return;
+
+        DBReference.Child("Users").Child(user.UserId)
+            .Child("BestCombo")
+            .SetValueAsync(bestCombo)
+            .ContinueWithOnMainThread(task =>
+            {
+                if (task.IsFaulted)
+                    Debug.LogError("[FireBaseManager] BestCombo 저장 실패: " + task.Exception);
+                else
+                    Debug.Log($"[FireBaseManager] BestCombo 저장 완료: {bestCombo}");
             });
     }
 

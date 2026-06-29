@@ -74,7 +74,10 @@ public class SettingsUIController : MonoBehaviour
         // 팝업 애니메이션 실행
         PanelRect.localScale = Vector3.zero;
         PanelRect.DOKill();
-        PanelRect.DOScale(Vector3.one, PopDuration).SetEase(PopEase).SetUpdate(true); ;
+        PanelRect.DOScale(Vector3.one, PopDuration).SetEase(PopEase).SetUpdate(true);
+
+        if (UIBackHandler.Instance != null)
+            UIBackHandler.Instance.Push(Hide);
     }
 
     public void Hide()
@@ -91,6 +94,9 @@ public class SettingsUIController : MonoBehaviour
                     if (GameManager.Instance != null)
                         GameManager.Instance.InputController.PopUIBlock();
                 }
+
+                if (UIBackHandler.Instance != null)
+                    UIBackHandler.Instance.Pop();
             });
 
     }

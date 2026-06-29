@@ -46,12 +46,10 @@ public class PauseMenuController : MonoBehaviour
             PanelRect.gameObject.SetActive(true);
             PanelRect.DOKill();
             PanelRect.localScale = Vector3.one;
-            //PanelRect.localScale = Vector3.zero;
-            //PanelRect.DOKill();
-            //PanelRect.DOScale(Vector3.one, PopDuration)
-            //    .SetEase(PopEase)
-            //    .SetUpdate(true); // timeScale=0 이어도 애니메이션 동작
         }
+
+        if (UIBackHandler.Instance != null)
+            UIBackHandler.Instance.Push(OnContinueButton);
     }
 
     /// <summary>"이어하기" 버튼에 연결합니다.</summary>
@@ -80,6 +78,9 @@ public class PauseMenuController : MonoBehaviour
 
         if (GameManager.Instance != null)
             GameManager.Instance.InputController.PopUIBlock();
+
+        if (UIBackHandler.Instance != null)
+            UIBackHandler.Instance.Pop();
     }
 
     /// <summary>"적 정보" 버튼에 연결합니다.</summary>
@@ -106,6 +107,9 @@ public class PauseMenuController : MonoBehaviour
             GameManager.Instance.InputController.PopUIBlock();
 
         gameObject.SetActive(false);
+
+        if (UIBackHandler.Instance != null)
+            UIBackHandler.Instance.Pop();
 
         if (GameManager.Instance != null)
             GameManager.Instance.ReturnToLobby();

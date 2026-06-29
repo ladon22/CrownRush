@@ -235,6 +235,18 @@ MonoBehaviour:
     m_Key: toast_offline_desc
     m_Metadata:
       m_Items: []
+  - m_Id: 24350971552964608
+    m_Key: exit_confirm_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24351012015415296
+    m_Key: exit_confirm_yes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 24351033246982144
+    m_Key: exit_confirm_no
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

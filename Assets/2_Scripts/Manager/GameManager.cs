@@ -36,6 +36,8 @@ public class GameManager : MonoBehaviour
     public GameOverUIController GameOverUI;
     public SettingsUIController SettingsUI;
     public UpdateBestScoreUI LobbyUI;
+    public PauseMenuController PauseMenu;
+    public ExitConfirmPanel ExitConfirmPanel;
 
     private bool IsInitialized = false;
     private PlayerController CurrentPlayer;
@@ -43,6 +45,7 @@ public class GameManager : MonoBehaviour
     public CollectionUIController CollectionUI;
     private bool bHasRevivedThisGame = false;
     private const string BestScoreKey = "BestScore";
+
 
     private void Awake()
     {
@@ -211,6 +214,21 @@ public class GameManager : MonoBehaviour
 
         if (FireBaseManager.Instance != null)
             FireBaseManager.Instance.SavePlayCount(playCount);
+
+        if (ScoreManager != null)
+        {
+            int bestComboThisGame = ScoreManager.BestComboThisGame;
+            int savedBestCombo = PlayerPrefs.GetInt("BestCombo", 0);
+
+            if (bestComboThisGame > savedBestCombo)
+            {
+                PlayerPrefs.SetInt("BestCombo", bestComboThisGame);
+                PlayerPrefs.Save();
+
+                if (FireBaseManager.Instance != null)
+                    FireBaseManager.Instance.SaveBestCombo(bestComboThisGame);
+            }
+        }
 
         if (GameOverUI != null)
             GameOverUI.Show(currentScore, bestScore, !bHasRevivedThisGame);

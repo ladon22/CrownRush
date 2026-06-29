@@ -34,6 +34,7 @@ public class ScoreManager : MonoBehaviour
 
     private PlayerController _player;
     private PlayerController Player => _player != null ? _player : _player = FindFirstObjectByType<PlayerController>();
+    public int BestComboThisGame { get; private set; } = 0;
 
     private void Awake()
     {
@@ -67,6 +68,7 @@ public class ScoreManager : MonoBehaviour
     public void ResetScore()
     {
         CurrentScore = 0;
+        BestComboThisGame = 0;
         ResetCombo();
         OnScoreChanged?.Invoke(CurrentScore);
     }
@@ -75,6 +77,9 @@ public class ScoreManager : MonoBehaviour
     {
         CurrentCombo++;
         CurrentComboTimer = MaxComboTime;
+
+        if (CurrentCombo > BestComboThisGame)
+            BestComboThisGame = CurrentCombo;
 
         float multiplier = GetMultiplier(CurrentCombo);
         int finalScore = Mathf.RoundToInt(ScoreToAdd * multiplier);
@@ -92,7 +97,7 @@ public class ScoreManager : MonoBehaviour
         if (AchievementManager.Instance != null)
         {
             AchievementManager.Instance.ReportProgress(AchievementType.Score, CurrentScore);
-            AchievementManager.Instance.ReportProgress(AchievementType.Combo, CurrentCombo);
+            AchievementManager.Instance.ReportProgress(AchievementType.Combo, BestComboThisGame);
         }
 
         OnScoreChanged?.Invoke(CurrentScore);

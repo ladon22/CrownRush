@@ -73,6 +73,9 @@ public class PieceInfoPanel : MonoBehaviour
                 .SetEase(PopEase)
                 .SetUpdate(true); // timeScale=0 이어도 애니메이션 동작
         }
+
+        if (UIBackHandler.Instance != null)
+            UIBackHandler.Instance.Push(Hide);
     }
 
     /// <summary>닫기 버튼에 연결합니다.</summary>
@@ -103,6 +106,9 @@ public class PieceInfoPanel : MonoBehaviour
             if (GameManager.Instance != null)
                 GameManager.Instance.InputController.PopUIBlock();
         }
+
+        if (UIBackHandler.Instance != null)
+            UIBackHandler.Instance.Pop();
     }
 
     // ── 리스트 채우기 (동적 생성) ────────────────────────────
