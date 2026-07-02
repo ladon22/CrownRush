@@ -42,7 +42,7 @@ public class SettingsUIController : MonoBehaviour
         if (Overlay != null)
             Overlay.SetActive(manageGameState);
 
-        if (GameManager.Instance != null)
+        if (manageGameState && GameManager.Instance != null)
             GameManager.Instance.InputController.PushUIBlock();
 
         gameObject.SetActive(true);

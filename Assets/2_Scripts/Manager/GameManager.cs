@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
     public CollectionUIController CollectionUI;
     private bool bHasRevivedThisGame = false;
     private const string BestScoreKey = "BestScore";
-
+    private bool bIsStartingGame = false;
 
     private void Awake()
     {
@@ -141,6 +141,10 @@ public class GameManager : MonoBehaviour
 
     public void StartGame(bool IsRetry = false)
     {
+
+        if (bIsStartingGame) return;
+        bIsStartingGame = true;
+
         ChangeState(GameState.Initialize);
 
         float StartDelay = 0f;
@@ -178,6 +182,7 @@ public class GameManager : MonoBehaviour
         DOVirtual.DelayedCall(StartDelay, () =>
         {
             TurnManager.StartGameLoop();
+            bIsStartingGame = false;
         });
 
         bHasRevivedThisGame = false;
@@ -379,6 +384,26 @@ public class GameManager : MonoBehaviour
             {
                 CollectionUI.Show();
             }
+        }
+    }
+
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        if (!pauseStatus) return; // 돌아왔을 때는 별도 처리 불필요
+                                  // (일시정지 메뉴가 이미 떠있으므로 유저가 직접 "이어하기"를 누르게 됨)
+
+        if (AdManager.bIsAdTransitioning) return;
+        // 플레이 중일 때만 자동으로 일시정지
+        // (로비, 게임오버 화면 등에서는 처리할 필요 없음)
+        bool bIsPlaying = CurrentState == GameState.PlayerTurn
+                        || CurrentState == GameState.EnemyTurn;
+
+        if (!bIsPlaying) return;
+
+        // 이미 일시정지 메뉴가 떠있다면 중복으로 열지 않음
+        if (PauseMenu != null && !PauseMenu.gameObject.activeInHierarchy)
+        {
+            PauseMenu.Show();
         }
     }
 }

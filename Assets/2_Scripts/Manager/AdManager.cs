@@ -1,5 +1,6 @@
 using GoogleMobileAds.Api;
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class AdManager : MonoBehaviour
@@ -11,6 +12,9 @@ public class AdManager : MonoBehaviour
     private Action OnRewardEarned;
     private bool bRewardEarned = false;
     public bool bIsAdReady => RewardedAd != null && RewardedAd.CanShowAd();
+
+    public static bool bIsAdTransitioning { get; private set; } = false;
+    private const float AdPauseCooldown = 1.0f;
 
     private void Awake()
     {
@@ -58,6 +62,7 @@ public class AdManager : MonoBehaviour
     {
         if (RewardedAd == null || !RewardedAd.CanShowAd()) return;
 
+        bIsAdTransitioning = true;
         OnRewardEarned = onRewardEarned;
         bRewardEarned = false;
 
@@ -84,5 +89,13 @@ public class AdManager : MonoBehaviour
 
         LoadRewardedAd();
 
+        StartCoroutine(ClearAdTransitionFlagAfterDelay());
+    }
+
+    private IEnumerator ClearAdTransitionFlagAfterDelay()
+    {
+        // Time.timeScale과 무관하게 실제 시간 기준으로 대기
+        yield return new WaitForSecondsRealtime(AdPauseCooldown);
+        bIsAdTransitioning = false;
     }
 }
