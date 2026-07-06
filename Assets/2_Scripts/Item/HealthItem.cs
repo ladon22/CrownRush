@@ -9,8 +9,9 @@ public class HealthItem : ItemBase
         {
             Player.HealthComponent.Heal(HealAmount);
         }
-        
+
         if(ItemManager != null) ItemManager.RemoveItem(this);
-        Destroy(gameObject);
+        KillTweens();
+        PoolManager.Instance.ReturnToPool(gameObject);
     }
 }

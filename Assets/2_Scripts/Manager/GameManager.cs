@@ -70,13 +70,13 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        // À¯´ÏÆ¼ ¿¡µğÅÍ¿¡¼­ ÇÃ·¹ÀÌ ÁßÀÏ ¶§¸¸ ÀÛµ¿ÇÏ´Â ¾ÈÀüÇÑ Ä¡Æ®Å°ÀÔ´Ï´Ù.
+        // ï¿½ï¿½ï¿½ï¿½Æ¼ ï¿½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ûµï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä¡Æ®Å°ï¿½Ô´Ï´ï¿½.
 #if UNITY_EDITOR
         if (Keyboard.current != null && Keyboard.current.f12Key.wasPressedThisFrame)
         {
             PlayerPrefs.DeleteAll();
             PlayerPrefs.Save();
-            Debug.Log("[Cheat] ¸ğµç µ¥ÀÌÅÍ ÃÊ±âÈ­ ¿Ï·á! ¾ÀÀ» Àç½ÃÀÛÇÕ´Ï´Ù.");
+            Debug.Log("[Cheat] ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­ ï¿½Ï·ï¿½! ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.");
 
             UnityEngine.SceneManagement.SceneManager.LoadScene(
                 UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex
@@ -123,6 +123,7 @@ public class GameManager : MonoBehaviour
             CurrentPlayer.TurnManager = TurnManager;
             CurrentPlayer.EnemyManager = EnemyManager;
             CurrentPlayer.ItemManager = ItemManager;
+            GridManager.PlaceOccupant(CurrentPlayer, StartX, StartY);
         }
 
         HealthComponent PlayerHealth = PlayerInstance.GetComponent<HealthComponent>();
@@ -132,7 +133,7 @@ public class GameManager : MonoBehaviour
             PlayerHealth.OnDied += GameOver;
         }
 
-        // ÇÃ·¹ÀÌ¾î°¡ »ı¼ºµÈ Á÷ÈÄ, ÇöÀç ÀåÂø ÁßÀÎ ½ºÅ²À» ÀÔÇôÁİ´Ï´Ù.
+        // ï¿½Ã·ï¿½ï¿½Ì¾î°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å²ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½İ´Ï´ï¿½.
         if (CurrentPlayer != null)
         {
             CurrentPlayer.ApplyEquippedSkin();
@@ -192,7 +193,7 @@ public class GameManager : MonoBehaviour
     {
         ChangeState(GameState.GameOver);
 
-        // °ÔÀÓ ¿À¹ö°¡ µÉ ¶§¸¶´Ù ´©Àû ÇÃ·¹ÀÌ È½¼ö¸¦ Áõ°¡½ÃÅ°°í º¸°íÇÕ´Ï´Ù.
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ È½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
         int playCount = PlayerPrefs.GetInt("TotalPlayCount", 0) + 1;
         PlayerPrefs.SetInt("TotalPlayCount", playCount);
         PlayerPrefs.Save();
@@ -247,23 +248,23 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            // ¿¡µğÅÍ Å×½ºÆ® ÁßÀÌ°Å³ª AdManager°¡ ¾øÀ» ¶§´Â ±×³É Áï½Ã ºÎÈ° Ã³¸® (Å×½ºÆ®¿ë ¹æ¾î ÄÚµå)
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×½ï¿½Æ® ï¿½ï¿½ï¿½Ì°Å³ï¿½ AdManagerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½×³ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½È° Ã³ï¿½ï¿½ (ï¿½×½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Úµï¿½)
             OnReviveSuccess();
         }
     }
 
     private void OnReviveSuccess()
     {
-        bHasRevivedThisGame = true; // ºÎÈ° ±âÈ¸ »ç¿ë ¿Ï·á
+        bHasRevivedThisGame = true; // ï¿½ï¿½È° ï¿½ï¿½È¸ ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½
 
         if (GameOverUI != null) GameOverUI.Hide();
 
         if (CurrentPlayer != null && CurrentPlayer.HealthComponent != null)
         {
-            CurrentPlayer.HealthComponent.Revive(1); // ÇÏÆ® 1°³·Î ºÎÈ° (¿øÇÑ´Ù¸é MaxHealth·Î ºÎÈ° °¡´É)
+            CurrentPlayer.HealthComponent.Revive(1); // ï¿½ï¿½Æ® 1ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È° (ï¿½ï¿½ï¿½Ñ´Ù¸ï¿½ MaxHealthï¿½ï¿½ ï¿½ï¿½È° ï¿½ï¿½ï¿½ï¿½)
         }
 
-        // ºÎÈ°ÇÏÀÚ¸¶ÀÚ ²û»ì´çÇÏ´Â °ÍÀ» ¸·±â À§ÇØ ÇÃ·¹ÀÌ¾î ÁÖº¯ÀÇ ÀûÀ» ³¯·Á¹ö¸³´Ï´Ù.
+        // ï¿½ï¿½È°ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½Öºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
         //ClearEnemiesNearPlayer();
 
         if (ScoreManager != null)
@@ -271,10 +272,10 @@ public class GameManager : MonoBehaviour
             ScoreManager.ResetCombo();
         }
 
-        // »óÅÂ¸¦ ´Ù½Ã ÇÃ·¹ÀÌ¾î ÅÏÀ¸·Î µÇµ¹¸³´Ï´Ù.
+        // ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½Ù½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Çµï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
         ChangeState(GameState.PlayerTurn);
 
-        // UI¸¦ ÀÎ°ÔÀÓ »óÅÂ·Î µÇµ¹¸³´Ï´Ù.
+        // UIï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½Çµï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
         if (UITransition != null) UITransition.SlideToGame();
     }
 
@@ -286,7 +287,7 @@ public class GameManager : MonoBehaviour
 
         foreach (EnemyBase Enemy in EnemyManager.ActiveEnemies)
         {
-            // ÇÃ·¹ÀÌ¾î¿Í °Å¸®°¡ 1 ÀÌ³»ÀÎ (»óÇÏÁÂ¿ì ¹× ´ë°¢¼±) ÀÎÁ¢ÇÑ ÀûµéÀ» Ã£½À´Ï´Ù.
+            // í”Œë ˆì´ì–´ì™€ ê±°ë¦¬ê°€ 2 ì´ë‚´ì¸(ìƒí•˜ì¢Œìš° ë° ëŒ€ê°ì„  í¬í•¨) ì ì„ ì°¾ìŠµë‹ˆë‹¤.
             int DistX = Mathf.Abs(Enemy.CurrentX - CurrentPlayer.CurrentX);
             int DistY = Mathf.Abs(Enemy.CurrentY - CurrentPlayer.CurrentY);
 
@@ -296,14 +297,14 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // Ã£¾Æ³½ ÀûµéÀ» ÅÍ¶ß·ÁÁİ´Ï´Ù.
+        // Ã£ï¿½Æ³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Í¶ß·ï¿½ï¿½İ´Ï´ï¿½.
         foreach (EnemyBase Enemy in EnemiesToRemove)
         {
-            Enemy.Die(); // (ÁÖÀÇ: Die ¾È¿¡ EnemyManager.RemoveEnemy Ã³¸®°¡ µÇ¾îÀÖ´ÂÁö È®ÀÎ ÇÊ¿ä)
-            // Ä«¸Ş¶ó Èçµé¸²ÀÌ³ª Æø¹ß ÀÌÆåÆ®¸¦ ÁÖ¸é Å¸°İ°¨ÀÌ ÈÎ¾À ÁÁ½À´Ï´Ù!
+            Enemy.Die(); // (ï¿½ï¿½ï¿½ï¿½: Die ï¿½È¿ï¿½ EnemyManager.RemoveEnemy Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¾ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½ ï¿½Ê¿ï¿½)
+            // Ä«ï¿½Ş¶ï¿½ ï¿½ï¿½é¸²ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ö¸ï¿½ Å¸ï¿½İ°ï¿½ï¿½ï¿½ ï¿½Î¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!
         }
 
-        // ÇÊ¿äÇÏ´Ù¸é Æø¹ß ÀÌÆåÆ® ¼Ò¸® Àç»ı
+        // ï¿½Ê¿ï¿½ï¿½Ï´Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ò¸ï¿½ ï¿½ï¿½ï¿½
         // if (AudioManager.Instance != null) AudioManager.Instance.PlaySFX(SfxType.EnemyDie);
     }
 
@@ -368,6 +369,7 @@ public class GameManager : MonoBehaviour
             {
                 if (Enemy != null)
                 {
+                    GridManager.RemoveOccupant(Enemy, Enemy.CurrentX, Enemy.CurrentY);
                     PoolManager.Instance.ReturnToPool(Enemy.gameObject);
                 }
             }
@@ -377,7 +379,7 @@ public class GameManager : MonoBehaviour
 
     public void OpenCollectionUI()
     {
-        // ·Îºñ »óÅÂÀÏ ¶§¸¸ ¿­¸®µµ·Ï ¹æ¾î ÄÚµå (°ÔÀÓ Áß¿£ ¾È ¿­¸®°Ô)
+        // ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Úµï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ß¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
         if (CurrentState == GameState.Lobby)
         {
             if (CollectionUI != null && !CollectionUI.isActiveAndEnabled)
@@ -389,18 +391,18 @@ public class GameManager : MonoBehaviour
 
     private void OnApplicationPause(bool pauseStatus)
     {
-        if (!pauseStatus) return; // µ¹¾Æ¿ÔÀ» ¶§´Â º°µµ Ã³¸® ºÒÇÊ¿ä
-                                  // (ÀÏ½ÃÁ¤Áö ¸Ş´º°¡ ÀÌ¹Ì ¶°ÀÖÀ¸¹Ç·Î À¯Àú°¡ Á÷Á¢ "ÀÌ¾îÇÏ±â"¸¦ ´©¸£°Ô µÊ)
+        if (!pauseStatus) return; // ï¿½ï¿½ï¿½Æ¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ ï¿½ï¿½ï¿½Ê¿ï¿½
+                                  // (ï¿½Ï½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ş´ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ "ï¿½Ì¾ï¿½ï¿½Ï±ï¿½"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½)
 
         if (AdManager.bIsAdTransitioning) return;
-        // ÇÃ·¹ÀÌ ÁßÀÏ ¶§¸¸ ÀÚµ¿À¸·Î ÀÏ½ÃÁ¤Áö
-        // (·Îºñ, °ÔÀÓ¿À¹ö È­¸é µî¿¡¼­´Â Ã³¸®ÇÒ ÇÊ¿ä ¾øÀ½)
+        // ï¿½Ã·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï½ï¿½ï¿½ï¿½ï¿½ï¿½
+        // (ï¿½Îºï¿½, ï¿½ï¿½ï¿½Ó¿ï¿½ï¿½ï¿½ È­ï¿½ï¿½ ï¿½î¿¡ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½)
         bool bIsPlaying = CurrentState == GameState.PlayerTurn
                         || CurrentState == GameState.EnemyTurn;
 
         if (!bIsPlaying) return;
 
-        // ÀÌ¹Ì ÀÏ½ÃÁ¤Áö ¸Ş´º°¡ ¶°ÀÖ´Ù¸é Áßº¹À¸·Î ¿­Áö ¾ÊÀ½
+        // ï¿½Ì¹ï¿½ ï¿½Ï½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ş´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ö´Ù¸ï¿½ ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (PauseMenu != null && !PauseMenu.gameObject.activeInHierarchy)
         {
             PauseMenu.Show();

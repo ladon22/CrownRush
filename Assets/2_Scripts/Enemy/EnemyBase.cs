@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public abstract class EnemyBase : MonoBehaviour
+public abstract class EnemyBase : MonoBehaviour, IBoardOccupant
 {
     [HideInInspector]
     public GridManager GridManager;
@@ -12,11 +12,8 @@ public abstract class EnemyBase : MonoBehaviour
     [HideInInspector]
     public PlayerController Player;
 
-    private ItemManager _itemManager;
-    private ItemManager CachedItemManager => _itemManager != null ? _itemManager : _itemManager = FindFirstObjectByType<ItemManager>();
-
-    public int CurrentX;
-    public int CurrentY;
+    public int CurrentX { get; protected set; }
+    public int CurrentY { get; protected set; }
     public float MoveSpeed = 20f;
     public int ScoreValue = 1;
 
@@ -40,6 +37,7 @@ public abstract class EnemyBase : MonoBehaviour
         this.GridManager = GridManager;
         CurrentX = StartX;
         CurrentY = StartY;
+        GridManager.PlaceOccupant(this, CurrentX, CurrentY);
 
         CurrentWaitCount = 0;
         Player = FindFirstObjectByType<PlayerController>();
@@ -124,23 +122,12 @@ public abstract class EnemyBase : MonoBehaviour
         if (TemporaryBlocked.Contains(new Vector2Int(TargetX, TargetY)))
             return true;
 
-        if (EnemyManager != null)
-        {
-            EnemyBase OtherEnemy = EnemyManager.GetEnemyAtPosition(TargetX, TargetY);
-            if (OtherEnemy != null && OtherEnemy != this)
-            {
-                return true;
-            }
-        }
-        if (CachedItemManager != null)
-        {
-            ItemBase ItemOnTile = CachedItemManager.GetItemAtPosition(TargetX, TargetY);
-            if (ItemOnTile != null)
-            {
-                return true;
-            }
-        }
-        return false;
+        // 플레이어가 있는 칸은 "공격 대상"이지 이동을 막는 장애물이 아니므로 제외합니다.
+        IBoardOccupant Occupant = GridManager.GetOccupant(TargetX, TargetY);
+        if (Occupant == null || Occupant is PlayerController || ReferenceEquals(Occupant, this))
+            return false;
+
+        return true;
     }
     public virtual IEnumerator MoveRoutine()
     {
@@ -202,6 +189,14 @@ public abstract class EnemyBase : MonoBehaviour
             CurrentY = PreviousY;
         }
 
+        // 공격 시에는 플레이어 칸에 자신을 등록하지 않습니다(직후 사망 처리되므로
+        // 플레이어의 점유 정보를 덮어쓰지 않도록 이전 칸만 비웁니다).
+        GridManager.RemoveOccupant(this, PreviousX, PreviousY);
+        if (!bIsAttacking)
+        {
+            GridManager.PlaceOccupant(this, CurrentX, CurrentY);
+        }
+
         yield return StartCoroutine(AnimateMove(PreviousX, PreviousY, CurrentX, CurrentY));
 
         if (bIsAttacking)
@@ -244,6 +239,8 @@ public abstract class EnemyBase : MonoBehaviour
     }
     public virtual void Die()
     {
+        if (EnemyManager != null) EnemyManager.RemoveEnemy(this);
+
         if (ScoreManager.Instance != null)
         {
             ScoreManager.Instance.AddScore(ScoreValue, transform.position);

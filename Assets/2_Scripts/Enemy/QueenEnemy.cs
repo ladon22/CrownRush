@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class QueenEnemy : EnemyBase
 {
-    private Vector2Int[] Directions = new Vector2Int[]
+    private static readonly Vector2Int[] Directions = new Vector2Int[]
     {
         new Vector2Int(0, 1), new Vector2Int(0, -1),
         new Vector2Int(1, 0), new Vector2Int(-1, 0),
@@ -17,7 +17,7 @@ public class QueenEnemy : EnemyBase
         Vector2Int BestMove = new Vector2Int(CurrentX, CurrentY);
         float MinDistance = float.MaxValue;
 
-        // 8¹æÇâÀ¸·Î °¢°¢ ·¹ÀÌÀú¸¦ ½îµíÀÌ Å½»öÇÕ´Ï´Ù.
+        // 8ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ Å½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
         foreach (Vector2Int Dir in Directions)
         {
             int CheckX = CurrentX;
@@ -28,30 +28,30 @@ public class QueenEnemy : EnemyBase
                 CheckX += Dir.x;
                 CheckY += Dir.y;
 
-                // 1. ¸Ê ¹ÛÀ¸·Î ³ª°¡¸é Å½»ö Á¾·á (´ÙÀ½ ¹æÇâÀ¸·Î)
+                // 1. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
                 if (!GridManager.IsValidGridPosition(CheckX, CheckY)) break;
 
-                // 2. ´©±º°¡ ÀÚ¸®¸¦ Â÷ÁöÇÏ°í ÀÖ´Ù¸é?
+                // 2. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ö´Ù¸ï¿½?
                 if (IsPositionOccupied(CheckX, CheckY))
                 {
-                    // ¸¸¾à ±× ÀÚ¸®¿¡ ÀÖ´Â °Ô ÇÃ·¹ÀÌ¾î¶ó¸é? ´çÀå µ¹ÁøÇØ¼­ °ø°ÝÇØ¾ß ÇÕ´Ï´Ù!
+                    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ú¸ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½? ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ ï¿½Õ´Ï´ï¿½!
                     if (Player.CurrentX == CheckX && Player.CurrentY == CheckY)
                     {
                         BestMove = new Vector2Int(CheckX, CheckY);
-                        MinDistance = 0; // ÃÖ¿ì¼± ¼øÀ§
+                        MinDistance = 0; // ï¿½Ö¿ì¼± ï¿½ï¿½ï¿½ï¿½
                         break;
                     }
                     else
                     {
-                        // ´Ù¸¥ ÀûÀÌ³ª ¾ÆÀÌÅÛ¿¡ ¸·ÇûÀ¸¹Ç·Î ÀÌ ¹æÇâ Å½»öÀº ¿©±â±îÁö.
+                        // ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
                         break;
                     }
                 }
 
-                // 3. ºó °ø°£ÀÌ¶ó¸é ÇÃ·¹ÀÌ¾î¿ÍÀÇ °Å¸®¸¦ Àì´Ï´Ù.
+                // 3. ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì¶ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ï¿½ï¿½ ï¿½ï¿½Ï´ï¿½.
                 float Dist = Vector2.Distance(new Vector2(CheckX, CheckY), new Vector2(Player.CurrentX, Player.CurrentY));
 
-                // Áö±Ý±îÁö Ã£Àº Ä­µéº¸´Ù ÇÃ·¹ÀÌ¾î¿Í ´õ °¡±õ´Ù¸é ÀÌ Ä­À» ÃÖÀûÀÇ ÀÌµ¿ À§Ä¡·Î ÀúÀåÇÕ´Ï´Ù.
+                // ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ Ä­ï¿½éº¸ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½ï¿½ Ä­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
                 if (Dist < MinDistance)
                 {
                     MinDistance = Dist;
@@ -59,11 +59,11 @@ public class QueenEnemy : EnemyBase
                 }
             }
 
-            // ÀÌ¹Ì ÇÃ·¹ÀÌ¾î¸¦ °ø°ÝÇÒ ¼ö ÀÖ´Â ¿Ïº®ÇÑ ¼ö¸¦ Ã£¾Ò´Ù¸é ´õ Å½»öÇÒ ÇÊ¿ä°¡ ¾ø½À´Ï´Ù.
+            // ï¿½Ì¹ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½Ïºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½Ò´Ù¸ï¿½ ï¿½ï¿½ Å½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ä°¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.
             if (MinDistance == 0) break;
         }
 
-        // ÃÖÁ¾ÀûÀ¸·Î °áÁ¤µÈ ÃÖÀûÀÇ À§Ä¡·Î ÀÌµ¿ÇÕ´Ï´Ù.
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Õ´Ï´ï¿½.
         CurrentX = BestMove.x;
         CurrentY = BestMove.y;
     }

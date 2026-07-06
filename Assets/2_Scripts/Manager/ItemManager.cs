@@ -19,7 +19,7 @@ public class ItemManager : MonoBehaviour
 
     private void Start()
     {
-        // ½Ì±ÛÅæ ÀÎ½ºÅÏ½º¿¡ Á¢±ÙÇÏ¿© ÀÌº¥Æ® ±¸µ¶
+        // ï¿½Ì±ï¿½ï¿½ï¿½ ï¿½Î½ï¿½ï¿½Ï½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Ìºï¿½Æ® ï¿½ï¿½ï¿½ï¿½
         if (ScoreManager.Instance != null)
         {
             ScoreManager.Instance.OnScoreChanged += HandleScoreChanged;
@@ -44,12 +44,13 @@ public class ItemManager : MonoBehaviour
             int RandomIndex = Random.Range(0, ItemPrefabs.Length);
             GameObject Prefab = ItemPrefabs[RandomIndex];
             Vector2 SpawnPos = GridManager.GetWorldPosition(SpawnX, SpawnY);
-            GameObject NewItemObj = Instantiate(Prefab, SpawnPos, Quaternion.identity);
+            GameObject NewItemObj = PoolManager.Instance.SpawnFromPool(Prefab, SpawnPos, Quaternion.identity);
             ItemBase NewItem = NewItemObj.GetComponent<ItemBase>();
 
             if (NewItem != null)
             {
                 NewItem.Initialize(this, SpawnX, SpawnY, SpawnPos);
+                GridManager.PlaceOccupant(NewItem, SpawnX, SpawnY);
                 ActiveItems.Add(NewItem);
 
                 if (TutorialHintManager.Instance != null)
@@ -113,15 +114,15 @@ public class ItemManager : MonoBehaviour
 
     public ItemBase GetItemAtPosition(int X, int Y)
     {
-        foreach (ItemBase Item in ActiveItems)
-        {
-            if (Item.CurrentX == X && Item.CurrentY == Y) return Item;
-        }
-        return null;
+        return GridManager.GetOccupant(X, Y) as ItemBase;
     }
 
     public void RemoveItem(ItemBase item)
     {
+        if (item != null)
+        {
+            GridManager.RemoveOccupant(item, item.CurrentX, item.CurrentY);
+        }
         ActiveItems.Remove(item);
     }
 
@@ -131,7 +132,9 @@ public class ItemManager : MonoBehaviour
         {
             if (Item != null)
             {
-                Destroy(Item.gameObject);
+                GridManager.RemoveOccupant(Item, Item.CurrentX, Item.CurrentY);
+                Item.KillTweens();
+                PoolManager.Instance.ReturnToPool(Item.gameObject);
             }
         }
         ActiveItems.Clear();

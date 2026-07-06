@@ -104,15 +104,15 @@ public class ScoreUIManager : MonoBehaviour
             ComboText.gameObject.SetActive(true);
 
             string MultiplierText = "";
-            // ½Ì±ÛÅæÀ» ÅëÇØ º¯¼ö Á¢±Ù
+            // ï¿½Ì±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             if (currentCombo >= ScoreManager.Instance.Stage4Threshold)
-                MultiplierText = $" <color=#B300FF>[x{ScoreManager.Instance.Stage4Multiplier:F1}]</color>"; // º¸¶ó»ö (°¡Àå È­·ÁÇÔ)
+                MultiplierText = $" <color=#D896FF>[x{ScoreManager.Instance.Stage4Multiplier:F1}]</color>"; // ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ È­ï¿½ï¿½ï¿½ï¿½)
             else if (currentCombo >= ScoreManager.Instance.Stage3Threshold)
-                MultiplierText = $" <color=#00EAFF>[x{ScoreManager.Instance.Stage3Multiplier:F1}]</color>"; // ¹ÎÆ®/½Ã¾È»ö
+                MultiplierText = $" <color=#00EAFF>[x{ScoreManager.Instance.Stage3Multiplier:F1}]</color>"; // ï¿½ï¿½Æ®/ï¿½Ã¾È»ï¿½
             else if (currentCombo >= ScoreManager.Instance.Stage2Threshold)
-                MultiplierText = $" <color=#FF2A2A>[x{ScoreManager.Instance.Stage2Multiplier:F1}]</color>"; // »¡°£»ö
+                MultiplierText = $" <color=#FF2A2A>[x{ScoreManager.Instance.Stage2Multiplier:F1}]</color>"; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             else if (currentCombo >= ScoreManager.Instance.Stage1Threshold)
-                MultiplierText = $" <color=#FFB300>[x{ScoreManager.Instance.Stage1Multiplier:F1}]</color>"; // ³ë¶õ»ö
+                MultiplierText = $" <color=#FFB300>[x{ScoreManager.Instance.Stage1Multiplier:F1}]</color>"; // ï¿½ï¿½ï¿½ï¿½ï¿½
 
             ComboText.text = $"{currentCombo} COMBO!{MultiplierText}";
 
@@ -127,7 +127,7 @@ public class ScoreUIManager : MonoBehaviour
 
             ComboText.rectTransform.anchoredPosition = ComboTextOriginPos;
             ComboText.rectTransform.localScale = Vector3.one;
-            ComboText.rectTransform.localRotation = Quaternion.identity; // 2D UI´Â ²À localRotationÀ» ¾¹´Ï´Ù!
+            ComboText.rectTransform.localRotation = Quaternion.identity; // 2D UIï¿½ï¿½ ï¿½ï¿½ localRotationï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½!
             ComboText.alpha = 1f;
 
             comboAnimSequence = DOTween.Sequence();

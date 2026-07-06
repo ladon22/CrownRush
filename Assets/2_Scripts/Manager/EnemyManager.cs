@@ -208,17 +208,15 @@ public class EnemyManager : MonoBehaviour
 
     public EnemyBase GetEnemyAtPosition(int TargetX , int TargetY)
     {
-        foreach (EnemyBase Enemy in ActiveEnemies)
-        {
-            if (Enemy != null && Enemy.gameObject.activeInHierarchy && Enemy.CurrentX == TargetX && Enemy.CurrentY == TargetY)
-            {
-                return Enemy;
-            }
-        }
-        return null;
+        return GridManager.GetOccupant(TargetX, TargetY) as EnemyBase;
     }
     public void RemoveEnemy(EnemyBase EnemyToRemove)
     {
+        if (EnemyToRemove != null)
+        {
+            GridManager.RemoveOccupant(EnemyToRemove, EnemyToRemove.CurrentX, EnemyToRemove.CurrentY);
+        }
+
         if(ActiveEnemies.Contains(EnemyToRemove))
         {
             ActiveEnemies.Remove(EnemyToRemove);

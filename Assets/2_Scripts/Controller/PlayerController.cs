@@ -3,7 +3,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IBoardOccupant
 {
     [HideInInspector]
     public GridManager GridManager;
@@ -20,8 +20,8 @@ public class PlayerController : MonoBehaviour
 
     public GameObject PreviewIndicator;
 
-    public int CurrentX = 2;
-    public int CurrentY = 0;
+    public int CurrentX { get; set; } = 2;
+    public int CurrentY { get; set; } = 0;
     public float MoveSpeed = 15f;
     public bool bIsMoving = false;
 
@@ -39,9 +39,9 @@ public class PlayerController : MonoBehaviour
             InputController.OnSwipeCanceled += HidePreview;
         }
 
-        // ¹æ¼Û±¹ ±¸µ¶
+        // ï¿½ï¿½Û±ï¿½ ï¿½ï¿½ï¿½ï¿½
         AchievementManager.OnSkinEquipped += ApplyEquippedSkin;
-        ApplyEquippedSkin(); // ½ÃÀÛÇÒ ¶§ ÇÑ ¹ø ÀÔ±â
+        ApplyEquippedSkin(); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ô±ï¿½
     }
 
     private void OnDestroy()
@@ -53,14 +53,14 @@ public class PlayerController : MonoBehaviour
             InputController.OnSwipeCanceled -= HidePreview;
         }
 
-        // ¹æ¼Û±¹ ±¸µ¶ ÇØÁ¦
+        // ï¿½ï¿½Û±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         AchievementManager.OnSkinEquipped -= ApplyEquippedSkin;
     }
 
     private void HandleSwipeUpdate(Vector2Int Direction)
     {
         if (InputController != null && InputController.bIsInputBlocked) return;
-        if (GameManager.Instance.CurrentState == GameState.EnemyTurn || HealthComponent.CurrentHealth <= 0) return;
+        if (GameManager.Instance.CurrentState == GameState.EnemyTurn || HealthComponent == null || HealthComponent.CurrentHealth <= 0) return;
 
         if (bIsMoving) return;
 
@@ -81,7 +81,7 @@ public class PlayerController : MonoBehaviour
     private void HandleSwipeEnd(Vector2Int Direction)
     {
         if (InputController != null && InputController.bIsInputBlocked) return;
-        if (GameManager.Instance.CurrentState == GameState.EnemyTurn || HealthComponent.CurrentHealth <= 0) return;
+        if (GameManager.Instance.CurrentState == GameState.EnemyTurn || HealthComponent == null || HealthComponent.CurrentHealth <= 0) return;
         HidePreview();
 
         if (bIsMoving) return;
@@ -97,6 +97,9 @@ public class PlayerController : MonoBehaviour
     private IEnumerator PerformAction(int TargetX, int TargetY)
     {
         bIsMoving = true;
+
+        int PreviousX = CurrentX;
+        int PreviousY = CurrentY;
 
         Vector2 StartPosition = transform.position;
         Vector2 TargetPosition = GridManager.GetWorldPosition(TargetX, TargetY);
@@ -124,15 +127,15 @@ public class PlayerController : MonoBehaviour
         while (Elapsed < Duration)
         {
             Elapsed += Time.deltaTime;
-            float T = Mathf.Clamp01(Elapsed / Duration); // 0.0 ¿¡¼­ 1.0 »çÀÌÀÇ ÁøÇàµµ
+            float T = Mathf.Clamp01(Elapsed / Duration); // 0.0 ï¿½ï¿½ï¿½ï¿½ 1.0 ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½àµµ
 
-            // 1. Á÷¼±À¸·Î °¡´Â ¹Ù´Ú ÁÂÇ¥
+            // 1. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù´ï¿½ ï¿½ï¿½Ç¥
             Vector2 LinearPos = Vector2.Lerp(StartPosition, TargetPosition, T);
 
-            // 2. »çÀÎ ±×·¡ÇÁ¸¦ ÀÌ¿ëÇØ 0 -> Á¤Á¡ -> 0 À¸·Î º¯ÇÏ´Â ³ôÀÌ °ª °è»ê
+            // 2. ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½ï¿½ 0 -> ï¿½ï¿½ï¿½ï¿½ -> 0 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½
             float HeightOffset = Mathf.Sin(T * Mathf.PI) * DynamicHopHeight;
 
-            // 3. ¹Ù´Ú ÁÂÇ¥¿¡ ³ôÀÌ °ªÀ» ´õÇØ¼­ ÃÖÁ¾ À§Ä¡ Àû¿ë
+            // 3. ï¿½Ù´ï¿½ ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
             transform.position = new Vector3(LinearPos.x, LinearPos.y + HeightOffset, transform.position.z);
             yield return null;
         }
@@ -142,6 +145,7 @@ public class PlayerController : MonoBehaviour
 
         CurrentX = TargetX;
         CurrentY = TargetY;
+        GridManager.MoveOccupant(this, PreviousX, PreviousY, CurrentX, CurrentY);
 
         if (TargetEnemy != null)
         {
@@ -191,7 +195,15 @@ public class PlayerController : MonoBehaviour
 
     public void ResetPlayer()
     {
-        GridManager.GetPlayerStartIndex(out CurrentX, out CurrentY);
+        int PreviousX = CurrentX;
+        int PreviousY = CurrentY;
+
+        int StartX, StartY;
+        GridManager.GetPlayerStartIndex(out StartX, out StartY);
+        CurrentX = StartX;
+        CurrentY = StartY;
+        GridManager.MoveOccupant(this, PreviousX, PreviousY, CurrentX, CurrentY);
+
         transform.position = GridManager.GetWorldPosition(CurrentX, CurrentY);
 
         if (HealthComponent != null)
@@ -222,7 +234,7 @@ public class PlayerController : MonoBehaviour
                     SpriteRenderer previewSR = PreviewIndicator.GetComponent<SpriteRenderer>();
                     if (previewSR != null && skinData.LightTileSprite != null)
                     {
-                        // ¹àÀº Å¸ÀÏ(LightTile) ¶Ç´Â ¾îµÎ¿î Å¸ÀÏ(DarkTile) Áß ¿øÇÏ½Ã´Â ¸ð¾çÀ» ³ÖÀ¸½Ã¸é µË´Ï´Ù.
+                        // ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½(LightTile) ï¿½Ç´ï¿½ ï¿½ï¿½Î¿ï¿½ Å¸ï¿½ï¿½(DarkTile) ï¿½ï¿½ ï¿½ï¿½ï¿½Ï½Ã´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ã¸ï¿½ ï¿½Ë´Ï´ï¿½.
                         previewSR.sprite = skinData.LightTileSprite;
                     }
                 }
