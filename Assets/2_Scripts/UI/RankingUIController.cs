@@ -61,6 +61,9 @@ public class RankingUIController : MonoBehaviour
 
     private void Awake()
     {
+        if (OfflineWarningPanel != null)
+            OfflineWarningPanel.gameObject.SetActive(false);
+
         ContentRect = ContentTransform.GetComponent<RectTransform>();
 
         if (RankingScrollRect != null)

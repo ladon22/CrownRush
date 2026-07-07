@@ -97,6 +97,24 @@ public class PauseMenuController : MonoBehaviour
             SettingsPanel.Show(manageGameState: false); // PauseMenu가 이미 처리함
     }
 
+    /// <summary>"다시 하기" 버튼에 연결합니다.</summary>
+    public void OnRetryButton()
+    {
+        // 메뉴를 닫고 게임 시간을 정상화한 뒤 게임을 재시작
+        Time.timeScale = 1f;
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.InputController.PopUIBlock();
+
+        gameObject.SetActive(false);
+
+        if (UIBackHandler.Instance != null)
+            UIBackHandler.Instance.Pop();
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.RetryGame();
+    }
+
     /// <summary>"로비로 나가기" 버튼에 연결합니다.</summary>
     public void OnExitToLobbyButton()
     {

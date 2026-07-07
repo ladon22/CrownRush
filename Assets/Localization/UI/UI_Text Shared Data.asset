@@ -219,6 +219,10 @@ MonoBehaviour:
     m_Key: pause_continue
     m_Metadata:
       m_Items: []
+  - m_Id: 28028859573706752
+    m_Key: pause_retry
+    m_Metadata:
+      m_Items: []
   - m_Id: 22570006912540672
     m_Key: pause_piece_info
     m_Metadata:

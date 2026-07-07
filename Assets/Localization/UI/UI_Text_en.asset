@@ -203,23 +203,36 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 22216699778015232
-    m_Localized: Moves in a line, rests every other turn
+    m_Localized: 'Moves in a line
+
+      Rests every other turn'
     m_Metadata:
       m_Items: []
   - m_Id: 22216684384919552
-    m_Localized: Moves forward, attacks diagonally, rests every other turn
+    m_Localized: 'Moves forward
+
+      Attacks diagonally
+
+      Rests every other
+      turn'
     m_Metadata:
       m_Items: []
   - m_Id: 22216713950568448
-    m_Localized: Moves diagonally, rests every other turn
+    m_Localized: 'Moves diagonally
+
+      Rests every other turn'
     m_Metadata:
       m_Items: []
   - m_Id: 22216760691892224
-    m_Localized: Moves in an L-shape, every turn
+    m_Localized: 'Moves in an L-shape
+
+      Every turn'
     m_Metadata:
       m_Items: []
   - m_Id: 22216775661363200
-    m_Localized: Moves in any direction, every turn
+    m_Localized: 'Moves in any direction
+
+      Every turn'
     m_Metadata:
       m_Items: []
   - m_Id: 22568582690480128
@@ -258,6 +271,10 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 24351033246982144
     m_Localized: Cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28028859573706752
+    m_Localized: "Retry\t"
     m_Metadata:
       m_Items: []
   references:

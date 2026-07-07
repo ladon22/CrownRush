@@ -1005,6 +1005,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
   BGMAudioSource: {fileID: 1731517521}
   SFXAudioSource: {fileID: 1731517520}
+  SfxPoolSize: 8
+  SfxPoolMaxSize: 32
   BgmTracks:
   - Type: 0
     Clip: {fileID: 8300000, guid: 91ab8b442b4b95b4f9991b1ba8089bf2, type: 3}

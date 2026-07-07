@@ -1,4 +1,4 @@
-﻿using DG.Tweening;
+using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -13,31 +13,59 @@ using UnityEngine.Localization;
 ///   ScoreValue 값은 EnemyManager.EnemyPrefabs의 각 프리팹에 붙은
 ///   EnemyBase 컴포넌트에서 매번 직접 읽습니다. 따로 저장하지 않으므로
 ///   밸런스 수치를 두 곳에서 관리할 필요가 없습니다.
-///   (EnemyBase 프리팹의 ScoreValue만 바꾸면 자동으로 반영됨)
 ///
-///   이름/이동 방식 문구는 PieceType별로 고정된 텍스트이므로
-///   여기서 매핑합니다. (밸런스 데이터가 아니라 UI 텍스트이므로
-///   중복 관리 문제가 없음)
+///   이름/이동 방식 문구, 그리고 이동 다이어그램 이미지는 밸런스 데이터가
+///   아니라 UI 전용 디자인 에셋이므로 PieceType별로 이 스크립트가
+///   직접 매핑을 들고 있습니다. (EnemyPrefab에서 읽어올 수 없는 값)
+///
+/// 카드 캐러셀 — 기물 종류마다 Row를 나열하던 방식 대신, 프리팹 안에
+///   미리 배치해 둔 카드(CardView) 하나를 재사용하며 ShowIndex()로
+///   내용만 교체합니다. 좌/우 버튼과 SwipeDetector의 UnityEvent가
+///   각각 ShowNext()/ShowPrev()를 호출합니다.
 /// </summary>
 public class PieceInfoPanel : MonoBehaviour
 {
+    [System.Serializable]
+    private struct PieceMoveVisual
+    {
+        public EnemyPieceType Type;
+        public Sprite Diagram; // 기물이 어떻게 이동하는지 보여주는 다이어그램 이미지
+    }
+
     [Header("UI 연결")]
     [SerializeField] private RectTransform PanelRect;
     [SerializeField] private GameObject Overlay;
-    [SerializeField] private Transform ListContainer;
-    [SerializeField] private PieceInfoRow RowPrefab;
+    [SerializeField] private PieceInfoCard CardView; // 패널 프리팹 안에 미리 배치된 카드 1개 (런타임 Instantiate 없음)
+    [SerializeField] private PieceInfoPageIndicator PageIndicator;
+
+    [Header("이동 다이어그램 이미지")]
+    [SerializeField] private List<PieceMoveVisual> MoveVisuals;
 
     [Header("애니메이션")]
     [SerializeField] private float PopDuration = 0.4f;
     [SerializeField] private Ease PopEase = Ease.OutBack;
+    [SerializeField] private float CardTransitionDuration = 0.2f;
+
+    [Header("페이지 이동")]
+    [SerializeField] private bool LoopPages = true;
 
     [Header("로컬라이제이션")]
     [SerializeField] private string TableName = "UI_Text";
     [SerializeField] private LocalizedString ScoreFormatString; // 예: "{0}점" / "{0} pts"
 
     [SerializeField] private string ScoreFormatKey = "piece_score_format";
-    private readonly List<PieceInfoRow> _spawnedRows = new List<PieceInfoRow>();
+
+    private struct PieceCardData
+    {
+        public EnemyPieceType Type;
+        public Sprite Icon;
+        public int Score;
+    }
+
+    private readonly List<PieceCardData> _cardData = new List<PieceCardData>();
+    private int _currentIndex;
     private bool bManageGameState = true;
+
     private void Awake()
     {
         gameObject.SetActive(false);
@@ -63,7 +91,7 @@ public class PieceInfoPanel : MonoBehaviour
 
 
         gameObject.SetActive(true);
-        PopulateList();
+        PopulateData();
 
         if (PanelRect != null)
         {
@@ -111,11 +139,11 @@ public class PieceInfoPanel : MonoBehaviour
             UIBackHandler.Instance.Pop();
     }
 
-    // ── 리스트 채우기 (동적 생성) ────────────────────────────
+    // ── 페이지 데이터 모으기 ────────────────────────────
 
-    private void PopulateList()
+    private void PopulateData()
     {
-        ClearRows();
+        _cardData.Clear();
 
         if (EnemyManager.Instance == null || EnemyManager.Instance.EnemyPrefabs == null) return;
 
@@ -128,13 +156,16 @@ public class PieceInfoPanel : MonoBehaviour
 
             EnemyBase enemyBase = prefab.GetComponent<EnemyBase>();
             if (enemyBase == null) continue;
-            if (!seenTypes.Add(enemyBase.PieceType)) continue; // 이미 표시한 타입이면 건너뜀
+            if (!seenTypes.Add(enemyBase.PieceType)) continue; // 이미 담은 타입이면 건너뜀
 
-            // [핵심] 항상 prefab의 현재 값을 읽음 — 캐싱하지 않음
-            int score = enemyBase.ScoreValue;
-            Sprite icon = prefab.GetComponent<SpriteRenderer>()?.sprite;
-
-            CreateRow(enemyBase.PieceType, icon, score);
+            // [핵심] 점수는 항상 prefab의 현재 값을 읽음 — 캐싱하지 않음
+            // 아이콘은 밸런스 데이터가 아니라 디자인 에셋이므로 MoveVisuals에서 가져옴
+            _cardData.Add(new PieceCardData
+            {
+                Type = enemyBase.PieceType,
+                Icon = GetMoveDiagram(enemyBase.PieceType),
+                Score = enemyBase.ScoreValue
+            });
         }
 
         GameObject queenPrefab = EnemyManager.Instance.QueenPrefabForDisplay;
@@ -143,33 +174,72 @@ public class PieceInfoPanel : MonoBehaviour
             EnemyBase queenBase = queenPrefab.GetComponent<EnemyBase>();
             if (queenBase != null && seenTypes.Add(queenBase.PieceType))
             {
-                int score = queenBase.ScoreValue;
-                Sprite icon = queenPrefab.GetComponent<SpriteRenderer>()?.sprite;
-
-                CreateRow(queenBase.PieceType, icon, score, true);
+                _cardData.Add(new PieceCardData
+                {
+                    Type = queenBase.PieceType,
+                    Icon = GetMoveDiagram(queenBase.PieceType),
+                    Score = queenBase.ScoreValue
+                });
             }
         }
+
+        if (PageIndicator != null)
+            PageIndicator.Setup(_cardData.Count);
+
+        ShowIndex(0, instant: true);
     }
 
-    private void CreateRow(EnemyPieceType pieceType, Sprite icon, int score, bool isLastRow = false)
-    {
-        if (RowPrefab == null || ListContainer == null) return;
+    // ── 페이지 이동 ──────────────────────────────
 
-        PieceInfoRow row = Instantiate(RowPrefab, ListContainer);
-        row.Bind(icon, GetNameKey(pieceType), GetMoveDescKey(pieceType), score, ScoreFormatKey, TableName, isLastRow);
-        _spawnedRows.Add(row);
-    }
+    /// <summary>다음 버튼, 왼쪽 스와이프에 연결합니다.</summary>
+    public void ShowNext() => ShowIndex(_currentIndex + 1);
 
-    private void ClearRows()
+    /// <summary>이전 버튼, 오른쪽 스와이프에 연결합니다.</summary>
+    public void ShowPrev() => ShowIndex(_currentIndex - 1);
+
+    private void ShowIndex(int index, bool instant = false)
     {
-        foreach (PieceInfoRow row in _spawnedRows)
+        if (_cardData.Count == 0) return;
+
+        if (LoopPages)
+            index = ((index % _cardData.Count) + _cardData.Count) % _cardData.Count;
+        else
+            index = Mathf.Clamp(index, 0, _cardData.Count - 1);
+
+        if (!instant && index == _currentIndex) return;
+
+        _currentIndex = index;
+
+        if (CardView != null)
         {
-            if (row != null) Destroy(row.gameObject);
+            PieceCardData data = _cardData[_currentIndex];
+            CardView.Bind(data.Icon, GetNameKey(data.Type), GetMoveDescKey(data.Type), data.Score, ScoreFormatKey, TableName);
+
+            if (!instant)
+            {
+                CardView.transform.DOKill();
+                CardView.transform.localScale = Vector3.one * 0.85f;
+                CardView.transform.DOScale(Vector3.one, CardTransitionDuration)
+                    .SetEase(Ease.OutBack)
+                    .SetUpdate(true);
+            }
         }
-        _spawnedRows.Clear();
+
+        if (PageIndicator != null)
+            PageIndicator.SetIndex(_currentIndex);
     }
 
-    // ── 텍스트 라벨 매핑 (밸런스 데이터 아님, UI 텍스트만) ──────
+    // ── 텍스트/이미지 라벨 매핑 (밸런스 데이터 아님, UI 전용) ──────
+
+    /// <summary>PieceType → 이동 다이어그램 스프라이트. MoveVisuals 인스펙터 리스트에서 찾습니다.</summary>
+    private Sprite GetMoveDiagram(EnemyPieceType type)
+    {
+        foreach (PieceMoveVisual visual in MoveVisuals)
+        {
+            if (visual.Type == type) return visual.Diagram;
+        }
+        return null;
+    }
 
     /// <summary>
     /// PieceType → 이름 로컬라이제이션 키.
