@@ -155,45 +155,69 @@ public class FireBaseManager : MonoBehaviour
             return tcs.Task;
         }
 
-        FirebaseDatabase.DefaultInstance.RootReference
-            .Child("Users")
-            .OrderByChild("Score")
+        DBReference.Child("Leaderboard")
+            .OrderByValue()
             .LimitToLast(limit)
             .GetValueAsync()
             .ContinueWithOnMainThread(task =>
             {
                 if (task.IsFaulted)
                 {
-                    Debug.LogError("[FireBaseManager] 랭킹 조회 실패.");
                     tcs.SetResult(new List<RankData>());
                     return;
                 }
 
-                var snapshots = new List<DataSnapshot>();
+                List<DataSnapshot> entries = new List<DataSnapshot>();
                 foreach (DataSnapshot child in task.Result.Children)
-                    snapshots.Add(child);
-                snapshots.Reverse(); // 높은 점수 순 정렬
-
-                var result = new List<RankData>();
-                for (int i = 0; i < snapshots.Count; i++)
-                {
-                    DataSnapshot data = snapshots[i];
-                    result.Add(new RankData
-                    {
-                        Rank = i + 1,
-                        Uid = data.Key,
-                        Name = data.Child("Name").Value?.ToString() ?? "",
-                        Score = data.Child("Score").Value?.ToString() ?? "0",
-                        PhotoUrl = data.HasChild("PhotoUrl")
-                            ? data.Child("PhotoUrl").Value?.ToString() ?? ""
-                            : ""
-                    });
-                }
-
-                tcs.SetResult(result);
+                    entries.Add(child);
+                entries.Reverse();
+                FetchDisplayInfoAsync(entries, tcs);
             });
 
         return tcs.Task;
+    }
+
+    // Leaderboard로 정렬된 순위(uid, score)를 받아 Users에서 표시용 Name/PhotoUrl만 골라 채운다.
+    // Users 전체(Achievements 등 포함)를 내려받지 않도록 필드 단위로만 조회해 쿼리 비용을 줄인다.
+    private void FetchDisplayInfoAsync(List<DataSnapshot> entries, TaskCompletionSource<List<RankData>> tcs)
+    {
+        if (entries.Count == 0)
+        {
+            tcs.SetResult(new List<RankData>());
+            return;
+        }
+
+        var nameTasks = new List<Task<DataSnapshot>>();
+        var photoTasks = new List<Task<DataSnapshot>>();
+
+        foreach (DataSnapshot entry in entries)
+        {
+            DatabaseReference userRef = DBReference.Child("Users").Child(entry.Key);
+            nameTasks.Add(userRef.Child("Name").GetValueAsync());
+            photoTasks.Add(userRef.Child("PhotoUrl").GetValueAsync());
+        }
+
+        var allTasks = new List<Task<DataSnapshot>>(nameTasks);
+        allTasks.AddRange(photoTasks);
+
+        Task.WhenAll(allTasks).ContinueWithOnMainThread(_ =>
+        {
+            var result = new List<RankData>();
+
+            for (int i = 0; i < entries.Count; i++)
+            {
+                result.Add(new RankData
+                {
+                    Rank = i + 1,
+                    Uid = entries[i].Key,
+                    Name = nameTasks[i].IsCompletedSuccessfully ? nameTasks[i].Result.Value?.ToString() ?? "" : "",
+                    Score = entries[i].Value?.ToString() ?? "0",
+                    PhotoUrl = photoTasks[i].IsCompletedSuccessfully ? photoTasks[i].Result.Value?.ToString() ?? "" : ""
+                });
+            }
+
+            tcs.SetResult(result);
+        });
     }
 
     public Task<RankData> GetMyRankAsync()
@@ -343,6 +367,16 @@ public class FireBaseManager : MonoBehaviour
             ["PhotoUrl"] = user.PhotoUrl != null ? user.PhotoUrl.ToString() : ""
         };
 
+        // Merge()는 항상 local/cloud 중 더 높은 점수를 선택하므로 Leaderboard도 같은 값으로 맞춰
+        // 두 기기 간 복원 후 Leaderboard와 Users.Score가 어긋나는 것을 방지한다.
+        DBReference.Child("Leaderboard").Child(uid)
+            .SetValueAsync(data.BestScore)
+            .ContinueWithOnMainThread(lbTask =>
+            {
+                if (lbTask.IsFaulted)
+                    Debug.LogError("[FireBaseManager] Leaderboard 동기화 실패: " + lbTask.Exception);
+            });
+
         userRef.UpdateChildrenAsync(updates).ContinueWithOnMainThread(task =>
         {
             if (task.IsFaulted)
@@ -408,22 +442,17 @@ public class FireBaseManager : MonoBehaviour
             yield break;
         }
 
-        bIsLoginSequenceFinished = false; // 로그인 진행 중 상태로 설정
+        bIsLoginSequenceFinished = false;
         auth = FirebaseAuth.DefaultInstance;
         PlayGamesPlatform.Instance.Authenticate(ProcessAuthentication);
 
-        float elapsed = 0f;                        // 1. 경과 시간 초기화
-        while (!bIsLoginSequenceFinished)          // 2. 로그인 완료될 때까지 반복
+        float elapsed = 0f;
+        while (!bIsLoginSequenceFinished)
         {
-            elapsed += Time.unscaledDeltaTime;     // 3. 매 프레임 경과 시간 누적
-
-            if (elapsed >= 10f)                    // 4. 10초 초과 시
-            {
-                Debug.LogWarning("타임아웃");
-                bIsLoginSequenceFinished = true;   // 5. 강제로 완료 처리
-            }
-
-            yield return null;                     // 6. 다음 프레임까지 대기
+            elapsed += Time.unscaledDeltaTime;
+            if (elapsed >= 10f)
+                bIsLoginSequenceFinished = true;
+            yield return null;
         }
     }
 
@@ -448,17 +477,12 @@ public class FireBaseManager : MonoBehaviour
         Credential credential = PlayGamesAuthProvider.GetCredential(authCode);
         auth.SignInWithCredentialAsync(credential).ContinueWithOnMainThread(task =>
         {
-            if (task.IsCanceled || task.IsFaulted)
-            {
-                Debug.LogError("파이어베이스 연동 에러: " + task.Exception);
-            }
-            else
+            if (!task.IsCanceled && !task.IsFaulted)
             {
                 user = task.Result;
-                Debug.Log($"파이어베이스 로그인 최종 성공!: {user.DisplayName}");
                 SaveUserProfile();
             }
-            bIsLoginSequenceFinished = true; // 성공/실패 여부 상관없이 씬을 넘기기 위해 종료
+            bIsLoginSequenceFinished = true;
         });
     }
 

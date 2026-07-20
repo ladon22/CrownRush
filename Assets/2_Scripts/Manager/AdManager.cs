@@ -24,7 +24,7 @@ public class AdManager : MonoBehaviour
     // 스레드에서 호출할 수 있어, 그 안에서 바로 AdMob API(MobileAds.Initialize 등)를
     // 호출하면 "get_isPlaying can only be called from the main thread" 크래시가 납니다.
     // 반드시 이 컨텍스트를 통해 메인 스레드로 되돌린 뒤 호출해야 합니다.
-    private SynchronizationContext mainThreadContext;
+    private SynchronizationContext MainThreadContext;
 
 #if DEVELOPMENT_BUILD || UNITY_EDITOR
     [Header("동의 테스트 (개발 빌드에서만 컴파일됨)")]
@@ -38,7 +38,7 @@ public class AdManager : MonoBehaviour
 
     private void Awake()
     {
-        mainThreadContext = SynchronizationContext.Current;
+        MainThreadContext = SynchronizationContext.Current;
 
         if (Instance == null)
         {
@@ -90,48 +90,34 @@ public class AdManager : MonoBehaviour
         }
 #endif
 
-        ConsentInformation.Update(request, OnConsentInfoUpdated);
+        ConsentInformation.Update(request, OnConsentInfoUpdated); //동의 캐싱
     }
 
     private void OnConsentInfoUpdated(FormError error)
     {
         // 네이티브 UMP SDK가 메인 스레드가 아닌 스레드에서 호출할 수 있으므로
         // 이후 AdMob API 호출은 전부 메인 스레드로 되돌려서 실행합니다.
-        mainThreadContext.Post(_ =>
+        MainThreadContext.Post(_ =>
         {
             if (error != null)
             {
-                Debug.LogError($"[AdManager] 동의 정보 업데이트 실패: {error.Message}");
-                // 갱신에 실패해도 기존에 저장된 동의 상태로는 광고를 요청할 수 있는지 확인합니다.
                 if (ConsentInformation.CanRequestAds())
                 {
                     InitializeAds();
                 }
                 return;
             }
-            // 필요한 경우(EEA/미국 주 규정 대상 등) 동의 양식을 자동으로 표시
+
             ConsentForm.LoadAndShowConsentFormIfRequired(OnConsentFormDismissed);
         }, null);
     }
 
     private void OnConsentFormDismissed(FormError formError)
     {
-        mainThreadContext.Post(_ =>
+        MainThreadContext.Post(_ =>
         {
-            if (formError != null)
-            {
-                Debug.LogError($"[AdManager] 동의 양식 처리 실패: {formError.Message}");
-            }
-
-            // 동의 완료(또는 대상이 아니라 스킵)된 경우에만 광고 SDK 초기화
             if (ConsentInformation.CanRequestAds())
-            {
                 InitializeAds();
-            }
-            else
-            {
-                Debug.LogWarning("[AdManager] 동의가 완료되지 않아 광고를 요청할 수 없습니다.");
-            }
         }, null);
     }
 
@@ -164,7 +150,6 @@ public class AdManager : MonoBehaviour
                 return;
             }
             RewardedAd = ad;
-            Debug.Log("���� �ε� ����");
         });
     }
 
@@ -180,7 +165,6 @@ public class AdManager : MonoBehaviour
         RewardedAd.Show((Reward reward) =>
         {
             bRewardEarned = true;
-            Debug.Log("[AdManager] ���� ȹ�� Ȯ��.");
         });
     }
 
@@ -191,7 +175,6 @@ public class AdManager : MonoBehaviour
         if (bRewardEarned)
         {
             OnRewardEarned?.Invoke();
-            Debug.Log("[AdManager] ���� ���� �Ϸ�.");
         }
 
         bRewardEarned = false;

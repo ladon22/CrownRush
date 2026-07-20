@@ -11,14 +11,15 @@ public class ToastUI : MonoBehaviour
 
     private RectTransform Rect;
 
-    private void Awake()                          // Start ¡æ Awake ·Î º¯°æ
+    private void Awake()                          // Start ï¿½ï¿½ Awake ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     {
-        Rect = GetComponent<RectTransform>();     // SetActive(true) Áï½Ã ½ÇÇà
+        Rect = GetComponent<RectTransform>();     // SetActive(true) ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
     public void Show(Action onComplete = null)
     {
-        if (Rect == null) return; 
         gameObject.SetActive(true);
+        if (Rect == null) Rect = GetComponent<RectTransform>();
+        if (Rect == null) return;
         Rect.DOKill();
         Rect.localScale = Vector3.zero;
         Rect.DOScale(Vector3.one, ScaleInDuration)
