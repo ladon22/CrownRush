@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class EnemyManager : MonoBehaviour
 {
@@ -15,9 +16,11 @@ public class EnemyManager : MonoBehaviour
     public int MaxEnemyCount = 4;
 
     [Header("Enemy Bag Settings")]
-    public int BasicEnemyCount = 5;   
-    public int DiagonalEnemyCount = 2;
-    public int DashEnemyCount = 1;
+    public int BasicEnemyCount = 5;
+    [FormerlySerializedAs("DiagonalEnemyCount")]
+    public int BishopEnemyCount = 2;
+    [FormerlySerializedAs("DashEnemyCount")]
+    public int RookEnemyCount = 1;
     public int KnightEnemyCount = 1;
 
     private List<int> EnemyBag = new List<int>();
@@ -60,10 +63,10 @@ public class EnemyManager : MonoBehaviour
 
             int PulledEnemyIndex = EnemyBag[0];
             GameObject PrefabToSpawn = EnemyPrefabs[PulledEnemyIndex];
-            bool bIsLinearEnemy = PrefabToSpawn.GetComponent<LinearEnemy>() != null;
+            bool bIsPawnEnemy = PrefabToSpawn.GetComponent<PawnEnemy>() != null;
 
             int SpawnX, SpawnY;
-            if (GetValidEdgeSpawnPosition(bIsLinearEnemy, out SpawnX, out SpawnY))
+            if (GetValidEdgeSpawnPosition(bIsPawnEnemy, out SpawnX, out SpawnY))
             {
                 EnemyBag.RemoveAt(0);
 
@@ -81,7 +84,7 @@ public class EnemyManager : MonoBehaviour
 
     }
 
-    private bool GetValidEdgeSpawnPosition(bool bIsLinearEnemy, out int SpawnX, out int SpawnY)
+    private bool GetValidEdgeSpawnPosition(bool bIsPawnEnemy, out int SpawnX, out int SpawnY)
     {
         SpawnX = -1; SpawnY = -1;
         List<Vector2Int> EdgeTiles = new List<Vector2Int>();
@@ -92,7 +95,7 @@ public class EnemyManager : MonoBehaviour
             EdgeTiles.Add(new Vector2Int(X, GridManager.Rows - 1));
         }
 
-        if (!bIsLinearEnemy)
+        if (!bIsPawnEnemy)
         {
             for (int Y = 1; Y < GridManager.Rows - 1; Y++)
             {
@@ -111,22 +114,22 @@ public class EnemyManager : MonoBehaviour
         {
             if (GetEnemyAtPosition(Tile.x, Tile.y) != null) continue;
 
-            if (bIsLinearEnemy)
+            if (bIsPawnEnemy)
             {
-                bool bIsColumnOccupiedByLinear = false;
+                bool bIsColumnOccupiedByPawn = false;
                 foreach (EnemyBase Enemy in ActiveEnemies)
                 {
-                    if (Enemy != null && Enemy.gameObject.activeInHierarchy && Enemy is LinearEnemy)
+                    if (Enemy != null && Enemy.gameObject.activeInHierarchy && Enemy is PawnEnemy)
                     {
-                        if (Enemy.CurrentX == Tile.x) // ���� �ٿ� �ִٸ�
+                        if (Enemy.CurrentX == Tile.x) // 같은 열에 있다면
                         {
-                            bIsColumnOccupiedByLinear = true;
+                            bIsColumnOccupiedByPawn = true;
                             break;
                         }
                     }
                 }
-                // �̹� ���� �ٿ� ���� �ִٸ� �� ���� ��ġ�� �ǳʶݴϴ�!
-                if (bIsColumnOccupiedByLinear) continue;
+                // 이미 같은 열에 폰이 있다면 이 스폰 위치는 건너뜁니다!
+                if (bIsColumnOccupiedByPawn) continue;
             }
 
             if (CachedPlayer != null)
@@ -152,9 +155,9 @@ public class EnemyManager : MonoBehaviour
         EnemyBag.Clear();
         for (int i = 0; i < BasicEnemyCount; i++)
             EnemyBag.Add(0);
-        for (int i = 0; i < DiagonalEnemyCount; i++)
+        for (int i = 0; i < BishopEnemyCount; i++)
             EnemyBag.Add(1);
-        for (int i = 0; i < DashEnemyCount; i++)
+        for (int i = 0; i < RookEnemyCount; i++)
             EnemyBag.Add(2);
         for (int i = 0; i < KnightEnemyCount; i++)
             EnemyBag.Add(3);

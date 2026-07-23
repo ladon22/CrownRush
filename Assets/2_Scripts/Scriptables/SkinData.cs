@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
-public enum EnemyPieceType { Linear, Dash, Diagonal, Knight, Queen }
+public enum EnemyPieceType { Pawn, Rook, Bishop, Knight, Queen }
 
-// °¢ Àû ±â¹°ÀÇ ½ºÅ² Á¤º¸¸¦ ´ã´Â ±¸Á¶Ã¼
+// ï¿½ï¿½ ï¿½ï¿½ ï¿½â¹°ï¿½ï¿½ ï¿½ï¿½Å² ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¼
 [System.Serializable]
 public struct EnemySkinData
 {
@@ -13,8 +13,8 @@ public struct EnemySkinData
 public class SkinData : ItemData
 {
     [Header("Board Skin")]
-    public Sprite LightTileSprite; // º¸µåÆÇ ¹àÀº Ä­
-    public Sprite DarkTileSprite;  // º¸µåÆÇ ¾îµÎ¿î Ä­
+    public Sprite LightTileSprite; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä­
+    public Sprite DarkTileSprite;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Î¿ï¿½ Ä­
     public Sprite FrameSprite;
     public Color FrameColor = Color.white;
 
@@ -26,13 +26,13 @@ public class SkinData : ItemData
     public Color EnemyColor = Color.white;
     public List<EnemySkinData> EnemySkins = new List<EnemySkinData>();
 
-    // ÀÔ·Â¹ÞÀº Àû Å¸ÀÔ¿¡ ¸Â´Â ½ºÅ² µ¥ÀÌÅÍ¸¦ »Ì¾ÆÁÖ´Â ÇïÆÛ ÇÔ¼ö
+    // ï¿½Ô·Â¹ï¿½ï¿½ï¿½ ï¿½ï¿½ Å¸ï¿½Ô¿ï¿½ ï¿½Â´ï¿½ ï¿½ï¿½Å² ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½Ì¾ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
     public EnemySkinData GetEnemySkin(EnemyPieceType type)
     {
         foreach (var skin in EnemySkins)
         {
             if (skin.Type == type) return skin;
         }
-        return new EnemySkinData(); // ¸ø Ã£¾ÒÀ» °æ¿ì ºó µ¥ÀÌÅÍ ¹ÝÈ¯
+        return new EnemySkinData(); // ï¿½ï¿½ Ã£ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
     }
 }

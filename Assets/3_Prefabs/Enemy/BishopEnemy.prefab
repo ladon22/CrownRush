@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3623772883223278602
+--- !u!1 &179464862539146791
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,41 +8,41 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4260796151667425322}
-  - component: {fileID: 1947049017560198797}
-  - component: {fileID: -6735458566810390507}
-  - component: {fileID: 1482405798623104791}
+  - component: {fileID: 6055109372758202599}
+  - component: {fileID: 5315916012413375539}
+  - component: {fileID: -1381304056858830721}
+  - component: {fileID: 6045290292432639670}
   m_Layer: 0
-  m_Name: DashEnemy
+  m_Name: BishopEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4260796151667425322
+--- !u!4 &6055109372758202599
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3623772883223278602}
+  m_GameObject: {fileID: 179464862539146791}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.2, z: 0}
   m_LocalScale: {x: 2.7, y: 2.7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5062692909240730131}
+  - {fileID: 6768208665107800126}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &1947049017560198797
+--- !u!212 &5315916012413375539
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3623772883223278602}
+  m_GameObject: {fileID: 179464862539146791}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -84,60 +84,60 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 6402892968040458680, guid: e0824125cd1444b40b5aff934a536cfa, type: 3}
+  m_Sprite: {fileID: 1379780806020190625, guid: 4762e44fa55354b498f3caf6e9c344b9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.32, y: 0.55}
+  m_Size: {x: 0.3, y: 0.58}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &-6735458566810390507
+--- !u!114 &-1381304056858830721
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3623772883223278602}
+  m_GameObject: {fileID: 179464862539146791}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6494152799810514eb062c7792d8c7a2, type: 3}
+  m_Script: {fileID: 11500000, guid: 164bc52e1c55e7c40bbd83cf3606348f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DashEnemy
+  m_EditorClassIdentifier: Assembly-CSharp::BishopEnemy
   GridManager: {fileID: 0}
   EnemyManager: {fileID: 0}
   Player: {fileID: 0}
   CurrentX: 0
   CurrentY: 0
   MoveSpeed: 15
-  ScoreValue: 6
-  IntentIndicator: {fileID: 3642752986216601965}
-  PieceType: 1
+  ScoreValue: 10
+  IntentIndicator: {fileID: 2964042560751369024}
+  PieceType: 2
   MoveInterval: 2
   HopHeight: 0.5
-  DashAmount: 7
---- !u!114 &1482405798623104791
+  MoveAmount: 4
+--- !u!114 &6045290292432639670
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3623772883223278602}
+  m_GameObject: {fileID: 179464862539146791}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172a2c5e24433614dbf138928369a93a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpriteDepthSorter
   SortingOrderOffset: 0
---- !u!1001 &8125611861609072427
+--- !u!1001 &7740620565819335942
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 4260796151667425322}
+    m_TransformParent: {fileID: 6055109372758202599}
     m_Modifications:
     - target: {fileID: 3927618878460790072, guid: b3e6da273dc569f498fcb647e6ffc387, type: 3}
       propertyPath: m_LocalPosition.x
@@ -188,13 +188,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b3e6da273dc569f498fcb647e6ffc387, type: 3}
---- !u!1 &3642752986216601965 stripped
+--- !u!1 &2964042560751369024 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4777844652127018566, guid: b3e6da273dc569f498fcb647e6ffc387, type: 3}
-  m_PrefabInstance: {fileID: 8125611861609072427}
+  m_PrefabInstance: {fileID: 7740620565819335942}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &5062692909240730131 stripped
+--- !u!4 &6768208665107800126 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3927618878460790072, guid: b3e6da273dc569f498fcb647e6ffc387, type: 3}
-  m_PrefabInstance: {fileID: 8125611861609072427}
+  m_PrefabInstance: {fileID: 7740620565819335942}
   m_PrefabAsset: {fileID: 0}

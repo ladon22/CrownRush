@@ -115,7 +115,6 @@ public abstract class EnemyBase : MonoBehaviour, IBoardOccupant
         transform.position = TargetPosition;
         if (Sorter != null) Sorter.SortingOrderOffset -= 2000;
     }
-    public abstract void CalculateNextPosition();
 
     public bool IsPositionOccupied(int TargetX, int TargetY)
     {
@@ -129,6 +128,8 @@ public abstract class EnemyBase : MonoBehaviour, IBoardOccupant
 
         return true;
     }
+
+    public abstract void CalculateNextPosition();
     public virtual IEnumerator MoveRoutine()
     {
         if (!WillMoveThisTurn())
@@ -137,16 +138,33 @@ public abstract class EnemyBase : MonoBehaviour, IBoardOccupant
             yield break;
         }
         CurrentWaitCount = MoveInterval - 1;
-
-        int PreviousX = CurrentX;
-        int PreviousY = CurrentY;
+        int PrevX = CurrentX;
+        int PrevY = CurrentY;
 
         CalculateNextPosition();
+        bool bIsAttacking = ResolveCollisionWithRetry(PrevX, PrevY, 8);
 
+        GridManager.RemoveOccupant(this, PrevX, PrevY);
+        if (!bIsAttacking)
+            GridManager.PlaceOccupant(this, CurrentX, CurrentY);
+
+        yield return StartCoroutine(AnimateMove(PrevX, PrevY, CurrentX, CurrentY));
+
+        if (bIsAttacking)
+        {
+            ApplyDamage();
+            if (EnemyManager != null) EnemyManager.RemoveEnemy(this);
+            PoolManager.Instance.ReturnToPool(gameObject);
+        }
+    }
+
+    // CalculateNextPosition()이 계산한 좌표가 막혀 있으면 재탐색하고,
+    // 끝까지 갈 곳이 없으면 제자리에 머물게 합니다. 플레이어 칸이면 공격 대상이므로 true를 반환합니다.
+    private bool ResolveCollisionWithRetry(int PrevX, int PrevY, int MaxRetries)
+    {
         CurrentX = Mathf.Clamp(CurrentX, 0, GridManager.Columns - 1);
         CurrentY = Mathf.Clamp(CurrentY, 0, GridManager.Rows - 1);
 
-        const int MaxRetries = 8;
         for (int attempt = 0; attempt < MaxRetries; attempt++)
         {
             // 플레이어 위치면 공격 → 통과
@@ -160,15 +178,15 @@ public abstract class EnemyBase : MonoBehaviour, IBoardOccupant
                 break;
 
             // 제자리면 이미 모든 방향이 막힌 것 → 포기
-            if (CurrentX == PreviousX && CurrentY == PreviousY)
+            if (CurrentX == PrevX && CurrentY == PrevY)
                 break;
 
             // 막힌 칸을 임시 차단에 추가
             TemporaryBlocked.Add(new Vector2Int(CurrentX, CurrentY));
 
             // 원래 위치로 되돌리고 재탐색
-            CurrentX = PreviousX;
-            CurrentY = PreviousY;
+            CurrentX = PrevX;
+            CurrentY = PrevY;
             CalculateNextPosition();
             CurrentX = Mathf.Clamp(CurrentX, 0, GridManager.Columns - 1);
             CurrentY = Mathf.Clamp(CurrentY, 0, GridManager.Rows - 1);
@@ -185,26 +203,11 @@ public abstract class EnemyBase : MonoBehaviour, IBoardOccupant
         // 재탐색 후에도 막혀 있으면 제자리
         if (!bIsAttacking && IsPositionOccupied(CurrentX, CurrentY))
         {
-            CurrentX = PreviousX;
-            CurrentY = PreviousY;
+            CurrentX = PrevX;
+            CurrentY = PrevY;
         }
 
-        // 공격 시에는 플레이어 칸에 자신을 등록하지 않습니다(직후 사망 처리되므로
-        // 플레이어의 점유 정보를 덮어쓰지 않도록 이전 칸만 비웁니다).
-        GridManager.RemoveOccupant(this, PreviousX, PreviousY);
-        if (!bIsAttacking)
-        {
-            GridManager.PlaceOccupant(this, CurrentX, CurrentY);
-        }
-
-        yield return StartCoroutine(AnimateMove(PreviousX, PreviousY, CurrentX, CurrentY));
-
-        if (bIsAttacking)
-        {
-            ApplyDamage();
-            if (EnemyManager != null) EnemyManager.RemoveEnemy(this);
-            PoolManager.Instance.ReturnToPool(gameObject);
-        }
+        return bIsAttacking;
     }
 
     protected virtual IEnumerator AnimateMove(int StartX, int StartY, int TargetX, int TargetY)

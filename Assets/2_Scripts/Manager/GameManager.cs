@@ -70,13 +70,11 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        // ����Ƽ �����Ϳ��� �÷��� ���� ���� �۵��ϴ� ������ ġƮŰ�Դϴ�.
 #if UNITY_EDITOR
         if (Keyboard.current != null && Keyboard.current.f12Key.wasPressedThisFrame)
         {
             PlayerPrefs.DeleteAll();
             PlayerPrefs.Save();
-            Debug.Log("[Cheat] ��� ������ �ʱ�ȭ �Ϸ�! ���� ������մϴ�.");
 
             UnityEngine.SceneManagement.SceneManager.LoadScene(
                 UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex
@@ -133,7 +131,6 @@ public class GameManager : MonoBehaviour
             PlayerHealth.OnDied += GameOver;
         }
 
-        // �÷��̾ ������ ����, ���� ���� ���� ��Ų�� �����ݴϴ�.
         if (CurrentPlayer != null)
         {
             CurrentPlayer.ApplyEquippedSkin();
@@ -158,9 +155,6 @@ public class GameManager : MonoBehaviour
                 StartDelay = UITransition.SlideDuration;
             }
         }
-
-        //if (LobbyUIPanel != null) LobbyUIPanel.SetActive(false);
-        //if (GameUIPanel != null) GameUIPanel.SetActive(true);
 
         if (GameOverUI != null) GameOverUI.Hide();
 
@@ -193,7 +187,6 @@ public class GameManager : MonoBehaviour
     {
         ChangeState(GameState.GameOver);
 
-        // ���� ������ �� ������ ���� �÷��� Ƚ���� ������Ű�� �����մϴ�.
         int playCount = PlayerPrefs.GetInt("TotalPlayCount", 0) + 1;
         PlayerPrefs.SetInt("TotalPlayCount", playCount);
         PlayerPrefs.Save();
@@ -248,34 +241,28 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            // ������ �׽�Ʈ ���̰ų� AdManager�� ���� ���� �׳� ��� ��Ȱ ó�� (�׽�Ʈ�� ��� �ڵ�)
             OnReviveSuccess();
         }
     }
 
     private void OnReviveSuccess()
     {
-        bHasRevivedThisGame = true; // ��Ȱ ��ȸ ��� �Ϸ�
+        bHasRevivedThisGame = true;
 
         if (GameOverUI != null) GameOverUI.Hide();
 
         if (CurrentPlayer != null && CurrentPlayer.HealthComponent != null)
         {
-            CurrentPlayer.HealthComponent.Revive(1); // ��Ʈ 1���� ��Ȱ (���Ѵٸ� MaxHealth�� ��Ȱ ����)
+            CurrentPlayer.HealthComponent.Revive(1);
         }
-
-        // ��Ȱ���ڸ��� ������ϴ� ���� ���� ���� �÷��̾� �ֺ��� ���� ���������ϴ�.
-        //ClearEnemiesNearPlayer();
 
         if (ScoreManager != null)
         {
             ScoreManager.ResetCombo();
         }
 
-        // ���¸� �ٽ� �÷��̾� ������ �ǵ����ϴ�.
         ChangeState(GameState.PlayerTurn);
 
-        // UI�� �ΰ��� ���·� �ǵ����ϴ�.
         if (UITransition != null) UITransition.SlideToGame();
     }
 
@@ -340,13 +327,7 @@ public class GameManager : MonoBehaviour
 
         ClearEnemies();
 
-        //if (BoardRenderer != null) BoardRenderer.gameObject.SetActive(false);
-        //if (CurrentPlayer != null) CurrentPlayer.gameObject.SetActive(false);
-
         if (CurrentPlayer != null) CurrentPlayer.ResetPlayer();
-
-        //if (LobbyUIPanel != null) LobbyUIPanel.SetActive(true);
-        //if (GameUIPanel != null) GameUIPanel.SetActive(false);
 
         if (UITransition != null)
             UITransition.SlideToLobby();
@@ -379,7 +360,6 @@ public class GameManager : MonoBehaviour
 
     public void OpenCollectionUI()
     {
-        // �κ� ������ ���� �������� ��� �ڵ� (���� �߿� �� ������)
         if (CurrentState == GameState.Lobby)
         {
             if (CollectionUI != null && !CollectionUI.isActiveAndEnabled)
@@ -391,18 +371,15 @@ public class GameManager : MonoBehaviour
 
     private void OnApplicationPause(bool pauseStatus)
     {
-        if (!pauseStatus) return; // ���ƿ��� ���� ���� ó�� ���ʿ�
-                                  // (�Ͻ����� �޴��� �̹� �������Ƿ� ������ ���� "�̾��ϱ�"�� ������ ��)
+        if (!pauseStatus) return;
 
         if (AdManager.bIsAdTransitioning) return;
-        // �÷��� ���� ���� �ڵ����� �Ͻ�����
-        // (�κ�, ���ӿ��� ȭ�� ����� ó���� �ʿ� ����)
+
         bool bIsPlaying = CurrentState == GameState.PlayerTurn
                         || CurrentState == GameState.EnemyTurn;
 
         if (!bIsPlaying) return;
 
-        // �̹� �Ͻ����� �޴��� ���ִٸ� �ߺ����� ���� ����
         if (PauseMenu != null && !PauseMenu.gameObject.activeInHierarchy)
         {
             PauseMenu.Show();

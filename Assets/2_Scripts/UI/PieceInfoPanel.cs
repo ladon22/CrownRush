@@ -241,18 +241,14 @@ public class PieceInfoPanel : MonoBehaviour
         return null;
     }
 
-    /// <summary>
-    /// PieceType → 이름 로컬라이제이션 키.
-    /// EnemyPieceType enum이 이동 패턴 기준 이름(Linear, Dash 등)이라
-    /// 체스 기물 이름과 매핑이 필요합니다.
-    /// </summary>
+    /// <summary>PieceType → 이름 로컬라이제이션 키.</summary>
     private string GetNameKey(EnemyPieceType type)
     {
         switch (type)
         {
-            case EnemyPieceType.Linear: return "piece_name_pawn";   // 폰
-            case EnemyPieceType.Dash: return "piece_name_rook";   // 룩
-            case EnemyPieceType.Diagonal: return "piece_name_bishop"; // 비숍
+            case EnemyPieceType.Pawn: return "piece_name_pawn";   // 폰
+            case EnemyPieceType.Rook: return "piece_name_rook";   // 룩
+            case EnemyPieceType.Bishop: return "piece_name_bishop"; // 비숍
             case EnemyPieceType.Knight: return "piece_name_knight"; // 나이트
             case EnemyPieceType.Queen: return "piece_name_queen";  // 퀸
             default: return "";
@@ -272,9 +268,9 @@ public class PieceInfoPanel : MonoBehaviour
     {
         switch (type)
         {
-            case EnemyPieceType.Linear: return "piece_move_pawn";   // "앞으로 한 칸, 매턴 이동"
-            case EnemyPieceType.Dash: return "piece_move_rook";   // "직선으로 끝까지, 1턴 쉬고 이동"
-            case EnemyPieceType.Diagonal: return "piece_move_bishop"; // "대각선으로 끝까지, 1턴 쉬고 이동"
+            case EnemyPieceType.Pawn: return "piece_move_pawn";   // "앞으로 한 칸, 매턴 이동"
+            case EnemyPieceType.Rook: return "piece_move_rook";   // "직선으로 끝까지, 1턴 쉬고 이동"
+            case EnemyPieceType.Bishop: return "piece_move_bishop"; // "대각선으로 끝까지, 1턴 쉬고 이동"
             case EnemyPieceType.Knight: return "piece_move_knight"; // "L자로 이동, 뛰어넘기 가능"
             case EnemyPieceType.Queen: return "piece_move_queen";  // "모든 방향 끝까지, 매턴 이동"
             default: return "";

@@ -46,7 +46,7 @@ public class PoolManager : MonoBehaviour
 
             PoolDictionary.Add(Key, new Queue<GameObject>());
 
-            // 하이어라키 창이 지저분해지지 않도록 묶어줄 빈 부모 오브젝트 생성 (예: "LinearEnemy_Pool")
+            // 하이어라키 창이 지저분해지지 않도록 묶어줄 빈 부모 오브젝트 생성 (예: "PawnEnemy_Pool")
             GameObject PoolParent = new GameObject($"{Key}_Pool");
             PoolParent.transform.SetParent(this.transform);
 

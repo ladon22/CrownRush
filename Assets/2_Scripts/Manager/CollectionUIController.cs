@@ -21,16 +21,16 @@ public class CollectionUIController : MonoBehaviour
     public RectTransform PanelRect;
 
     [Header("Localization Tables")]
-    // Å×ÀÌºíÀ» ¿ëµµº°·Î ³ª´©¾î ÀÌ¸§À» ¹Þ½À´Ï´Ù.
+    // ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ ï¿½ëµµï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½Þ½ï¿½ï¿½Ï´ï¿½.
     public string UITableName = "UI_Text";
     public string ItemTableName = "Item_Table";
     public string AchievementTableName = "Achievement_Table";
 
     [Header("Item Preview UI")]
-    // ±âÁ¸ TextMeshProUGUI ´ë½Å LocalizeStringEvent¸¦ »ç¿ëÇÕ´Ï´Ù.
+    // ï¿½ï¿½ï¿½ï¿½ TextMeshProUGUI ï¿½ï¿½ï¿½ LocalizeStringEventï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
     public LocalizeStringEvent ItemNameTextEvent;
 
-    [Header("Unlock Status UI (Àá±Ý/ÁøÇàµµ ¹Ú½º)")]
+    [Header("Unlock Status UI (ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½àµµ ï¿½Ú½ï¿½)")]
     public GameObject LockOverlayPanel;
 
     public LocalizeStringEvent UnlockConditionTextEvent;
@@ -46,14 +46,14 @@ public class CollectionUIController : MonoBehaviour
     [Header("Item Preview UI - Frame")]
     public Image PreviewFrameImage;
 
-    // µ¥ÀÌÅÍº£ÀÌ½º¿¡¼­ ½ºÅ²¸¸ µû·Î ¸ð¾ÆµÑ ¸®½ºÆ®
+    // ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å²ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æµï¿½ ï¿½ï¿½ï¿½ï¿½Æ®
     private List<AchievementEntry> SkinList = new List<AchievementEntry>();
     private int CurrentIndex = 0;
     private Sprite defaultPreviewFrameSprite;
 
     private void Awake()
     {
-        // ½ÃÀÛÇÒ ¶§ ¿ø·¡ UI¿¡ Àû¿ëµÇ¾î ÀÖ´ø ±âº» ÀÌ¹ÌÁö¸¦ ÀúÀåÇØµÓ´Ï´Ù.
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ UIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ ï¿½Ö´ï¿½ ï¿½âº» ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ØµÓ´Ï´ï¿½.
         if (PreviewFrameImage != null)
         {
             defaultPreviewFrameSprite = PreviewFrameImage.sprite;
@@ -61,7 +61,7 @@ public class CollectionUIController : MonoBehaviour
     }
     private void Start()
     {
-        // ¹öÆ° ÀÌº¥Æ® ¿¬°á
+        // ï¿½ï¿½Æ° ï¿½Ìºï¿½Æ® ï¿½ï¿½ï¿½ï¿½
         if (LeftButton != null) LeftButton.onClick.AddListener(ShowPrevious);
         if (RightButton != null) RightButton.onClick.AddListener(ShowNext);
         if (SelectButton != null) SelectButton.onClick.AddListener(EquipCurrentItem);
@@ -76,7 +76,7 @@ public class CollectionUIController : MonoBehaviour
 
         gameObject.SetActive(true);
 
-        // 1. µ¥ÀÌÅÍº£ÀÌ½º¿¡¼­ ½ºÅ² ¸ñ·Ï¸¸ °¡Á®¿Í¼­ ¸®½ºÆ® ¼¼ÆÃ
+        // 1. ï¿½ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½Ì½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å² ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
         SkinList.Clear();
         if (AchievementManager.Instance != null && AchievementManager.Instance.Database != null)
         {
@@ -90,9 +90,9 @@ public class CollectionUIController : MonoBehaviour
         }
 
         string equippedID = PlayerPrefs.GetString("Equipped_Skin", "skin_default");
-        CurrentIndex = 0; // È¤½Ã ¸ø Ã£À» °æ¿ì¸¦ ´ëºñÇÑ ±âº»°ª
+        CurrentIndex = 0; // È¤ï¿½ï¿½ ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ì¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½âº»ï¿½ï¿½
 
-        //3. [Ãß°¡] ¸®½ºÆ®¸¦ ÈÈ¾îº¸¸ç ÀåÂø ÁßÀÎ ½ºÅ²ÀÌ ¸î ¹øÂ°¿¡ ÀÖ´ÂÁö Ã£½À´Ï´Ù.
+        //3. [ï¿½ß°ï¿½] ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½È¾îº¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å²ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Â°ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ï¿½Ï´ï¿½.
         for (int i = 0; i < SkinList.Count; i++)
         {
             if (SkinList[i].RewardItem != null && SkinList[i].RewardItem.ItemID == equippedID)
@@ -104,13 +104,13 @@ public class CollectionUIController : MonoBehaviour
 
         UpdateUI();
 
-        // ÆË¾÷ ¾Ö´Ï¸ÞÀÌ¼Ç
+        // ï¿½Ë¾ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½
         PanelRect.localScale = Vector3.zero;
         PanelRect.DOKill();
         PanelRect.DOScale(Vector3.one, 0.4f).SetEase(Ease.OutBack).SetUpdate(true);
     }
 
-    // È­¸é(±ÛÀÚ, °ÔÀÌÁö, ¹öÆ° »óÅÂ)À» °»½ÅÇÏ´Â ÇÙ½É ÇÔ¼ö
+    // È­ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½Æ° ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ù½ï¿½ ï¿½Ô¼ï¿½
     private void UpdateUI()
     {
         if (SkinList.Count == 0) return;
@@ -121,13 +121,13 @@ public class CollectionUIController : MonoBehaviour
 
 
 
-        // ÀÌ¸§ °»½Å
+        // ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (ItemNameTextEvent != null && currentData.RewardItem != null)
         {
             ItemNameTextEvent.StringReference.SetReference(ItemTableName, currentData.RewardItem.ItemID);
         }
 
-        if (currentData.RewardItem is SkinData skinData) // (±âÁ¸ ·ÎÁ÷ À¯Áö)
+        if (currentData.RewardItem is SkinData skinData) // (ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
         {
             UpdateSkinDiorama(skinData);
 
@@ -148,14 +148,14 @@ public class CollectionUIController : MonoBehaviour
         }
         else
         {
-            // ½ºÅ²ÀÌ ¾Æ´Ñ ÀÏ¹Ý ¾ÆÀÌÅÛÀÏ °æ¿ìÀÇ Ã³¸® (ÇÊ¿äÇÏ´Ù¸é)
+            // ï¿½ï¿½Å²ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ (ï¿½Ê¿ï¿½ï¿½Ï´Ù¸ï¿½)
             ClearPreviewSlots();
         }
 
         int currentProgress = GetCurrentProgress(currentData.Type);
-        // ÇØ±Ý ¿©ºÎ ¹× ÀåÂø ¿©ºÎ È®ÀÎ
+        // ï¿½Ø±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
         string unlockKey = $"{currentData.RewardItem.ItemID}_Unlocked";
-        // RewardID°¡ "Skin_Default" (¶Ç´Â "Board_Default")ÀÎ ±âº» ¾ÆÀÌÅÛÀº ¹«Á¶°Ç true(ÇØ±Ý)·Î Ã³¸®ÇÕ´Ï´Ù!
+        // RewardIDï¿½ï¿½ "Skin_Default" (ï¿½Ç´ï¿½ "Board_Default")ï¿½ï¿½ ï¿½âº» ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ true(ï¿½Ø±ï¿½)ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Õ´Ï´ï¿½!
         bool isUnlocked = isDefaultSkin || (PlayerPrefs.GetInt(unlockKey, 0) == 1);
 
         if (!isUnlocked && currentProgress >= currentData.TargetValue)
@@ -174,7 +174,7 @@ public class CollectionUIController : MonoBehaviour
         }
         else
         {
-            // ±âº» ½ºÅ²ÀÌ ¾Æ´Ò ¶§¸¸ ÅØ½ºÆ®¿Í °ÔÀÌÁö¸¦ °»½ÅÇÕ´Ï´Ù.
+            // ï¿½âº» ï¿½ï¿½Å²ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
             if (UnlockConditionTextEvent != null)
                 UnlockConditionTextEvent.StringReference.SetReference(AchievementTableName, currentData.TitleKey);
 
@@ -184,15 +184,15 @@ public class CollectionUIController : MonoBehaviour
             if (ProgressSlider != null)
                 ProgressSlider.value = Mathf.Clamp01((float)currentProgress / currentData.TargetValue);
 
-            // ÇØ±Ý ¿©ºÎ¿Í »ó°ü¾øÀÌ ¿À¹ö·¹ÀÌ ÆÐ³Î(Á¶°Ç ÅØ½ºÆ® µî Æ÷ÇÔ)Àº ÀÏ´Ü ÄÑµÓ´Ï´Ù! 
-            // (±×·¡¾ß "Á¶°Ç ´Þ¼º", "¿­¸° ÀÚ¹°¼è" µîÀÌ º¸ÀÌ´Ï±î¿ä)
+            // ï¿½Ø±ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð³ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ® ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½ÑµÓ´Ï´ï¿½! 
+            // (ï¿½×·ï¿½ï¿½ï¿½ "ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¼ï¿½", "ï¿½ï¿½ï¿½ï¿½ ï¿½Ú¹ï¿½ï¿½ï¿½" ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´Ï±ï¿½ï¿½)
             if (LockOverlayPanel != null) LockOverlayPanel.SetActive(true);
         }
 
         if (isUnlocked)
         {
-            SelectButton.interactable = !isEquipped; // ÀÌ¹Ì ÀåÂø ÁßÀÌ¸é ¹öÆ° ºñÈ°¼ºÈ­
-            // [º¹±¸] ¹öÆ°ÀÇ ÅØ½ºÆ®¸¦ ÇöÀç »óÅÂ¿¡ ¸Â°Ô ¹Ù²ãÁÝ´Ï´Ù!
+            SelectButton.interactable = !isEquipped; // ï¿½Ì¹ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½Æ° ï¿½ï¿½È°ï¿½ï¿½È­
+            // [ï¿½ï¿½ï¿½ï¿½] ï¿½ï¿½Æ°ï¿½ï¿½ ï¿½Ø½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¿ï¿½ ï¿½Â°ï¿½ ï¿½Ù²ï¿½ï¿½Ý´Ï´ï¿½!
             if (SelectTextEvent != null)
             {
                 SelectTextEvent.StringReference.SetReference(UITableName, isEquipped ? "ui_btn_equipped" : "ui_btn_select");
@@ -200,7 +200,7 @@ public class CollectionUIController : MonoBehaviour
         }
         else
         {
-            // Àá±ä »óÅÂ (ÀÌ¹ÌÁö¿Í ¶È°°ÀÌ ÁøÇàµµ ¹Ù Ç¥½Ã)
+            // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½È°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½àµµ ï¿½ï¿½ Ç¥ï¿½ï¿½)
             if (LockOverlayPanel != null) LockOverlayPanel.SetActive(true);
             SelectButton.interactable = false;
 
@@ -211,38 +211,38 @@ public class CollectionUIController : MonoBehaviour
 
     private void UpdateSkinDiorama(SkinData skinData)
     {
-        // ÀÎ½ºÆåÅÍ ¼¼ÆÃÀÌ ´©¶ôµÇ¾ú´ÂÁö ¾ÈÀü °Ë»ç
+        // ï¿½Î½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½
         if (PreviewSlots == null || PreviewSlots.Length < 6)
         {
-            Debug.LogWarning("CollectionUI: PreviewSlots ¹è¿­ÀÇ Å©±â°¡ 6ÀÌ ¾Æ´Õ´Ï´Ù! ÀÎ½ºÆåÅÍ¸¦ È®ÀÎÇØÁÖ¼¼¿ä.");
+            Debug.LogWarning("CollectionUI: PreviewSlots ï¿½è¿­ï¿½ï¿½ Å©ï¿½â°¡ 6ï¿½ï¿½ ï¿½Æ´Õ´Ï´ï¿½! ï¿½Î½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ È®ï¿½ï¿½ï¿½ï¿½ï¿½Ö¼ï¿½ï¿½ï¿½.");
             return;
         }
 
-        //  3x2 Ã¼½ºÆÇ ÆÐÅÏ¿¡ ¸Â°Ô ±³Â÷µÇ´Â Å¸ÀÏ »ö»ó ¹è¿­ (Light, Dark ±³´ë)
+        //  3x2 Ã¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½Â°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½è¿­ (Light, Dark ï¿½ï¿½ï¿½ï¿½)
         Sprite[] tiles = {
             skinData.LightTileSprite, skinData.DarkTileSprite, skinData.LightTileSprite,
             skinData.DarkTileSprite, skinData.LightTileSprite, skinData.DarkTileSprite
         };
 
-        // 1. Ã¹ ¹øÂ° ½½·Ô [0] : ÇÃ·¹ÀÌ¾î (King)
+        // 1. Ã¹ ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ [0] : ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ (King)
         SetSlotUI(PreviewSlots[0], tiles[0], skinData.PlayerSprite, skinData.PlayerColor);
 
-        // 2. ³ª¸ÓÁö ½½·Ô [1]~[5] : Àû ±â¹°µé
-        // Enum ¼ø¼­¸¦ UI¿¡ º¸¿©ÁÖ°í ½ÍÀº ¼ø¼­´ë·Î ¹èÄ¡ÇÕ´Ï´Ù.
+        // 2. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ [1]~[5] : ï¿½ï¿½ ï¿½â¹°ï¿½ï¿½
+        // Enum ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ UIï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Õ´Ï´ï¿½.
         EnemyPieceType[] enemyTypes = {
-            EnemyPieceType.Linear,   // [1] Æù
-            EnemyPieceType.Knight,   // [2] ³ªÀÌÆ®
-            EnemyPieceType.Dash,     // [3] ·è
-            EnemyPieceType.Diagonal, // [4] ºñ¼ó
-            EnemyPieceType.Queen     // [5] Äý
+            EnemyPieceType.Pawn,     // [1] í°
+            EnemyPieceType.Knight,   // [2] ë‚˜ì´íŠ¸
+            EnemyPieceType.Rook,     // [3] ë£©
+            EnemyPieceType.Bishop,   // [4] ë¹„ìˆ
+            EnemyPieceType.Queen     // [5] í€¸
         };
 
         for (int i = 0; i < enemyTypes.Length; i++)
         {
-            // ½ºÅ² µ¥ÀÌÅÍ¿¡¼­ ÇØ´ç Å¸ÀÔÀÇ Àû ½ºÇÁ¶óÀÌÆ®¸¦ Ã£¾Æ¿É´Ï´Ù.
+            // ï¿½ï¿½Å² ï¿½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ Ã£ï¿½Æ¿É´Ï´ï¿½.
             EnemySkinData enemySkin = skinData.GetEnemySkin(enemyTypes[i]);
 
-            // ÇÃ·¹ÀÌ¾î°¡ 0¹øÀÌ¹Ç·Î ÀûÀº 1¹ø ÀÎµ¦½ººÎÅÍ ½ÃÀÛ
+            // ï¿½Ã·ï¿½ï¿½Ì¾î°¡ 0ï¿½ï¿½ï¿½Ì¹Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ 1ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             int slotIndex = i + 1;
 
             SetSlotUI(PreviewSlots[slotIndex], tiles[slotIndex], enemySkin.EnemySprite, skinData.EnemyColor);
@@ -251,21 +251,21 @@ public class CollectionUIController : MonoBehaviour
 
     private void SetSlotUI(PreviewSlotUI slot, Sprite tileSprite, Sprite pieceSprite, Color pieceColor)
     {
-        // Å¸ÀÏ ¼¼ÆÃ
+        // Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (slot.TileImage != null)
         {
             slot.TileImage.sprite = tileSprite;
-            // ½ºÇÁ¶óÀÌÆ®°¡ ºñ¾îÀÖÀ¸¸é Åõ¸íÇÏ°Ô, ÀÖÀ¸¸é ¿ø·¡ »ö»ó(ÇÏ¾á»ö)À¸·Î
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½Ï¾ï¿½ï¿½)ï¿½ï¿½ï¿½ï¿½
             slot.TileImage.color = (tileSprite != null) ? Color.white : Color.clear;
         }
 
-        // ±â¹° ¼¼ÆÃ
+        // ï¿½â¹° ï¿½ï¿½ï¿½ï¿½
         if (slot.PieceImage != null)
         {
             slot.PieceImage.sprite = pieceSprite;
-            // ½ºÇÁ¶óÀÌÆ®°¡ ºñ¾îÀÖÀ¸¸é Åõ¸íÇÏ°Ô, ÀÖÀ¸¸é ÁöÁ¤µÈ Æ¾Æ® ÄÃ·¯ Àû¿ë
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Æ¾Æ® ï¿½Ã·ï¿½ ï¿½ï¿½ï¿½ï¿½
             slot.PieceImage.color = (pieceSprite != null) ? pieceColor : Color.clear;
-            slot.PieceImage.preserveAspect = true; // ºñÀ² À¯Áö
+            slot.PieceImage.preserveAspect = true; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
     }
 
@@ -278,15 +278,15 @@ public class CollectionUIController : MonoBehaviour
         }
     }
 
-    // À¯ÀúÀÇ ÇöÀç ÇÃ·¹ÀÌ ÁøÃ´µµ(ÃÖ°í Á¡¼ö µî)¸¦ °¡Á®¿À´Â ÇÔ¼ö
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ ï¿½ï¿½Ã´ï¿½ï¿½(ï¿½Ö°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½
     private int GetCurrentProgress(AchievementType type)
     {
         switch (type)
         {
             case AchievementType.Score:
-                // ±âÁ¸ GameOverUIController¿¡ ÀúÀåµÈ º£½ºÆ® ½ºÄÚ¾î Å°
+                // ï¿½ï¿½ï¿½ï¿½ GameOverUIControllerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½Ú¾ï¿½ Å°
                 return PlayerPrefs.GetInt("BestScore", 0);
-            // ÄÞº¸³ª Å³ Ä«¿îÆ® µî ´Ù¸¥ Å¸ÀÔÀÌ Ãß°¡µÇ¸é ¿©±â¿¡ PlayerPrefs¸¦ ºÒ·¯¿À´Â ·ÎÁ÷ Ãß°¡
+            // ï¿½Þºï¿½ï¿½ï¿½ Å³ Ä«ï¿½ï¿½Æ® ï¿½ï¿½ ï¿½Ù¸ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½â¿¡ PlayerPrefsï¿½ï¿½ ï¿½Ò·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
             default:
                 return 0;
         }
@@ -295,14 +295,14 @@ public class CollectionUIController : MonoBehaviour
     public void ShowNext()
     {
         CurrentIndex++;
-        if (CurrentIndex >= SkinList.Count) CurrentIndex = 0; // ³¡¿¡ µµ´ÞÇÏ¸é Ã³À½À¸·Î
+        if (CurrentIndex >= SkinList.Count) CurrentIndex = 0; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         UpdateUI();
     }
 
     public void ShowPrevious()
     {
         CurrentIndex--;
-        if (CurrentIndex < 0) CurrentIndex = SkinList.Count - 1; // Ã³À½¿¡ µµ´ÞÇÏ¸é ³¡À¸·Î
+        if (CurrentIndex < 0) CurrentIndex = SkinList.Count - 1; // Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         UpdateUI();
     }
 
@@ -311,7 +311,7 @@ public class CollectionUIController : MonoBehaviour
         AchievementEntry currentData = SkinList[CurrentIndex];
         if (currentData.RewardItem is SkinData skinData)
         {
-            // PlayerPrefs Á÷Á¢ ÀúÀåÀÌ ¾Æ´Ñ ¸Å´ÏÀúÀÇ ÀÌº¥Æ® ¹æ¼Û ÇÔ¼ö È£Ãâ!
+            // PlayerPrefs ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ ï¿½Å´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìºï¿½Æ® ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ È£ï¿½ï¿½!
             if (AchievementManager.Instance != null)
             {
                 AchievementManager.Instance.EquipSkin(skinData.ItemID);
