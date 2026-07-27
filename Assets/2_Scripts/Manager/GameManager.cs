@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -82,9 +83,12 @@ public class GameManager : MonoBehaviour
         }
 #endif
     }
+    public event Action<GameState> OnStateChanged;
+
     public void ChangeState(GameState state)
     {
         CurrentState = state;
+        OnStateChanged?.Invoke(state);
     }
 
     private void InitializeGameStage()
@@ -139,7 +143,6 @@ public class GameManager : MonoBehaviour
 
     public void StartGame(bool IsRetry = false)
     {
-
         if (bIsStartingGame) return;
         bIsStartingGame = true;
 
@@ -155,11 +158,6 @@ public class GameManager : MonoBehaviour
                 StartDelay = UITransition.SlideDuration;
             }
         }
-
-        if (GameOverUI != null) GameOverUI.Hide();
-
-        if (ScoreManager != null) ScoreManager.ResetScore();
-        if (ItemManager != null) ItemManager.ClearItem();
 
         ClearEnemies();
 
@@ -331,12 +329,6 @@ public class GameManager : MonoBehaviour
 
         if (UITransition != null)
             UITransition.SlideToLobby();
-
-        if (GameOverUI != null) GameOverUI.Hide();
-
-        if (ItemManager != null) ItemManager.ClearItem();
-
-        if (LobbyUI != null) LobbyUI.LoadBestScore();
     }
 
     private void ClearEnemies()

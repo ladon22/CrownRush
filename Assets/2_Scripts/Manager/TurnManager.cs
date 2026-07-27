@@ -28,7 +28,6 @@ public class TurnManager : MonoBehaviour
     {
         GameManager.Instance.ChangeState(GameState.EnemyTurn);
 
-        if (EnemyManager != null) EnemyManager.ClearAllIntents();
         yield return new WaitForSeconds(TurnDelay);
 
         yield return StartCoroutine(EnemyManager.ProcessEnemiesTurnRoutine());
@@ -43,7 +42,6 @@ public class TurnManager : MonoBehaviour
     {
 
         GameManager.Instance.ChangeState(GameState.PlayerTurn);
-        if (EnemyManager != null) EnemyManager.UpdateEnemyIntents();
 
         yield return new WaitForSeconds(TurnDelay);
 

@@ -39,6 +39,24 @@ public class EnemyManager : MonoBehaviour
         else Destroy(gameObject);
     }
 
+    private void Start()
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnStateChanged += HandleStateChanged;
+    }
+
+    private void OnDestroy()
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnStateChanged -= HandleStateChanged;
+    }
+
+    private void HandleStateChanged(GameState state)
+    {
+        if (state == GameState.EnemyTurn) ClearAllIntents();
+        else if (state == GameState.PlayerTurn) UpdateEnemyIntents();
+    }
+
     public void SpawnEnemy()
     {
         MaintainEnemyCount();

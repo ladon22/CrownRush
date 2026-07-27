@@ -6,11 +6,26 @@ using UnityEngine.UI;
 public class UpdateBestScoreUI : MonoBehaviour
 {
     [Header("UI Texts")]
-    public LocalizeStringEvent BestScoreTextEvent; // ´Ù±¹¾î Àû¿ëÀ» À§ÇÑ ÄÄÆ÷³ÍÆ®
+    public LocalizeStringEvent BestScoreTextEvent; // ï¿½Ù±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
 
     private void Start()
     {
         LoadBestScore();
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnStateChanged += HandleStateChanged;
+    }
+
+    private void OnDestroy()
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnStateChanged -= HandleStateChanged;
+    }
+
+    private void HandleStateChanged(GameState state)
+    {
+        if (state == GameState.Lobby)
+            LoadBestScore();
     }
 
     public void LoadBestScore()
