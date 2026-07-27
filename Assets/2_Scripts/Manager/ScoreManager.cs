@@ -49,24 +49,6 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        if (GameManager.Instance != null)
-            GameManager.Instance.OnStateChanged += HandleStateChanged;
-    }
-
-    private void OnDestroy()
-    {
-        if (GameManager.Instance != null)
-            GameManager.Instance.OnStateChanged -= HandleStateChanged;
-    }
-
-    private void HandleStateChanged(GameState state)
-    {
-        if (state == GameState.Initialize)
-            ResetScore();
-    }
-
     private void Update()
     {
         if (GameManager.Instance == null || GameManager.Instance.CurrentState != GameState.PlayerTurn) return;

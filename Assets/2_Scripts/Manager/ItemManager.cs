@@ -24,11 +24,6 @@ public class ItemManager : MonoBehaviour
         {
             ScoreManager.Instance.OnScoreChanged += HandleScoreChanged;
         }
-
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.OnStateChanged += HandleStateChanged;
-        }
     }
 
     private void OnDisable()
@@ -37,17 +32,6 @@ public class ItemManager : MonoBehaviour
         {
             ScoreManager.Instance.OnScoreChanged -= HandleScoreChanged;
         }
-
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.OnStateChanged -= HandleStateChanged;
-        }
-    }
-
-    private void HandleStateChanged(GameState state)
-    {
-        if (state == GameState.Lobby || state == GameState.Initialize)
-            ClearItem();
     }
 
     public void SpawnRandomItem()

@@ -24,27 +24,6 @@ public class GameOverUIController : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private void Start()
-    {
-        if (GameManager.Instance != null)
-            GameManager.Instance.OnStateChanged += HandleStateChanged;
-    }
-
-    private void OnDestroy()
-    {
-        if (GameManager.Instance != null)
-            GameManager.Instance.OnStateChanged -= HandleStateChanged;
-    }
-
-    // PlayerTurn은 매 턴마다 반복되는 상태라 여기서 처리하면 Hide()가 매턴 호출되어
-    // PopUIBlock()이 과도하게 실행됩니다. 부활(OnReviveSuccess) 시의 Hide()는
-    // GameManager에서 그대로 직접 호출합니다.
-    private void HandleStateChanged(GameState state)
-    {
-        if (state == GameState.Lobby || state == GameState.Initialize)
-            Hide();
-    }
-
     public void Show(int currentScore, int bestScore, bool bCanRevive)
     {
         if (gameObject.activeInHierarchy) return;
@@ -63,7 +42,7 @@ public class GameOverUIController : MonoBehaviour
         if (ScoreTextEvent != null)
         {
             ScoreTextEvent.StringReference.Arguments = new object[] { currentScore };
-            ScoreTextEvent.RefreshString(); // "�ܾ��� ���ΰ�ħ ����!" ��� ����
+            ScoreTextEvent.RefreshString(); // "�ܾ��� ���ΰ�ħ ����!" ��� ����
         }
 
         if (BestScoreTextEvent != null)
