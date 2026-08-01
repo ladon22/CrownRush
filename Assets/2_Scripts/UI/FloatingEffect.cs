@@ -1,38 +1,34 @@
 using UnityEngine;
-using DG.Tweening; // DOTween »ç¿ëÀ» À§ÇØ ÇÊ¼ö
+using DG.Tweening; // DOTween ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¼ï¿½
 
 public class FloatingEffect : MonoBehaviour
 {
     [Header("Floating Settings")]
-    [Tooltip("¾ó¸¶³ª ³ôÀÌ µÕµÕ ¶ã °ÍÀÎÁö °Å¸®")]
+    [Tooltip("ï¿½ó¸¶³ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Õµï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½")]
     public float FloatDistance = 20f;
 
-    [Tooltip("ÇÑ ¹ø ¿Ã¶ó°¡´Â µ¥ °É¸®´Â ½Ã°£")]
+    [Tooltip("ï¿½ï¿½ ï¿½ï¿½ ï¿½Ã¶ó°¡´ï¿½ ï¿½ï¿½ ï¿½É¸ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½")]
     public float Duration = 1.5f;
 
     private RectTransform rectTransform;
 
     void Start()
     {
-        // ½ºÅ©¸³Æ®°¡ ºÙ¾îÀÖ´Â ¿ÀºêÁ§Æ®ÀÇ RectTransformÀ» ÀÚµ¿À¸·Î °¡Á®¿É´Ï´Ù.
+        // ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ù¾ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ RectTransformï¿½ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½É´Ï´ï¿½.
         rectTransform = GetComponent<RectTransform>();
 
         if (rectTransform != null)
         {
-            // °³¹ßÀÚ´ÔÀÌ ÀÛ¼ºÇÏ½Å ÄÚµå Àû¿ë
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ ï¿½Û¼ï¿½ï¿½Ï½ï¿½ ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½
             rectTransform.DOAnchorPosY(rectTransform.anchoredPosition.y + FloatDistance, Duration)
                          .SetEase(Ease.InOutSine)
                          .SetLoops(-1, LoopType.Yoyo);
-        }
-        else
-        {
-            Debug.LogWarning("FloatingEffect´Â UI ¿ä¼Ò(RectTransform)¿¡¸¸ »ç¿ëÇÒ ¼ö ÀÖ½À´Ï´Ù!");
         }
     }
 
     void OnDestroy()
     {
-        // ¿ÀºêÁ§Æ®°¡ ÆÄ±«µÉ ¶§ Âî²¨±â ¾Ö´Ï¸ÞÀÌ¼ÇÀÌ ³²Áö ¾Êµµ·Ï ±ò²ûÇÏ°Ô Á¾·áÇØ ÁÝ´Ï´Ù.
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ä±ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½î²¨ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Êµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ý´Ï´ï¿½.
         if (rectTransform != null)
         {
             rectTransform.DOKill();

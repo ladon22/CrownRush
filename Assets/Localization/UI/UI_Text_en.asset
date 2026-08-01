@@ -209,12 +209,14 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 22216684384919552
-    m_Localized: 'Moves forward
+    m_Localized: 'Spawns only on top/bottom rows
 
-      Attacks diagonally
+      Moves forward
 
-      Rests every other
-      turn'
+      Attacks
+      diagonally
+
+      Rests every other turn'
     m_Metadata:
       m_Items: []
   - m_Id: 22216713950568448

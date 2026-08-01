@@ -61,7 +61,7 @@ public class HealthUIManager : MonoBehaviour
     {
         for (int i = 0; i < HealthIcons.Count; i++)
         {
-            // ÇöÀç Ã¼·Âº¸´Ù ÀÎµ¦½º°¡ ³·À¸¸é ²Ë Âù ¿Õ°ü, ¾Æ´Ï¸é ºó ¿Õ°üÀ» º¸¿©ÁÝ´Ï´Ù.
+            // ï¿½ï¿½ï¿½ï¿½ Ã¼ï¿½Âºï¿½ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Õ°ï¿½, ï¿½Æ´Ï¸ï¿½ ï¿½ï¿½ ï¿½Õ°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ý´Ï´ï¿½.
             if (i < CurrentHealth)
             {
                 HealthIcons[i].sprite = FullHealthSprite;
@@ -72,36 +72,4 @@ public class HealthUIManager : MonoBehaviour
             }
         }
     }
-
-    //private void UpdateHearts(int CurrentHealth)
-    //{
-    //    for (int i = 0; i < HeartIcons.Count; i++)
-    //    {
-    //        Animator Anim = HeartIcons[i].GetComponent<Animator>();   
-    //        if (i < CurrentHealth)
-    //        {
-    //            if (Anim != null && Anim.isActiveAndEnabled)
-    //            {
-    //                Anim.SetBool("IsEmpty", false);
-    //            }
-    //            else if (Anim == null)
-    //            {
-    //                HeartIcons[i].sprite = FullHeartSprite;
-    //            }
-    //        }
-    //        else
-    //        {
-    //            if (Anim != null && Anim.isActiveAndEnabled)
-    //            {
-    //                Anim.SetBool("IsEmpty", true);
-    //            }
-    //            else if (Anim == null)
-    //            {
-    //                HeartIcons[i].sprite = EmptyHeartSprite;
-    //            }
-    //        }
-    //    }
-    //}
-
-
 }

@@ -10,6 +10,11 @@ public class HealthItem : ItemBase
             Player.HealthComponent.Heal(HealAmount);
         }
 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(SfxType.ItemConsume);
+        }
+
         if(ItemManager != null) ItemManager.RemoveItem(this);
         KillTweens();
         PoolManager.Instance.ReturnToPool(gameObject);

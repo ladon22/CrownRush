@@ -22,8 +22,6 @@ public class PoolManager : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
-
-        //InitializePools();
     }
 
     private void Start()

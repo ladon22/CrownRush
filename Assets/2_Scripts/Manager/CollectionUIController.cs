@@ -214,7 +214,6 @@ public class CollectionUIController : MonoBehaviour
         // �ν����� ������ �����Ǿ����� ���� �˻�
         if (PreviewSlots == null || PreviewSlots.Length < 6)
         {
-            Debug.LogWarning("CollectionUI: PreviewSlots �迭�� ũ�Ⱑ 6�� �ƴմϴ�! �ν����͸� Ȯ�����ּ���.");
             return;
         }
 

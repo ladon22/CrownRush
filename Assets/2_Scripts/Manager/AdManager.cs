@@ -9,7 +9,8 @@ using UnityEngine;
 public class AdManager : MonoBehaviour
 {
     public static AdManager Instance;
-    private string AdUnitId = "ca-app-pub-3940256099942544/5224354917";
+    //테스트용 ID: ca-app-pub-3940256099942544/5224354917
+    private string AdUnitId = "ca-app-pub-1954417796107340/7852122167";
 
     private RewardedAd RewardedAd;
     private Action OnRewardEarned;
@@ -43,7 +44,7 @@ public class AdManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(transform.root.gameObject);
         }
         else
         {

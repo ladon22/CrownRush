@@ -67,6 +67,5 @@ public class UserCloudData
             PlayerPrefs.SetInt($"{kv.Key}_Unlocked", kv.Value ? 1 : 0);
 
         PlayerPrefs.Save();
-        Debug.Log("[UserCloudData] 로컬 저장 완료.");
     }
 }

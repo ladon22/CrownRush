@@ -39,7 +39,6 @@ public class FireBaseManager : MonoBehaviour
     {
         if (bUseFirebase == false)
         {
-            Debug.Log("[FireBaseManager] 파이어베이스를 사용하지 않음 설정.");
             yield break; // 코루틴 즉시 종료
         }
 
@@ -51,7 +50,6 @@ public class FireBaseManager : MonoBehaviour
             {
                 DBReference = FirebaseDatabase.DefaultInstance.RootReference;
                 bIsFireBaseReady = true;
-                Debug.Log("[FireBaseManager] 초기화 성공 및 연결 완료");
             }
             else
             {
@@ -107,8 +105,6 @@ public class FireBaseManager : MonoBehaviour
                 {
                     if (t.IsFaulted)
                         Debug.LogError("[FireBaseManager] Users 점수 저장 실패: " + t.Exception);
-                    else
-                        Debug.Log($"[FireBaseManager] 신기록 저장 완료: {finalScore}점");
                 });
         });
     }
@@ -124,8 +120,6 @@ public class FireBaseManager : MonoBehaviour
             {
                 if (task.IsFaulted)
                     Debug.LogError("[FireBaseManager] PlayCount 저장 실패: " + task.Exception);
-                else
-                    Debug.Log($"[FireBaseManager] PlayCount 저장 완료: {playCount}회");
             });
     }
 
@@ -140,8 +134,6 @@ public class FireBaseManager : MonoBehaviour
             {
                 if (task.IsFaulted)
                     Debug.LogError($"[FireBaseManager] 업적 저장 실패 ({skinID}): " + task.Exception);
-                else
-                    Debug.Log($"[FireBaseManager] 업적 저장 완료: {skinID}");
             });
     }
 
@@ -292,7 +284,6 @@ public class FireBaseManager : MonoBehaviour
     {
         if (!bUseFirebase || !bIsFireBaseReady || user == null)
         {
-            Debug.Log("[FireBaseManager] Firebase 미사용 또는 비로그인 — 로컬 데이터 사용.");
             yield break;
         }
 
@@ -314,7 +305,6 @@ public class FireBaseManager : MonoBehaviour
                 if (!snapshot.Exists)
                 {
                     // 첫 설치 → 로컬 데이터로 첫 백업 생성
-                    Debug.Log("[FireBaseManager] 클라우드 데이터 없음 → 첫 백업 생성.");
                     RestoreFirstBackup();
                     isDone = true;
                     return;
@@ -333,10 +323,6 @@ public class FireBaseManager : MonoBehaviour
 
                 // 병합 결과를 클라우드에도 동기화 (두 기기 간 최신화)
                 SyncMergedData(merged);
-
-                Debug.Log($"[FireBaseManager] 복원 완료 — " +
-                          $"BestScore: {merged.BestScore} / " +
-                          $"PlayCount: {merged.TotalPlayCount}");
 
                 isDone = true;
             });
@@ -397,8 +383,6 @@ public class FireBaseManager : MonoBehaviour
                 {
                     if (achTask.IsFaulted)
                         Debug.LogError("[FireBaseManager] 업적 동기화 실패: " + achTask.Exception);
-                    else
-                        Debug.Log("[FireBaseManager] 클라우드 동기화 완료!");
                 });
         });
     }
@@ -502,8 +486,6 @@ public class FireBaseManager : MonoBehaviour
             {
                 if (task.IsFaulted)
                     Debug.LogError("[FireBaseManager] 프로필 저장 실패: " + task.Exception);
-                else
-                    Debug.Log($"[FireBaseManager] 프로필 저장 완료: {user.DisplayName}");
             });
     }
 
@@ -518,8 +500,6 @@ public class FireBaseManager : MonoBehaviour
             {
                 if (task.IsFaulted)
                     Debug.LogError("[FireBaseManager] BestCombo 저장 실패: " + task.Exception);
-                else
-                    Debug.Log($"[FireBaseManager] BestCombo 저장 완료: {bestCombo}");
             });
     }
 

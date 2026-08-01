@@ -77,7 +77,6 @@ public class GridManager : MonoBehaviour
             return GridPositions[Y, X];
         }
 
-        Debug.LogWarning("��ȿ���� ���� �׸��� ��ǥ�� ��û�߽��ϴ�.");
         return Vector2.zero;
     }
 

@@ -167,7 +167,7 @@ public class PlayerController : MonoBehaviour, IBoardOccupant
 
             if (AudioManager.Instance != null)
             {
-                AudioManager.Instance.PlaySFX(SfxType.PlayerAttack, true);
+                AudioManager.Instance.PlaySFX(SfxType.PlayerAttack, false);
             }
         }
         else if (AudioManager.Instance != null)

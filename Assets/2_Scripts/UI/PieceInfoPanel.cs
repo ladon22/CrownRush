@@ -1,7 +1,6 @@
 using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Localization;
 
 /// <summary>
 /// 적 정보 패널.
@@ -51,7 +50,6 @@ public class PieceInfoPanel : MonoBehaviour
 
     [Header("로컬라이제이션")]
     [SerializeField] private string TableName = "UI_Text";
-    [SerializeField] private LocalizedString ScoreFormatString; // 예: "{0}점" / "{0} pts"
 
     [SerializeField] private string ScoreFormatKey = "piece_score_format";
 

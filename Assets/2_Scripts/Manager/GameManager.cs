@@ -25,7 +25,6 @@ public class GameManager : MonoBehaviour
     public HealthUIManager HealthUIManager;
     public ItemManager ItemManager;
     public ScoreManager ScoreManager;
-    //public FireBaseManager FireBaseManager;
 
     public GameObject PlayerPrefab;
 
@@ -65,7 +64,6 @@ public class GameManager : MonoBehaviour
 
         if (AudioManager.Instance != null) AudioManager.Instance.PlayBGM(BgmType.Lobby);
         if (LobbyUIPanel != null) LobbyUIPanel.SetActive(true);
-        //if (GameUIPanel != null) GameUIPanel.SetActive(false);
     }
 
     void Update()
@@ -264,35 +262,6 @@ public class GameManager : MonoBehaviour
         ChangeState(GameState.PlayerTurn);
 
         if (UITransition != null) UITransition.SlideToGame();
-    }
-
-    private void ClearEnemiesNearPlayer()
-    {
-        if (EnemyManager == null || CurrentPlayer == null) return;
-
-        List<EnemyBase> EnemiesToRemove = new List<EnemyBase>();
-
-        foreach (EnemyBase Enemy in EnemyManager.ActiveEnemies)
-        {
-            // 플레이어와 거리가 2 이내인(상하좌우 및 대각선 포함) 적을 찾습니다.
-            int DistX = Mathf.Abs(Enemy.CurrentX - CurrentPlayer.CurrentX);
-            int DistY = Mathf.Abs(Enemy.CurrentY - CurrentPlayer.CurrentY);
-
-            if (DistX <= 2 && DistY <= 2)
-            {
-                EnemiesToRemove.Add(Enemy);
-            }
-        }
-
-        // ã�Ƴ� ������ �Ͷ߷��ݴϴ�.
-        foreach (EnemyBase Enemy in EnemiesToRemove)
-        {
-            Enemy.Die(); // (����: Die �ȿ� EnemyManager.RemoveEnemy ó���� �Ǿ��ִ��� Ȯ�� �ʿ�)
-            // ī�޶� ��鸲�̳� ���� ����Ʈ�� �ָ� Ÿ�ݰ��� �ξ� �����ϴ�!
-        }
-
-        // �ʿ��ϴٸ� ���� ����Ʈ �Ҹ� ���
-        // if (AudioManager.Instance != null) AudioManager.Instance.PlaySFX(SfxType.EnemyDie);
     }
 
     public void RetryGame()

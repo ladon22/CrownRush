@@ -60,7 +60,6 @@ public class TutorialHintManager : MonoBehaviour
         {
             // 현재 힌트 표시 중 → 대기열에 추가
             _hintQueue.Enqueue(data);
-            Debug.Log($"[TutorialHintManager] 힌트 대기열 추가: {hintID} (대기 {_hintQueue.Count}개)");
         }
         else
         {
@@ -76,7 +75,6 @@ public class TutorialHintManager : MonoBehaviour
         {
             TutorialHintData next = _hintQueue.Dequeue();
             ShowHint(next);
-            Debug.Log($"[TutorialHintManager] 다음 힌트 표시 (남은 대기 {_hintQueue.Count}개)");
         }
     }
 
@@ -84,7 +82,6 @@ public class TutorialHintManager : MonoBehaviour
     {
         _isShowing = true;
         OnHintRequested?.Invoke(data);
-        Debug.Log($"[TutorialHintManager] 힌트 표시: {data.HintID}");
     }
     // ── 유틸 ─────────────────────────────────────────────────
 
@@ -104,7 +101,6 @@ public class TutorialHintManager : MonoBehaviour
             PlayerPrefs.DeleteKey(PrefKeyPrefix + id);
 
         PlayerPrefs.Save();
-        Debug.Log("[TutorialHintManager] 모든 힌트 기록 초기화 완료.");
     }
 
 #if UNITY_EDITOR

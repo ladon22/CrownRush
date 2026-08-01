@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class EnemyManager : MonoBehaviour
 {
@@ -15,15 +14,24 @@ public class EnemyManager : MonoBehaviour
     [Header("Spawn Settings")]
     public int MaxEnemyCount = 4;
 
-    [Header("Enemy Bag Settings")]
-    public int BasicEnemyCount = 5;
-    [FormerlySerializedAs("DiagonalEnemyCount")]
-    public int BishopEnemyCount = 2;
-    [FormerlySerializedAs("DashEnemyCount")]
-    public int RookEnemyCount = 1;
-    public int KnightEnemyCount = 1;
+    [System.Serializable]
+    public struct EnemyBagEntry
+    {
+        public EnemyPieceType Type;
+        public int Count;
+    }
 
-    private List<int> EnemyBag = new List<int>();
+    [Header("Enemy Bag Settings")]
+    public List<EnemyBagEntry> BagComposition = new List<EnemyBagEntry>
+    {
+        new EnemyBagEntry { Type = EnemyPieceType.Pawn, Count = 3 },
+        new EnemyBagEntry { Type = EnemyPieceType.Rook, Count = 2 },
+        new EnemyBagEntry { Type = EnemyPieceType.Knight, Count = 2 },
+        new EnemyBagEntry { Type = EnemyPieceType.Bishop, Count = 2 },
+    };
+
+    private List<EnemyPieceType> EnemyBag = new List<EnemyPieceType>();
+    private Dictionary<EnemyPieceType, GameObject> _prefabByType;
 
     [HideInInspector]
     public List<EnemyBase> ActiveEnemies = new List<EnemyBase>();
@@ -37,6 +45,22 @@ public class EnemyManager : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+
+        BuildPrefabLookup();
+    }
+
+    private void BuildPrefabLookup()
+    {
+        _prefabByType = new Dictionary<EnemyPieceType, GameObject>();
+        foreach (GameObject Prefab in EnemyPrefabs)
+        {
+            if (Prefab == null) continue;
+
+            EnemyBase EnemyBaseComp = Prefab.GetComponent<EnemyBase>();
+            if (EnemyBaseComp == null) continue;
+
+            _prefabByType[EnemyBaseComp.PieceType] = Prefab;
+        }
     }
 
     public void SpawnEnemy()
@@ -56,14 +80,18 @@ public class EnemyManager : MonoBehaviour
 
         for (int i = 0; i < SpawnAmount; i++)
         {
-            if (EnemyBag.Count == 0)
+            if (EnemyBag.Count == 0) RefillAndShuffleEnemyBag();
+
+            EnemyPieceType PulledType = EnemyBag[0];
+
+            if (!_prefabByType.TryGetValue(PulledType, out GameObject PrefabToSpawn) 
+                || PrefabToSpawn == null)
             {
-                RefillAndShuffleEnemyBag();
+                EnemyBag.RemoveAt(0);
+                continue;
             }
 
-            int PulledEnemyIndex = EnemyBag[0];
-            GameObject PrefabToSpawn = EnemyPrefabs[PulledEnemyIndex];
-            bool bIsPawnEnemy = PrefabToSpawn.GetComponent<PawnEnemy>() != null;
+            bool bIsPawnEnemy = PulledType == EnemyPieceType.Pawn;
 
             int SpawnX, SpawnY;
             if (GetValidEdgeSpawnPosition(bIsPawnEnemy, out SpawnX, out SpawnY))
@@ -71,7 +99,8 @@ public class EnemyManager : MonoBehaviour
                 EnemyBag.RemoveAt(0);
 
                 Vector2 SpawnPosition = GridManager.GetWorldPosition(SpawnX, SpawnY);
-                GameObject NewEnemyObj = PoolManager.Instance.SpawnFromPool(PrefabToSpawn, SpawnPosition, Quaternion.identity);
+                GameObject NewEnemyObj = 
+                    PoolManager.Instance.SpawnFromPool(PrefabToSpawn, SpawnPosition, Quaternion.identity);
 
                 EnemyBase NewEnemy = NewEnemyObj.GetComponent<EnemyBase>();
                 if (NewEnemy != null)
@@ -153,19 +182,14 @@ public class EnemyManager : MonoBehaviour
     private void RefillAndShuffleEnemyBag()
     {
         EnemyBag.Clear();
-        for (int i = 0; i < BasicEnemyCount; i++)
-            EnemyBag.Add(0);
-        for (int i = 0; i < BishopEnemyCount; i++)
-            EnemyBag.Add(1);
-        for (int i = 0; i < RookEnemyCount; i++)
-            EnemyBag.Add(2);
-        for (int i = 0; i < KnightEnemyCount; i++)
-            EnemyBag.Add(3);
+        foreach (EnemyBagEntry Entry in BagComposition)
+            for (int i = 0; i < Entry.Count; i++)
+                EnemyBag.Add(Entry.Type);
 
         for(int i = 0; i < EnemyBag.Count; i++)
         {
             int RandomIndex = Random.Range(i, EnemyBag.Count);
-            int Temp = EnemyBag[i];
+            EnemyPieceType Temp = EnemyBag[i];
             EnemyBag[i] = EnemyBag[RandomIndex];
             EnemyBag[RandomIndex] = Temp;
         }
