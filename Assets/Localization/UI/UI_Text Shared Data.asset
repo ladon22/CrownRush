@@ -215,6 +215,10 @@ MonoBehaviour:
     m_Key: pause_title
     m_Metadata:
       m_Items: []
+  - m_Id: 38075785379684352
+    m_Key: settings_privacy
+    m_Metadata:
+      m_Items: []
   - m_Id: 22568598339428352
     m_Key: pause_continue
     m_Metadata:

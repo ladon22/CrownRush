@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using Solo.MOST_IN_ONE;
 
@@ -37,8 +38,18 @@ public class SettingsManager : MonoBehaviour
 
         CurrentFrameRate = PlayerPrefs.GetInt(FrameRateKey, 60);
         ApplyFrameRate(CurrentFrameRate);
+        StartCoroutine(ReapplyFrameRateAfterStartup());
     }
-    //###################### ���� ######################
+
+    // 안드로이드 콜드 스타트 직후에는 그래픽/프레임 페이싱 파이프라인이 아직
+    // 준비되지 않아 Awake()에서의 targetFrameRate 적용이 반영되지 않는 경우가 있어,
+    // 부팅 후 한 번 더 재적용해 최초 실행 세션에서도 실제 프레임레이트가 어긋나지 않도록 한다.
+    private IEnumerator ReapplyFrameRateAfterStartup()
+    {
+        yield return new WaitForSeconds(1.0f);
+        ApplyFrameRate(CurrentFrameRate);
+    }
+    //###################### ���� ######################
     public void SetVibration(bool value)
     {
         IsVibrationEnabled = value;
@@ -70,7 +81,7 @@ public class SettingsManager : MonoBehaviour
 #endif
         }
     }
-    //###################### ������ ######################
+    //###################### ������ ######################
 
     public void SetFrameRate(int fps)
     {

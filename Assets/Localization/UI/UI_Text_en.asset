@@ -279,6 +279,10 @@ MonoBehaviour:
     m_Localized: "Retry\t"
     m_Metadata:
       m_Items: []
+  - m_Id: 38075785379684352
+    m_Localized: Privacy Policy
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

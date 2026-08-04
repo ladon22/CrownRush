@@ -26,6 +26,8 @@ public class SettingsUIController : MonoBehaviour
     public float PopDuration = 0.4f;
     public Ease PopEase = Ease.OutBack;
 
+    private const string PrivacyPolicyUrl = "https://ladon22.github.io/privacy-policy.html";
+
     private bool bManageGameState = true;
 
     private void Awake()
@@ -127,6 +129,11 @@ public class SettingsUIController : MonoBehaviour
         {
             SettingsManager.Instance.SetFrameRate(TargetFPS);
         }
+    }
+
+    public void OnPrivacyPolicyButtonClicked()
+    {
+        Application.OpenURL(PrivacyPolicyUrl);
     }
 
     private IEnumerator SetLocaleRoutine(int localeID)
