@@ -59,7 +59,7 @@ public class PlayerController : MonoBehaviour, IBoardOccupant
 
     private void HandleSwipeUpdate(Vector2Int Direction)
     {
-        if (InputController != null && InputController.bIsInputBlocked) return;
+        if (InputController != null && InputController.bIsInputLocked) return;
         if (GameManager.Instance.CurrentState == GameState.EnemyTurn || HealthComponent == null || HealthComponent.CurrentHealth <= 0) return;
 
         if (bIsMoving) return;
@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour, IBoardOccupant
 
     private void HandleSwipeEnd(Vector2Int Direction)
     {
-        if (InputController != null && InputController.bIsInputBlocked) return;
+        if (InputController != null && InputController.bIsInputLocked) return;
         if (GameManager.Instance.CurrentState == GameState.EnemyTurn || HealthComponent == null || HealthComponent.CurrentHealth <= 0) return;
         HidePreview();
 

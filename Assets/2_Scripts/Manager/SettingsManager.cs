@@ -49,7 +49,7 @@ public class SettingsManager : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
         ApplyFrameRate(CurrentFrameRate);
     }
-    //###################### ���� ######################
+    //###################### 진동 ######################
     public void SetVibration(bool value)
     {
         IsVibrationEnabled = value;
@@ -81,7 +81,7 @@ public class SettingsManager : MonoBehaviour
 #endif
         }
     }
-    //###################### ������ ######################
+    //###################### 프레임레이트 ######################
 
     public void SetFrameRate(int fps)
     {

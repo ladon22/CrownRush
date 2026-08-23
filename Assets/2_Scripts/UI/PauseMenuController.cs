@@ -6,10 +6,10 @@ using UnityEngine;
 ///
 /// 톱니바퀴 버튼 클릭 시 이 패널이 열립니다.
 ///
-/// 핵심 설계 — timeScale/UIBlock 책임 분리
-///   PauseMenuController만 Time.timeScale과 PushUIBlock/PopUIBlock을 관리합니다.
+/// 핵심 설계 — timeScale/InputLock 책임 분리
+///   PauseMenuController만 Time.timeScale과 PushInputLock/PopInputLock을 관리합니다.
 ///   하위 패널(Settings, PieceInfo)은 PauseMenu에서 열릴 때
-///   manageGameState: false로 호출되어 timeScale/UIBlock을 건드리지 않습니다.
+///   manageGameState: false로 호출되어 timeScale/InputLock을 건드리지 않습니다.
 ///   (이미 PauseMenu가 게임을 멈추고 입력을 차단한 상태이므로 중복 처리 방지)
 /// </summary>
 public class PauseMenuController : MonoBehaviour
@@ -34,7 +34,7 @@ public class PauseMenuController : MonoBehaviour
         if (gameObject.activeInHierarchy) return;
 
         if (GameManager.Instance != null)
-            GameManager.Instance.InputController.PushUIBlock();
+            GameManager.Instance.InputController.PushInputLock();
 
         // [핵심] 일시정지 메뉴가 열리는 시점에 게임 시간을 멈춤
         Time.timeScale = 0f;
@@ -77,7 +77,7 @@ public class PauseMenuController : MonoBehaviour
         Time.timeScale = 1f;
 
         if (GameManager.Instance != null)
-            GameManager.Instance.InputController.PopUIBlock();
+            GameManager.Instance.InputController.PopInputLock();
 
         if (UIBackHandler.Instance != null)
             UIBackHandler.Instance.Pop();
@@ -104,7 +104,7 @@ public class PauseMenuController : MonoBehaviour
         Time.timeScale = 1f;
 
         if (GameManager.Instance != null)
-            GameManager.Instance.InputController.PopUIBlock();
+            GameManager.Instance.InputController.PopInputLock();
 
         gameObject.SetActive(false);
 
@@ -122,7 +122,7 @@ public class PauseMenuController : MonoBehaviour
         Time.timeScale = 1f;
 
         if (GameManager.Instance != null)
-            GameManager.Instance.InputController.PopUIBlock();
+            GameManager.Instance.InputController.PopInputLock();
 
         gameObject.SetActive(false);
 

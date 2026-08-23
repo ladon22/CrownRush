@@ -70,7 +70,7 @@ public class TutorialHintPanel : MonoBehaviour
 
         // 입력 차단
         if (GameManager.Instance != null)
-            GameManager.Instance.InputController.PushUIBlock();
+            GameManager.Instance.InputController.PushInputLock();
 
         gameObject.SetActive(true);
         Time.timeScale = 0f;
@@ -97,7 +97,7 @@ public class TutorialHintPanel : MonoBehaviour
                 Time.timeScale = 1f;
 
                 if (GameManager.Instance != null)
-                    GameManager.Instance.InputController.PopUIBlock();
+                    GameManager.Instance.InputController.PopInputLock();
 
                 if (TutorialHintManager.Instance != null)
                     TutorialHintManager.Instance.OnHintConfirmed();

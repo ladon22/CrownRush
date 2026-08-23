@@ -188,7 +188,7 @@ public class AdManager : MonoBehaviour
 
     private IEnumerator ClearAdTransitionFlagAfterDelay()
     {
-        // Time.timeScale�� �����ϰ� ���� �ð� �������� ���
+        // Time.timeScale과 무관하게 실제 경과 시간 기준으로 대기
         yield return new WaitForSecondsRealtime(AdPauseCooldown);
         bIsAdTransitioning = false;
     }

@@ -13,7 +13,7 @@ public class TurnManager : MonoBehaviour
     
     public void StartPlayerTurn()
     {
-        StartCoroutine(DelayStartPlayerTurn());
+        StartCoroutine(PlayerTurnRoutine());
     }
 
     public void EndPlayerTurn()
@@ -39,7 +39,7 @@ public class TurnManager : MonoBehaviour
         StartPlayerTurn();
     }
 
-    private IEnumerator DelayStartPlayerTurn()
+    private IEnumerator PlayerTurnRoutine()
     {
 
         GameManager.Instance.ChangeState(GameState.PlayerTurn);
@@ -48,7 +48,7 @@ public class TurnManager : MonoBehaviour
         yield return new WaitForSeconds(TurnDelay);
 
         if (GameManager.Instance != null)
-            GameManager.Instance.InputController.PopUIBlock();
+            GameManager.Instance.InputController.PopInputLock();
 
         if (TutorialHintManager.Instance != null)
             TutorialHintManager.Instance.TryShowHint(TutorialHintID.Swipe);

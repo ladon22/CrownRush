@@ -2,11 +2,11 @@ using DG.Tweening;
 using UnityEngine;
 
 /// <summary>
-/// ·Îºñ¿¡¼­ µÚ·Î°¡±â¸¦ ´­·¶À» ¶§ Ç¥½ÃµÇ´Â Á¾·á È®ÀÎ ÆË¾÷.
-/// UIBackHandler.HandleDefaultBack()ÀÇ Lobby ÄÉÀÌ½º¿¡¼­ È£ÃâµË´Ï´Ù.
+/// ë¡œë¹„ì—ì„œ ë’¤ë¡œê°€ê¸°ë¥¼ ëˆŒë €ì„ ë•Œ í‘œì‹œë˜ëŠ” ì¢…ë£Œ í™•ì¸ íŒì—….
+/// UIBackHandler.HandleDefaultBack()ê°€ Lobby ì¼€ì´ìŠ¤ì—ì„œ í˜¸ì¶œí•©ë‹ˆë‹¤.
 ///
-/// ´Ù¸¥ ÆĞ³Îµé°ú µ¿ÀÏÇÑ ÆĞÅÏ(Show/Hide, manageGameState ºÒÇÊ¿ä ?
-/// ·Îºñ¿¡¼­´Â timeScaleÀ» °Çµå¸± ÇÊ¿ä°¡ ¾øÀ¸¹Ç·Î ´Ü¼øÇÏ°Ô ±¸¼º)À» µû¸¨´Ï´Ù.
+/// ë‹¤ë¥¸ íŒ¨ë„ë“¤ê³¼ ë‹¬ë¦¬ êµ¬ì¡°ê°€ ë‹¨ìˆœí•©ë‹ˆë‹¤(Show/Hideë§Œ ìˆê³  manageGameStateëŠ” ë¶ˆí•„ìš”.
+/// ë¡œë¹„ì—ì„œëŠ” timeScaleì„ ê±´ë“œë¦´ í•„ìš”ê°€ ì—†ìœ¼ë¯€ë¡œ ë‹¨ìˆœí•˜ê²Œ ìœ ì§€).
 /// </summary>
 public class ExitConfirmPanel : MonoBehaviour
 {
@@ -20,13 +20,13 @@ public class ExitConfirmPanel : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    /// <summary>UIBackHandler¿¡¼­ È£ÃâÇÕ´Ï´Ù.</summary>
+    /// <summary>UIBackHandlerì—ì„œ í˜¸ì¶œí•©ë‹ˆë‹¤.</summary>
     public void Show()
     {
         if (gameObject.activeInHierarchy) return;
 
         if (GameManager.Instance != null)
-            GameManager.Instance.InputController.PushUIBlock();
+            GameManager.Instance.InputController.PushInputLock();
 
         gameObject.SetActive(true);
 
@@ -37,13 +37,13 @@ public class ExitConfirmPanel : MonoBehaviour
             PanelRect.DOScale(Vector3.one, PopDuration).SetEase(PopEase);
         }
 
-        // µÚ·Î°¡±â¸¦ ¶Ç ´©¸£¸é ÀÌ ÆË¾÷ÀÌ ´İÈ÷µµ·Ï µî·Ï
-        // (Á¾·á È®ÀÎ ÆË¾÷ÀÌ ¶°ÀÖ´Âµ¥ µÚ·Î°¡±â¸¦ ´©¸£¸é "Ãë¼Ò"¿Í µ¿ÀÏÇÏ°Ô Ã³¸®)
+        // ë’¤ë¡œê°€ê¸°ë¥¼ í•œ ë²ˆ ë” ëˆ„ë¥´ë©´ íŒì—…ì´ ë‹«íˆë„ë¡ ë“±ë¡
+        // (ì¢…ë£Œ í™•ì¸ íŒì—…ì´ ë–  ìˆëŠ” ë™ì•ˆ ë’¤ë¡œê°€ê¸°ë¥¼ ëˆ„ë¥´ë©´ "ì·¨ì†Œ"ë¡œ ê°„ì£¼í•˜ê³  ì²˜ë¦¬)
         if (UIBackHandler.Instance != null)
             UIBackHandler.Instance.Push(OnCancelButton);
     }
 
-    /// <summary>"Ãë¼Ò" ¹öÆ° ¶Ç´Â µÚ·Î°¡±â¿¡ ¿¬°áÇÕ´Ï´Ù.</summary>
+    /// <summary>"ì·¨ì†Œ" ë²„íŠ¼ ë˜ëŠ” ë’¤ë¡œê°€ê¸°ì— ëŒ€ì‘í•©ë‹ˆë‹¤.</summary>
     public void OnCancelButton()
     {
         if (PanelRect != null)
@@ -64,13 +64,13 @@ public class ExitConfirmPanel : MonoBehaviour
         gameObject.SetActive(false);
 
         if (GameManager.Instance != null)
-            GameManager.Instance.InputController.PopUIBlock();
+            GameManager.Instance.InputController.PopInputLock();
 
         if (UIBackHandler.Instance != null)
             UIBackHandler.Instance.Pop();
     }
 
-    /// <summary>"Á¾·á" ¹öÆ°¿¡ ¿¬°áÇÕ´Ï´Ù.</summary>
+    /// <summary>"ì¢…ë£Œ" ë²„íŠ¼ì„ ì²˜ë¦¬í•©ë‹ˆë‹¤.</summary>
     public void OnConfirmExitButton()
     {
 #if UNITY_EDITOR

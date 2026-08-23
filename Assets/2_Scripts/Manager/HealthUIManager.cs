@@ -61,7 +61,7 @@ public class HealthUIManager : MonoBehaviour
     {
         for (int i = 0; i < HealthIcons.Count; i++)
         {
-            // ���� ü�º��� �ε����� ������ �� �� �հ�, �ƴϸ� �� �հ��� �����ݴϴ�.
+            // 현재 체력보다 인덱스가 작으면 꽉 찬 하트, 아니면 빈 하트로 표시합니다.
             if (i < CurrentHealth)
             {
                 HealthIcons[i].sprite = FullHealthSprite;

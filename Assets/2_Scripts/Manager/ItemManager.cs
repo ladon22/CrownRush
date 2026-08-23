@@ -19,7 +19,7 @@ public class ItemManager : MonoBehaviour
 
     private void Start()
     {
-        // �̱��� �ν��Ͻ��� �����Ͽ� �̺�Ʈ ����
+        // 싱글턴 인스턴스를 참조해 이벤트 구독
         if (ScoreManager.Instance != null)
         {
             ScoreManager.Instance.OnScoreChanged += HandleScoreChanged;

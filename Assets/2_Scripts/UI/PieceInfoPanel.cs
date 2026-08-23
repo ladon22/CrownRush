@@ -6,7 +6,7 @@ using UnityEngine;
 /// 적 정보 패널.
 /// 로비/인게임 양쪽의 "?" 아이콘에서 직접 호출되는 독립 패널입니다.
 /// (별도 일시정지 메뉴를 거치지 않으므로 이 패널이 스스로
-///  Time.timeScale과 PushUIBlock/PopUIBlock을 관리합니다)
+///  Time.timeScale과 PushInputLock/PopInputLock을 관리합니다)
 ///
 /// 핵심 설계 — 단일 진실 공급원(Single Source of Truth)
 ///   ScoreValue 값은 EnemyManager.EnemyPrefabs의 각 프리팹에 붙은
@@ -82,7 +82,7 @@ public class PieceInfoPanel : MonoBehaviour
         if (manageGameState)
         {
             if (GameManager.Instance != null)
-                GameManager.Instance.InputController.PushUIBlock();
+                GameManager.Instance.InputController.PushInputLock();
 
             Time.timeScale = 0f;
         }
@@ -130,7 +130,7 @@ public class PieceInfoPanel : MonoBehaviour
             Time.timeScale = 1f;
 
             if (GameManager.Instance != null)
-                GameManager.Instance.InputController.PopUIBlock();
+                GameManager.Instance.InputController.PopInputLock();
         }
 
         if (UIBackHandler.Instance != null)

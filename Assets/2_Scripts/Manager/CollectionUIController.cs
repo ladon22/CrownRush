@@ -72,7 +72,7 @@ public class CollectionUIController : MonoBehaviour
         if (gameObject.activeInHierarchy) return;
 
         if (GameManager.Instance != null)
-            GameManager.Instance.InputController.PushUIBlock();
+            GameManager.Instance.InputController.PushInputLock();
 
         gameObject.SetActive(true);
 
@@ -328,7 +328,7 @@ public class CollectionUIController : MonoBehaviour
                 gameObject.SetActive(false);
 
                 if (GameManager.Instance != null)
-                    GameManager.Instance.InputController.PopUIBlock();
+                    GameManager.Instance.InputController.PopInputLock();
             });
     }
 }

@@ -29,7 +29,7 @@ public class GameOverUIController : MonoBehaviour
         if (gameObject.activeInHierarchy) return;
 
         if (GameManager.Instance != null)
-            GameManager.Instance.InputController.PushUIBlock();
+            GameManager.Instance.InputController.PushInputLock();
 
         gameObject.SetActive(true);
 
@@ -42,7 +42,7 @@ public class GameOverUIController : MonoBehaviour
         if (ScoreTextEvent != null)
         {
             ScoreTextEvent.StringReference.Arguments = new object[] { currentScore };
-            ScoreTextEvent.RefreshString(); // "´Ü¾îÀå »õ·Î°íÄ§ ÇØÁà!" ¶ó°í ¸í·É
+            ScoreTextEvent.RefreshString(); // Arguments ë³€ê²½ í›„ ë¡œì»¬ë¼ì´ì¦ˆ ë¬¸ìì—´ì„ ì¦‰ì‹œ ê°±ì‹ 
         }
 
         if (BestScoreTextEvent != null)
@@ -63,6 +63,6 @@ public class GameOverUIController : MonoBehaviour
         gameObject.SetActive(false);
 
         if (GameManager.Instance != null)
-            GameManager.Instance.InputController.PopUIBlock();
+            GameManager.Instance.InputController.PopInputLock();
     }
 }

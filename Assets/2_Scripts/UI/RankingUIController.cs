@@ -97,7 +97,7 @@ public class RankingUIController : MonoBehaviour
         }
 
         if (GameManager.Instance != null)
-            GameManager.Instance.InputController.PushUIBlock();
+            GameManager.Instance.InputController.PushInputLock();
             
         if (RankingPanel != null)
         {
@@ -126,14 +126,14 @@ public class RankingUIController : MonoBehaviour
                 {
                     gameObject.SetActive(false);
                     if (GameManager.Instance != null)
-                        GameManager.Instance.InputController.PopUIBlock();
+                        GameManager.Instance.InputController.PopInputLock();
                 });
         }
         else
         {
             gameObject.SetActive(false);
             if (GameManager.Instance != null)
-                GameManager.Instance.InputController.PopUIBlock();
+                GameManager.Instance.InputController.PopInputLock();
         }
 
         if (UIBackHandler.Instance != null)

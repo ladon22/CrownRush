@@ -14,14 +14,14 @@ public class InputController : MonoBehaviour
 
     public float SwipeThreshold = 50f;
 
-    public int UIOpenCount = 0;
-    public bool bIsInputBlocked => UIOpenCount > 0;
-    public void PushUIBlock() { UIOpenCount++; }
-    public void PopUIBlock() { UIOpenCount = Mathf.Max(0, UIOpenCount - 1); }
+    public int InputLockCount = 0;
+    public bool bIsInputLocked => InputLockCount > 0;
+    public void PushInputLock() { InputLockCount++; }
+    public void PopInputLock() { InputLockCount = Mathf.Max(0, InputLockCount - 1); }
 
     void Update()
     {
-        if (bIsInputBlocked)
+        if (bIsInputLocked)
         {
             IsDragging = false;
             return;

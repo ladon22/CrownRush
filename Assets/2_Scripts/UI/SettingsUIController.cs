@@ -26,7 +26,8 @@ public class SettingsUIController : MonoBehaviour
     public float PopDuration = 0.4f;
     public Ease PopEase = Ease.OutBack;
 
-    private const string PrivacyPolicyUrl = "https://ladon22.github.io/privacy-policy.html";
+    private const string PrivacyPolicyUrlEn = "https://crownrush.net/privacy-policy.html";
+    private const string PrivacyPolicyUrlKo = "https://crownrush.net/privacy-policy-ko.html";
 
     private bool bManageGameState = true;
 
@@ -45,7 +46,7 @@ public class SettingsUIController : MonoBehaviour
             Overlay.SetActive(manageGameState);
 
         if (manageGameState && GameManager.Instance != null)
-            GameManager.Instance.InputController.PushUIBlock();
+            GameManager.Instance.InputController.PushInputLock();
 
         gameObject.SetActive(true);
         // 1. 오디오 토글 UI 초기화 (AudioManager 연동)
@@ -94,7 +95,7 @@ public class SettingsUIController : MonoBehaviour
                 {
                     Time.timeScale = 1.0f;
                     if (GameManager.Instance != null)
-                        GameManager.Instance.InputController.PopUIBlock();
+                        GameManager.Instance.InputController.PopInputLock();
                 }
 
                 if (UIBackHandler.Instance != null)
@@ -133,7 +134,10 @@ public class SettingsUIController : MonoBehaviour
 
     public void OnPrivacyPolicyButtonClicked()
     {
-        Application.OpenURL(PrivacyPolicyUrl);
+        bool isKorean = LocalizationSettings.SelectedLocale != null
+            && LocalizationSettings.SelectedLocale.Identifier.Code.StartsWith("ko");
+
+        Application.OpenURL(isKorean ? PrivacyPolicyUrlKo : PrivacyPolicyUrlEn);
     }
 
     private IEnumerator SetLocaleRoutine(int localeID)

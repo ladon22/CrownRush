@@ -31,7 +31,7 @@ public class EnemyManager : MonoBehaviour
     };
 
     private List<EnemyPieceType> EnemyBag = new List<EnemyPieceType>();
-    private Dictionary<EnemyPieceType, GameObject> _prefabByType;
+    private Dictionary<EnemyPieceType, GameObject> PrefabByType;
 
     [HideInInspector]
     public List<EnemyBase> ActiveEnemies = new List<EnemyBase>();
@@ -51,7 +51,7 @@ public class EnemyManager : MonoBehaviour
 
     private void BuildPrefabLookup()
     {
-        _prefabByType = new Dictionary<EnemyPieceType, GameObject>();
+        PrefabByType = new Dictionary<EnemyPieceType, GameObject>();
         foreach (GameObject Prefab in EnemyPrefabs)
         {
             if (Prefab == null) continue;
@@ -59,7 +59,7 @@ public class EnemyManager : MonoBehaviour
             EnemyBase EnemyBaseComp = Prefab.GetComponent<EnemyBase>();
             if (EnemyBaseComp == null) continue;
 
-            _prefabByType[EnemyBaseComp.PieceType] = Prefab;
+            PrefabByType[EnemyBaseComp.PieceType] = Prefab;
         }
     }
 
@@ -84,7 +84,7 @@ public class EnemyManager : MonoBehaviour
 
             EnemyPieceType PulledType = EnemyBag[0];
 
-            if (!_prefabByType.TryGetValue(PulledType, out GameObject PrefabToSpawn) 
+            if (!PrefabByType.TryGetValue(PulledType, out GameObject PrefabToSpawn) 
                 || PrefabToSpawn == null)
             {
                 EnemyBag.RemoveAt(0);
