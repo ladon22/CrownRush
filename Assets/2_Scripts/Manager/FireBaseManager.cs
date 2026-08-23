@@ -8,19 +8,20 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class FireBaseManager : MonoBehaviour
 {
     public static FireBaseManager Instance;
 
     private DatabaseReference DBReference;
-    private bool bIsFireBaseReady = false;
+    private bool IsFireBaseReady = false;
 
-    private FirebaseAuth auth;
-    private FirebaseUser user;
-    [HideInInspector] public bool bIsLoginSequenceFinished = false;
+    private FirebaseAuth Auth;
+    private FirebaseUser User;
+    [HideInInspector] public bool IsLoginSequenceFinished = false;
 
-    public bool bUseFirebase = false;
+    public bool UseFirebase = false;
 
     private void Awake()
     {
@@ -37,37 +38,36 @@ public class FireBaseManager : MonoBehaviour
 
     public IEnumerator InitializeFirebaseRoutine()
     {
-        if (bUseFirebase == false)
+        if (UseFirebase == false)
         {
-            yield break; // 코루틴 즉시 종료
+            yield break;
         }
 
-        bool bWaitFirebase = true;
+        bool waitFirebase = true;
 
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
         {
             if (task.Result == DependencyStatus.Available)
             {
                 DBReference = FirebaseDatabase.DefaultInstance.RootReference;
-                bIsFireBaseReady = true;
+                IsFireBaseReady = true;
             }
             else
             {
                 Debug.LogError($"[FireBaseManager] 초기화 실패: {task.Result}");
             }
 
-            bWaitFirebase = false;
+            waitFirebase = false;
         });
 
-        // 비동기 작업이 끝날 때까지 대기
-        yield return new WaitUntil(() => bWaitFirebase == false);
+        yield return new WaitUntil(() => waitFirebase == false);
     }
 
     public void SaveScoreToDatabase(int finalScore)
     {
         if (!IsAvailable()) return;
 
-        string uid = user.UserId;
+        string uid = User.UserId;
         DatabaseReference leaderboardRef = DBReference.Child("Leaderboard").Child(uid);
 
         leaderboardRef.GetValueAsync().ContinueWithOnMainThread(task =>
@@ -84,19 +84,17 @@ public class FireBaseManager : MonoBehaviour
 
             if (finalScore <= existingScore) return;
 
-            // 1. Leaderboard — Score 숫자값 하나만 저장
             leaderboardRef.SetValueAsync(finalScore).ContinueWithOnMainThread(t =>
             {
                 if (t.IsFaulted)
                     Debug.LogError("[FireBaseManager] Leaderboard 저장 실패: " + t.Exception);
             });
 
-            // 2. Users — Score + Name + PhotoUrl 저장
             var updates = new Dictionary<string, object>
             {
                 ["Score"] = finalScore,
-                ["Name"] = user.DisplayName ?? "",
-                ["PhotoUrl"] = user.PhotoUrl != null ? user.PhotoUrl.ToString() : ""
+                ["Name"] = User.DisplayName ?? "",
+                ["PhotoUrl"] = User.PhotoUrl != null ? User.PhotoUrl.ToString() : ""
             };
 
             DBReference.Child("Users").Child(uid)
@@ -113,7 +111,7 @@ public class FireBaseManager : MonoBehaviour
     {
         if (!IsAvailable()) return;
 
-        DBReference.Child("Users").Child(user.UserId)
+        DBReference.Child("Users").Child(User.UserId)
             .Child("TotalPlayCount")
             .SetValueAsync(playCount)
             .ContinueWithOnMainThread(task =>
@@ -127,7 +125,7 @@ public class FireBaseManager : MonoBehaviour
     {
         if (!IsAvailable()) return;
 
-        DBReference.Child("Users").Child(user.UserId)
+        DBReference.Child("Users").Child(User.UserId)
             .Child("Achievements").Child(skinID)
             .SetValueAsync(true)
             .ContinueWithOnMainThread(task =>
@@ -141,7 +139,7 @@ public class FireBaseManager : MonoBehaviour
     {
         var tcs = new TaskCompletionSource<List<RankData>>();
 
-        if (!bUseFirebase || !bIsFireBaseReady)
+        if (!UseFirebase || !IsFireBaseReady)
         {
             tcs.SetResult(new List<RankData>());
             return tcs.Task;
@@ -169,8 +167,6 @@ public class FireBaseManager : MonoBehaviour
         return tcs.Task;
     }
 
-    // Leaderboard로 정렬된 순위(uid, score)를 받아 Users에서 표시용 Name/PhotoUrl만 골라 채운다.
-    // Users 전체(Achievements 등 포함)를 내려받지 않도록 필드 단위로만 조회해 쿼리 비용을 줄인다.
     private void FetchDisplayInfoAsync(List<DataSnapshot> entries, TaskCompletionSource<List<RankData>> tcs)
     {
         if (entries.Count == 0)
@@ -216,13 +212,13 @@ public class FireBaseManager : MonoBehaviour
     {
         var tcs = new TaskCompletionSource<RankData>();
 
-        if (!bUseFirebase || !bIsFireBaseReady || user == null)
+        if (!UseFirebase || !IsFireBaseReady || User == null)
         {
             tcs.SetResult(null);
             return tcs.Task;
         }
 
-        string myUid = user.UserId;
+        string myUid = User.UserId;
 
         DBReference.Child("Leaderboard").Child(myUid)
             .GetValueAsync()
@@ -237,7 +233,6 @@ public class FireBaseManager : MonoBehaviour
                 int myScore = 0;
                 int.TryParse(task.Result.Value?.ToString(), out myScore);
 
-                // 2단계: 내 점수 이상인 유저 수 카운트 (초경량 노드라 부담 없음)
                 DBReference.Child("Leaderboard")
                     .OrderByValue()
                     .StartAt((double)myScore)
@@ -247,8 +242,6 @@ public class FireBaseManager : MonoBehaviour
                         int myRank = countTask.IsCompletedSuccessfully
                             ? (int)countTask.Result.ChildrenCount
                             : -1;
-
-                        // 3단계: 표시용 Name/PhotoUrl은 Users에서 가져오기
                         DBReference.Child("Users").Child(myUid)
                             .GetValueAsync()
                             .ContinueWithOnMainThread(userTask =>
@@ -282,14 +275,14 @@ public class FireBaseManager : MonoBehaviour
 
     public IEnumerator LoadAndRestoreUserDataRoutine()
     {
-        if (!bUseFirebase || !bIsFireBaseReady || user == null)
+        if (!UseFirebase || !IsFireBaseReady || User == null)
         {
             yield break;
         }
 
         bool isDone = false;
 
-        DBReference.Child("Users").Child(user.UserId)
+        DBReference.Child("Users").Child(User.UserId)
             .GetValueAsync()
             .ContinueWithOnMainThread(task =>
             {
@@ -304,24 +297,19 @@ public class FireBaseManager : MonoBehaviour
 
                 if (!snapshot.Exists)
                 {
-                    // 첫 설치 → 로컬 데이터로 첫 백업 생성
                     RestoreFirstBackup();
                     isDone = true;
                     return;
                 }
 
-                // 클라우드 데이터 파싱
                 UserCloudData cloudData = ParseUserCloudData(snapshot);
 
-                // 로컬 데이터 수집
                 AchievementDatabase db = AchievementManager.Instance?.Database;
                 UserCloudData local = UserCloudData.FromLocalPrefs(db);
 
-                // 병합 후 로컬 반영
                 UserCloudData merged = UserCloudData.Merge(local, cloudData);
                 merged.ApplyToLocalPrefs();
 
-                // 병합 결과를 클라우드에도 동기화 (두 기기 간 최신화)
                 SyncMergedData(merged);
 
                 isDone = true;
@@ -341,7 +329,7 @@ public class FireBaseManager : MonoBehaviour
     {
         if (!IsAvailable()) return;
 
-        string uid = user.UserId;
+        string uid = User.UserId;
         var userRef = DBReference.Child("Users").Child(uid);
 
         var updates = new Dictionary<string, object>
@@ -349,12 +337,10 @@ public class FireBaseManager : MonoBehaviour
             ["Score"] = data.BestScore,
             ["TotalPlayCount"] = data.TotalPlayCount,
             ["BestCombo"] = data.BestCombo,
-            ["Name"] = user.DisplayName ?? "",
-            ["PhotoUrl"] = user.PhotoUrl != null ? user.PhotoUrl.ToString() : ""
+            ["Name"] = User.DisplayName ?? "",
+            ["PhotoUrl"] = User.PhotoUrl != null ? User.PhotoUrl.ToString() : ""
         };
 
-        // Merge()는 항상 local/cloud 중 더 높은 점수를 선택하므로 Leaderboard도 같은 값으로 맞춰
-        // 두 기기 간 복원 후 Leaderboard와 Users.Score가 어긋나는 것을 방지한다.
         DBReference.Child("Leaderboard").Child(uid)
             .SetValueAsync(data.BestScore)
             .ContinueWithOnMainThread(lbTask =>
@@ -414,28 +400,28 @@ public class FireBaseManager : MonoBehaviour
     }
     public IEnumerator GoogleLoginRoutine()
     {
-        if (bUseFirebase == false)
+        if (UseFirebase == false)
         {
-            bIsLoginSequenceFinished = true;
+            IsLoginSequenceFinished = true;
             yield break;
         }
 
         if (Application.internetReachability == NetworkReachability.NotReachable)
         {
-            bIsLoginSequenceFinished = true;
+            IsLoginSequenceFinished = true;
             yield break;
         }
 
-        bIsLoginSequenceFinished = false;
-        auth = FirebaseAuth.DefaultInstance;
+        IsLoginSequenceFinished = false;
+        Auth = FirebaseAuth.DefaultInstance;
         PlayGamesPlatform.Instance.Authenticate(ProcessAuthentication);
 
         float elapsed = 0f;
-        while (!bIsLoginSequenceFinished)
+        while (!IsLoginSequenceFinished)
         {
             elapsed += Time.unscaledDeltaTime;
             if (elapsed >= 10f)
-                bIsLoginSequenceFinished = true;
+                IsLoginSequenceFinished = true;
             yield return null;
         }
     }
@@ -452,21 +438,21 @@ public class FireBaseManager : MonoBehaviour
         else
         {
             Debug.LogError("GPGS 로그인 실패 또는 취소됨: " + status);
-            bIsLoginSequenceFinished = true; // 실패해도 로비로는 가야 하므로 시퀀스 종료
+            IsLoginSequenceFinished = true;
         }
     }
 
     private void LoginToFirebase(string authCode)
     {
         Credential credential = PlayGamesAuthProvider.GetCredential(authCode);
-        auth.SignInWithCredentialAsync(credential).ContinueWithOnMainThread(task =>
+        Auth.SignInWithCredentialAsync(credential).ContinueWithOnMainThread(task =>
         {
             if (!task.IsCanceled && !task.IsFaulted)
             {
-                user = task.Result;
+                User = task.Result;
                 SaveUserProfile();
             }
-            bIsLoginSequenceFinished = true;
+            IsLoginSequenceFinished = true;
         });
     }
 
@@ -476,11 +462,11 @@ public class FireBaseManager : MonoBehaviour
 
         var updates = new Dictionary<string, object>
         {
-            ["Name"] = user.DisplayName ?? "",
-            ["PhotoUrl"] = user.PhotoUrl != null ? user.PhotoUrl.ToString() : ""
+            ["Name"] = User.DisplayName ?? "",
+            ["PhotoUrl"] = User.PhotoUrl != null ? User.PhotoUrl.ToString() : ""
         };
 
-        DBReference.Child("Users").Child(user.UserId)
+        DBReference.Child("Users").Child(User.UserId)
             .UpdateChildrenAsync(updates)
             .ContinueWithOnMainThread(task =>
             {
@@ -493,7 +479,7 @@ public class FireBaseManager : MonoBehaviour
     {
         if (!IsAvailable()) return;
 
-        DBReference.Child("Users").Child(user.UserId)
+        DBReference.Child("Users").Child(User.UserId)
             .Child("BestCombo")
             .SetValueAsync(bestCombo)
             .ContinueWithOnMainThread(task =>
@@ -505,7 +491,7 @@ public class FireBaseManager : MonoBehaviour
 
     private bool IsAvailable()
     {
-        if (!bUseFirebase || !bIsFireBaseReady || user == null)
+        if (!UseFirebase || !IsFireBaseReady || User == null)
         {
             Debug.LogWarning("[FireBaseManager] Firebase 사용 불가 상태.");
             return false;
@@ -513,6 +499,6 @@ public class FireBaseManager : MonoBehaviour
         return true;
     }
 
-    public string GetCurrentUserUid() => user?.UserId ?? "";
-    public bool IsLoggedIn => user != null;
+    public string GetCurrentUserUid() => User?.UserId ?? "";
+    public bool IsLoggedIn => User != null;
 }

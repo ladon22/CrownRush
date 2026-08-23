@@ -25,12 +25,12 @@ public class ScoreUIManager : MonoBehaviour
     private RectTransform ComboGaugeRect;
     private Vector2 ComboGaugeOriginPos;
     private Vector2 ComboTextOriginPos;
-    private bool bIsGaugeAnimating = false;
+    private bool IsGaugeAnimating = false;
 
-    private Sequence comboAnimSequence;
+    private Sequence ComboAnimSequence;
 
     private Tween ShakeTween;
-    private bool bIsShaking = false;
+    private bool IsShaking = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -89,14 +89,14 @@ public class ScoreUIManager : MonoBehaviour
     {
         if (ComboGaugeSlider != null)
         {
-            bIsGaugeAnimating = true;
+            IsGaugeAnimating = true;
             if (ComboGaugeFillImage != null)
             {
                 ComboGaugeFillImage.enabled = true;
                 ComboGaugeFillImage.color = ComboGaugeColorGradient.Evaluate(1.0f);
             }
             ComboGaugeSlider.DOKill();
-            ComboGaugeSlider.DOValue(1.0f, 0.2f).SetEase(Ease.InOutExpo).OnComplete(() => bIsGaugeAnimating = false);
+            ComboGaugeSlider.DOValue(1.0f, 0.2f).SetEase(Ease.InOutExpo).OnComplete(() => IsGaugeAnimating = false);
         }
 
         if (ComboText != null && currentCombo >= 1)
@@ -104,21 +104,20 @@ public class ScoreUIManager : MonoBehaviour
             ComboText.gameObject.SetActive(true);
 
             string MultiplierText = "";
-            // �̱����� ���� ���� ����
             if (currentCombo >= ScoreManager.Instance.Stage4Threshold)
-                MultiplierText = $" <color=#D896FF>[x{ScoreManager.Instance.Stage4Multiplier:F1}]</color>"; // ����� (���� ȭ����)
+                MultiplierText = $" <color=#D896FF>[x{ScoreManager.Instance.Stage4Multiplier:F1}]</color>";
             else if (currentCombo >= ScoreManager.Instance.Stage3Threshold)
-                MultiplierText = $" <color=#00EAFF>[x{ScoreManager.Instance.Stage3Multiplier:F1}]</color>"; // ��Ʈ/�þȻ�
+                MultiplierText = $" <color=#00EAFF>[x{ScoreManager.Instance.Stage3Multiplier:F1}]</color>";
             else if (currentCombo >= ScoreManager.Instance.Stage2Threshold)
-                MultiplierText = $" <color=#FF2A2A>[x{ScoreManager.Instance.Stage2Multiplier:F1}]</color>"; // ������
+                MultiplierText = $" <color=#FF2A2A>[x{ScoreManager.Instance.Stage2Multiplier:F1}]</color>";
             else if (currentCombo >= ScoreManager.Instance.Stage1Threshold)
-                MultiplierText = $" <color=#FFB300>[x{ScoreManager.Instance.Stage1Multiplier:F1}]</color>"; // �����
+                MultiplierText = $" <color=#FFB300>[x{ScoreManager.Instance.Stage1Multiplier:F1}]</color>";
 
             ComboText.text = $"{currentCombo} COMBO!{MultiplierText}";
 
-            if (comboAnimSequence != null && comboAnimSequence.IsActive())
+            if (ComboAnimSequence != null && ComboAnimSequence.IsActive())
             {
-                comboAnimSequence.Kill();
+                ComboAnimSequence.Kill();
             }
 
             ComboText.DOKill();
@@ -127,11 +126,11 @@ public class ScoreUIManager : MonoBehaviour
 
             ComboText.rectTransform.anchoredPosition = ComboTextOriginPos;
             ComboText.rectTransform.localScale = Vector3.one;
-            ComboText.rectTransform.localRotation = Quaternion.identity; // 2D UI�� �� localRotation�� ���ϴ�!
+            ComboText.rectTransform.localRotation = Quaternion.identity;
             ComboText.alpha = 1f;
 
-            comboAnimSequence = DOTween.Sequence();
-            comboAnimSequence.Append(ComboText.rectTransform.DOAnchorPos(ComboTextOriginPos, ComboDuration).From(ComboTextOriginPos + ComboOffset))
+            ComboAnimSequence = DOTween.Sequence();
+            ComboAnimSequence.Append(ComboText.rectTransform.DOAnchorPos(ComboTextOriginPos, ComboDuration).From(ComboTextOriginPos + ComboOffset))
                 .Join(ComboText.transform.DOPunchScale(new Vector3(0.5f, 0.5f, 0f), ComboDuration * 2f, 5, 0.5f))
                 .Join(ComboText.transform.DOPunchRotation(new Vector3(0, 0, 15f), ComboDuration * 2f, 5, 0.5f));
         }
@@ -139,9 +138,9 @@ public class ScoreUIManager : MonoBehaviour
 
     private void PlayComboBreakAnimation()
     {
-        if (bIsShaking)
+        if (IsShaking)
         {
-            bIsShaking = false;
+            IsShaking = false;
             ShakeTween?.Kill();
         }
 
@@ -154,9 +153,9 @@ public class ScoreUIManager : MonoBehaviour
 
         if (ComboText != null)
         {
-            if (comboAnimSequence != null && comboAnimSequence.IsActive())
+            if (ComboAnimSequence != null && ComboAnimSequence.IsActive())
             {
-                comboAnimSequence.Kill();
+                ComboAnimSequence.Kill();
             }
 
             ComboText.DOKill();
@@ -180,7 +179,7 @@ public class ScoreUIManager : MonoBehaviour
 
     private void UpdateComboGaugeUI(float currentTime, float maxTime)
     {
-        if (ComboGaugeSlider == null || bIsGaugeAnimating) return;
+        if (ComboGaugeSlider == null || IsGaugeAnimating) return;
 
         float ratio = currentTime / maxTime;
         ComboGaugeSlider.value = ratio;
@@ -195,9 +194,9 @@ public class ScoreUIManager : MonoBehaviour
 
         if (ratio <= ShakeThreshold && ratio > 0f)
         {
-            if (!bIsShaking)
+            if (!IsShaking)
             {
-                bIsShaking = true;
+                IsShaking = true;
                 ShakeTween = ComboGaugeRect
                     .DOShakeAnchorPos(0.3f, new Vector2(0f, ShakeStrength),
                         (int)ShakeSpeed, 0f, false, false)
@@ -206,9 +205,9 @@ public class ScoreUIManager : MonoBehaviour
         }
         else
         {
-            if (bIsShaking)
+            if (IsShaking)
             {
-                bIsShaking = false;
+                IsShaking = false;
                 ShakeTween?.Kill();
                 ComboGaugeRect.anchoredPosition = ComboGaugeOriginPos;
             }

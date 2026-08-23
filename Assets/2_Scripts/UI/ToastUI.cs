@@ -11,9 +11,9 @@ public class ToastUI : MonoBehaviour
 
     private RectTransform Rect;
 
-    private void Awake()                          // Start 대신 Awake로 변경
+    private void Awake()
     {
-        Rect = GetComponent<RectTransform>();     // SetActive(true) 전에 미리 확보
+        Rect = GetComponent<RectTransform>();
     }
     public void Show(Action onComplete = null)
     {

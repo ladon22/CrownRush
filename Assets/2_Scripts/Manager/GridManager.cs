@@ -34,16 +34,12 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    // 좌표 X,Y에 Occupant를 등록합니다. 이미 다른 점유자가 있어도 덮어씁니다
-    // (승진 등 같은 칸에 새 오브젝트가 들어서는 경우를 위함).
     public void PlaceOccupant(IBoardOccupant Occupant, int X, int Y)
     {
         if (!IsValidGridPosition(X, Y)) return;
         Occupants[Y, X] = Occupant;
     }
 
-    // Occupant가 여전히 해당 칸을 점유하고 있을 때만 제거합니다.
-    // (이미 다른 오브젝트가 그 칸을 차지했다면 잘못 지우지 않도록 방지)
     public void RemoveOccupant(IBoardOccupant Occupant, int X, int Y)
     {
         if (!IsValidGridPosition(X, Y)) return;
@@ -63,11 +59,6 @@ public class GridManager : MonoBehaviour
     {
         if (!IsValidGridPosition(X, Y)) return null;
         return Occupants[Y, X];
-    }
-
-    public bool IsOccupied(int X, int Y)
-    {
-        return GetOccupant(X, Y) != null;
     }
 
     public Vector2 GetWorldPosition(int X, int Y)

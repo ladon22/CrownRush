@@ -36,10 +36,10 @@ public class EnemyManager : MonoBehaviour
     [HideInInspector]
     public List<EnemyBase> ActiveEnemies = new List<EnemyBase>();
 
-    private PlayerController _player;
-    private PlayerController CachedPlayer => _player != null ? _player : _player = FindFirstObjectByType<PlayerController>();
-    private ItemManager _itemManager;
-    private ItemManager CachedItemManager => _itemManager != null ? _itemManager : _itemManager = FindFirstObjectByType<ItemManager>();
+    private PlayerController Player;
+    private PlayerController CachedPlayer => Player != null ? Player : Player = FindFirstObjectByType<PlayerController>();
+    private ItemManager ItemManager;
+    private ItemManager CachedItemManager => ItemManager != null ? ItemManager : ItemManager = FindFirstObjectByType<ItemManager>();
 
     private void Awake()
     {
@@ -91,21 +91,21 @@ public class EnemyManager : MonoBehaviour
                 continue;
             }
 
-            bool bIsPawnEnemy = PulledType == EnemyPieceType.Pawn;
+            bool isPawnEnemy = PulledType == EnemyPieceType.Pawn;
 
-            int SpawnX, SpawnY;
-            if (GetValidEdgeSpawnPosition(bIsPawnEnemy, out SpawnX, out SpawnY))
+            int spawnX, spawnY;
+            if (GetValidEdgeSpawnPosition(isPawnEnemy, out spawnX, out spawnY))
             {
                 EnemyBag.RemoveAt(0);
 
-                Vector2 SpawnPosition = GridManager.GetWorldPosition(SpawnX, SpawnY);
+                Vector2 SpawnPosition = GridManager.GetWorldPosition(spawnX, spawnY);
                 GameObject NewEnemyObj = 
                     PoolManager.Instance.SpawnFromPool(PrefabToSpawn, SpawnPosition, Quaternion.identity);
 
                 EnemyBase NewEnemy = NewEnemyObj.GetComponent<EnemyBase>();
                 if (NewEnemy != null)
                 {
-                    NewEnemy.Initialize(this, GridManager, SpawnX, SpawnY);
+                    NewEnemy.Initialize(this, GridManager, spawnX, spawnY);
                     ActiveEnemies.Add(NewEnemy);
                 }
             }
@@ -113,9 +113,9 @@ public class EnemyManager : MonoBehaviour
 
     }
 
-    private bool GetValidEdgeSpawnPosition(bool bIsPawnEnemy, out int SpawnX, out int SpawnY)
+    private bool GetValidEdgeSpawnPosition(bool isPawnEnemy, out int spawnX, out int spawnY)
     {
-        SpawnX = -1; SpawnY = -1;
+        spawnX = -1; spawnY = -1;
         List<Vector2Int> EdgeTiles = new List<Vector2Int>();
 
         for (int X = 0; X < GridManager.Columns; X++)
@@ -124,7 +124,7 @@ public class EnemyManager : MonoBehaviour
             EdgeTiles.Add(new Vector2Int(X, GridManager.Rows - 1));
         }
 
-        if (!bIsPawnEnemy)
+        if (!isPawnEnemy)
         {
             for (int Y = 1; Y < GridManager.Rows - 1; Y++)
             {
@@ -143,22 +143,21 @@ public class EnemyManager : MonoBehaviour
         {
             if (GetEnemyAtPosition(Tile.x, Tile.y) != null) continue;
 
-            if (bIsPawnEnemy)
+            if (isPawnEnemy)
             {
-                bool bIsColumnOccupiedByPawn = false;
+                bool isColumnOccupiedByPawn = false;
                 foreach (EnemyBase Enemy in ActiveEnemies)
                 {
                     if (Enemy != null && Enemy.gameObject.activeInHierarchy && Enemy is PawnEnemy)
                     {
-                        if (Enemy.CurrentX == Tile.x) // 같은 열에 있다면
+                        if (Enemy.CurrentX == Tile.x)
                         {
-                            bIsColumnOccupiedByPawn = true;
+                            isColumnOccupiedByPawn = true;
                             break;
                         }
                     }
                 }
-                // 이미 같은 열에 폰이 있다면 이 스폰 위치는 건너뜁니다!
-                if (bIsColumnOccupiedByPawn) continue;
+                if (isColumnOccupiedByPawn) continue;
             }
 
             if (CachedPlayer != null)
@@ -172,8 +171,8 @@ public class EnemyManager : MonoBehaviour
             {
                 continue;
             }
-            SpawnX = Tile.x;
-            SpawnY = Tile.y;
+            spawnX = Tile.x;
+            spawnY = Tile.y;
             return true;
         }
 

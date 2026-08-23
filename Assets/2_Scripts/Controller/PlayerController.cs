@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerController : MonoBehaviour, IBoardOccupant
 {
@@ -17,13 +18,15 @@ public class PlayerController : MonoBehaviour, IBoardOccupant
     public InputController InputController;
     [HideInInspector]
     public HealthComponent HealthComponent;
+    [HideInInspector]
+    public bool IsMoving = false;
 
     public GameObject PreviewIndicator;
 
     public int CurrentX { get; set; } = 2;
     public int CurrentY { get; set; } = 0;
     public float MoveSpeed = 15f;
-    public bool bIsMoving = false;
+
 
     [Header("Movement Settings")]
     public float HopHeight = 0.5f;
@@ -39,9 +42,8 @@ public class PlayerController : MonoBehaviour, IBoardOccupant
             InputController.OnSwipeCanceled += HidePreview;
         }
 
-        // ��۱� ����
         AchievementManager.OnSkinEquipped += ApplyEquippedSkin;
-        ApplyEquippedSkin(); // ������ �� �� �� �Ա�
+        ApplyEquippedSkin();
     }
 
     private void OnDestroy()
@@ -53,16 +55,15 @@ public class PlayerController : MonoBehaviour, IBoardOccupant
             InputController.OnSwipeCanceled -= HidePreview;
         }
 
-        // ��۱� ���� ����
         AchievementManager.OnSkinEquipped -= ApplyEquippedSkin;
     }
 
     private void HandleSwipeUpdate(Vector2Int Direction)
     {
-        if (InputController != null && InputController.bIsInputLocked) return;
+        if (InputController != null && InputController.IsInputLocked) return;
         if (GameManager.Instance.CurrentState == GameState.EnemyTurn || HealthComponent == null || HealthComponent.CurrentHealth <= 0) return;
 
-        if (bIsMoving) return;
+        if (IsMoving) return;
 
         int TargetX = CurrentX + Direction.x;
         int TargetY = CurrentY + Direction.y;
@@ -80,11 +81,11 @@ public class PlayerController : MonoBehaviour, IBoardOccupant
 
     private void HandleSwipeEnd(Vector2Int Direction)
     {
-        if (InputController != null && InputController.bIsInputLocked) return;
+        if (InputController != null && InputController.IsInputLocked) return;
         if (GameManager.Instance.CurrentState == GameState.EnemyTurn || HealthComponent == null || HealthComponent.CurrentHealth <= 0) return;
         HidePreview();
 
-        if (bIsMoving) return;
+        if (IsMoving) return;
 
         int TargetX = CurrentX + Direction.x;
         int TargetY = CurrentY + Direction.y;
@@ -96,7 +97,7 @@ public class PlayerController : MonoBehaviour, IBoardOccupant
 
     private IEnumerator PerformAction(int TargetX, int TargetY)
     {
-        bIsMoving = true;
+        IsMoving = true;
 
         int PreviousX = CurrentX;
         int PreviousY = CurrentY;
@@ -127,15 +128,12 @@ public class PlayerController : MonoBehaviour, IBoardOccupant
         while (Elapsed < Duration)
         {
             Elapsed += Time.deltaTime;
-            float T = Mathf.Clamp01(Elapsed / Duration); // 0.0 ���� 1.0 ������ ���൵
+            float T = Mathf.Clamp01(Elapsed / Duration);
 
-            // 1. �������� ���� �ٴ� ��ǥ
             Vector2 LinearPos = Vector2.Lerp(StartPosition, TargetPosition, T);
 
-            // 2. ���� �׷����� �̿��� 0 -> ���� -> 0 ���� ���ϴ� ���� �� ���
             float HeightOffset = Mathf.Sin(T * Mathf.PI) * DynamicHopHeight;
 
-            // 3. �ٴ� ��ǥ�� ���� ���� ���ؼ� ���� ��ġ ����
             transform.position = new Vector3(LinearPos.x, LinearPos.y + HeightOffset, transform.position.z);
             yield return null;
         }
@@ -181,7 +179,7 @@ public class PlayerController : MonoBehaviour, IBoardOccupant
         }
 
 
-        bIsMoving = false;
+        IsMoving = false;
 
         if (TurnManager != null) TurnManager.EndPlayerTurn();
     }
@@ -210,7 +208,7 @@ public class PlayerController : MonoBehaviour, IBoardOccupant
         {
             HealthComponent.ResetHealth();
         }
-        bIsMoving = false;
+        IsMoving = false;
     }
 
     public void ApplyEquippedSkin()
@@ -234,7 +232,6 @@ public class PlayerController : MonoBehaviour, IBoardOccupant
                     SpriteRenderer previewSR = PreviewIndicator.GetComponent<SpriteRenderer>();
                     if (previewSR != null && skinData.LightTileSprite != null)
                     {
-                        // ���� Ÿ��(LightTile) �Ǵ� ��ο� Ÿ��(DarkTile) �� ���Ͻô� ����� �����ø� �˴ϴ�.
                         previewSR.sprite = skinData.LightTileSprite;
                     }
                 }

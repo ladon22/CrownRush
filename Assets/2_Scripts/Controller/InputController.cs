@@ -15,13 +15,13 @@ public class InputController : MonoBehaviour
     public float SwipeThreshold = 50f;
 
     public int InputLockCount = 0;
-    public bool bIsInputLocked => InputLockCount > 0;
+    public bool IsInputLocked => InputLockCount > 0;
     public void PushInputLock() { InputLockCount++; }
     public void PopInputLock() { InputLockCount = Mathf.Max(0, InputLockCount - 1); }
 
     void Update()
     {
-        if (bIsInputLocked)
+        if (IsInputLocked)
         {
             IsDragging = false;
             return;

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; // [추가] UI 컴포넌트 사용을 위해 필수
+using UnityEngine.UI;
 
 public class BoardRenderer : MonoBehaviour
 {
@@ -8,20 +8,19 @@ public class BoardRenderer : MonoBehaviour
     public GameObject BaseTilePrefab;
 
     [Header("Board Frame Settings")]
-    public Image BoardFrameImage; // [수정] SpriteRenderer -> Image로 변경
+    public Image BoardFrameImage;
     public float FramePaddingX = 1.0f;
     public float FramePaddingY = 1.0f;
 
-    private List<SpriteRenderer> lightTiles = new List<SpriteRenderer>();
-    private List<SpriteRenderer> darkTiles = new List<SpriteRenderer>();
-    private Sprite defaultFrameSprite;
+    private List<SpriteRenderer> LightTiles = new List<SpriteRenderer>();
+    private List<SpriteRenderer> DarkTiles = new List<SpriteRenderer>();
+    private Sprite DefaultFrameSprite;
 
     private void Awake()
     {
-        // 시작할 때 원래 적용되어 있던 기본 이미지를 저장해둡니다.
         if (BoardFrameImage != null)
         {
-            defaultFrameSprite = BoardFrameImage.sprite;
+            DefaultFrameSprite = BoardFrameImage.sprite;
         }
     }
 
@@ -46,8 +45,8 @@ public class BoardRenderer : MonoBehaviour
     {
         if (BaseTilePrefab == null || GridManager == null) return;
 
-        lightTiles.Clear();
-        darkTiles.Clear();
+        LightTiles.Clear();
+        DarkTiles.Clear();
 
         Vector2 tileSize = GetTileSize();
 
@@ -62,8 +61,8 @@ public class BoardRenderer : MonoBehaviour
 
                 SpriteRenderer sr = NewTile.GetComponent<SpriteRenderer>();
 
-                if ((Y + X) % 2 == 0) lightTiles.Add(sr);
-                else darkTiles.Add(sr);
+                if ((Y + X) % 2 == 0) LightTiles.Add(sr);
+                else DarkTiles.Add(sr);
             }
         }
 
@@ -72,7 +71,6 @@ public class BoardRenderer : MonoBehaviour
             float totalWidth = (GridManager.Columns * tileSize.x) + FramePaddingX;
             float totalHeight = (GridManager.Rows * tileSize.y) + FramePaddingY;
 
-            // [수정] Image 컴포넌트는 size 대신 rectTransform.sizeDelta를 사용합니다.
             BoardFrameImage.rectTransform.sizeDelta = new Vector2(totalWidth, totalHeight);
             BoardFrameImage.transform.position = Vector3.zero;
         }
@@ -89,8 +87,8 @@ public class BoardRenderer : MonoBehaviour
             {
                 if (data.RewardItem is SkinData skinData && skinData.ItemID == equippedSkinID)
                 {
-                    foreach (var sr in lightTiles) sr.sprite = skinData.LightTileSprite;
-                    foreach (var sr in darkTiles) sr.sprite = skinData.DarkTileSprite;
+                    foreach (var sr in LightTiles) sr.sprite = skinData.LightTileSprite;
+                    foreach (var sr in DarkTiles) sr.sprite = skinData.DarkTileSprite;
 
                     if (BoardFrameImage != null)
                     {
@@ -100,10 +98,9 @@ public class BoardRenderer : MonoBehaviour
                         }
                         else
                         {
-                            BoardFrameImage.sprite = defaultFrameSprite;
+                            BoardFrameImage.sprite = DefaultFrameSprite;
                         }
 
-                        // [추가] 개발자님이 원하시던 설정 적용!
                         BoardFrameImage.type = Image.Type.Tiled;
                         BoardFrameImage.pixelsPerUnitMultiplier = 24f;
                         BoardFrameImage.color = skinData.FrameColor;

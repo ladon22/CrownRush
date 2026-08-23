@@ -24,7 +24,7 @@ public class GameOverUIController : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void Show(int currentScore, int bestScore, bool bCanRevive)
+    public void Show(int currentScore, int bestScore, bool canRevive)
     {
         if (gameObject.activeInHierarchy) return;
 
@@ -35,14 +35,14 @@ public class GameOverUIController : MonoBehaviour
 
         if (AdReviveButton != null)
         {
-            bool adReady = AdManager.Instance != null && AdManager.Instance.bIsAdReady;
-            AdReviveButton.gameObject.SetActive(bCanRevive && adReady);
+            bool adReady = AdManager.Instance != null && AdManager.Instance.IsAdReady;
+            AdReviveButton.gameObject.SetActive(canRevive && adReady);
         }
 
         if (ScoreTextEvent != null)
         {
             ScoreTextEvent.StringReference.Arguments = new object[] { currentScore };
-            ScoreTextEvent.RefreshString(); // Arguments 변경 후 로컬라이즈 문자열을 즉시 갱신
+            ScoreTextEvent.RefreshString();
         }
 
         if (BestScoreTextEvent != null)

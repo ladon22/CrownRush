@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class UpdateBestScoreUI : MonoBehaviour
 {
     [Header("UI Texts")]
-    public LocalizeStringEvent BestScoreTextEvent; // 다국어 적용을 위한 컴포넌트
+    public LocalizeStringEvent BestScoreTextEvent;
 
     private void Start()
     {

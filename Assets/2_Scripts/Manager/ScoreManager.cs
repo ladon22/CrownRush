@@ -22,7 +22,7 @@ public class ScoreManager : MonoBehaviour
     public int Stage3Threshold = 15;
     public float Stage3Multiplier = 3.0f;
     public int Stage4Threshold = 20;
-    public float Stage4Multiplier = 5.0f; // 20콤보 달성 시 무려 5배!
+    public float Stage4Multiplier = 5.0f;
 
     [Header("Floating Text")]
     public GameObject FloatingTextPrefab;
@@ -32,13 +32,12 @@ public class ScoreManager : MonoBehaviour
     public Action OnComboReset;
     public Action<float, float> OnComboTimerUpdated;
 
-    private PlayerController _player;
-    private PlayerController Player => _player != null ? _player : _player = FindFirstObjectByType<PlayerController>();
+    private PlayerController PlayerCache;
+    private PlayerController Player => PlayerCache != null ? PlayerCache : PlayerCache = FindFirstObjectByType<PlayerController>();
     public int BestComboThisGame { get; private set; } = 0;
 
     private void Awake()
     {
-        //씬 종속 싱글톤 초기화
         if (Instance == null)
         {
             Instance = this;
@@ -53,7 +52,7 @@ public class ScoreManager : MonoBehaviour
     {
         if (GameManager.Instance == null || GameManager.Instance.CurrentState != GameState.PlayerTurn) return;
         if (CurrentCombo <= 0) return;
-        if (Player == null || Player.bIsMoving) return;
+        if (Player == null || Player.IsMoving) return;
 
         CurrentComboTimer -= Time.deltaTime;
         OnComboTimerUpdated?.Invoke(CurrentComboTimer, MaxComboTime);
@@ -85,7 +84,6 @@ public class ScoreManager : MonoBehaviour
         int finalScore = Mathf.RoundToInt(ScoreToAdd * multiplier);
         CurrentScore += finalScore;
 
-        // 플로팅 텍스트 스폰 로직 추가
         if (FloatingTextPrefab != null && spawnPosition != default)
         {
             GameObject textObj = PoolManager.Instance.SpawnFromPool(FloatingTextPrefab, spawnPosition, Quaternion.identity);
@@ -93,7 +91,6 @@ public class ScoreManager : MonoBehaviour
             floatingText?.Show(finalScore);
         }
 
-        // 업적 매니저에게 현재 점수와 콤보 상태를 실시간으로 보고
         if (AchievementManager.Instance != null)
         {
             AchievementManager.Instance.ReportProgress(AchievementType.Score, CurrentScore);
@@ -109,7 +106,6 @@ public class ScoreManager : MonoBehaviour
         CurrentCombo = 0;
         CurrentComboTimer = 0f;
 
-        // 콤보가 깨졌다고 방송합니다.
         OnComboReset?.Invoke();
     }
 

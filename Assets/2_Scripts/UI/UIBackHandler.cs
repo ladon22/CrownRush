@@ -3,21 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-/// <summary>
-/// �ȵ���̵� �ڷΰ��� ��ư(�ý��� ��) ó���� �߾ӿ��� �����մϴ�.
-///
-/// ���� ���� ? ����(Stack) ���
-///   �� ��� �г��� ���� ��(Show) �ڽ��� �ݴ� ������ ���ÿ� Push�ϰ�,
-///   ���� ��(Hide �Ϸ�) ���ÿ��� Pop�մϴ�.
-///
-///   �ڷΰ��⸦ ������ ������ ���� ��(���� �ֱٿ� �� �г�)�� �����ϴ�.
-///   ��: �Ͻ����� �� ���� ������ �����ٸ�
-///       �ڷΰ��� 1�� �� ������ ����
-///       �ڷΰ��� 1�� �� �� �Ͻ����� ���� (�̾��ϱ�� ���� ����)
-///
-/// ������ ������� ��(���� �г��� ���� ��)��
-/// HandleDefaultBack()���� ��Ȳ�� �⺻ ������ ó���մϴ�.
-/// </summary>
 public class UIBackHandler : MonoBehaviour
 {
     public static UIBackHandler Instance;
@@ -39,14 +24,11 @@ public class UIBackHandler : MonoBehaviour
 
     private void Update()
     {
-        // �� Input System���� �ȵ���̵� �ڷΰ��� ��ư�� Escape Ű�� ���ε˴ϴ�.
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             HandleBackPressed();
         }
     }
-
-    // ���� �гο��� ȣ���ϴ� API ����������������������������������������������������������������
 
     public void Push(Action onBackPressed)
     {
@@ -67,10 +49,6 @@ public class UIBackHandler : MonoBehaviour
             HandleDefaultBack();
     }
 
-    /// <summary>
-    /// �����ִ� �г��� �ϳ��� ���� ���� �⺻ ����.
-    /// ������Ʈ ��Ȳ�� �°� �����Ӱ� �����ϼ���.
-    /// </summary>
     private void HandleDefaultBack()
     {
         if (GameManager.Instance == null) return;

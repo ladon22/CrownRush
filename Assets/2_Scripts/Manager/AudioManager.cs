@@ -57,8 +57,8 @@ public class AudioManager : MonoBehaviour
     private List<AudioSource> SfxPool = new List<AudioSource>();
     private int NextSfxIndex = 0;
 
-    private const string BGM_KEY = "Settings_BGM_On";
-    private const string SFX_KEY = "Settings_SFX_On";
+    private const string BgmKey = "Settings_BGM_On";
+    private const string SfxKey = "Settings_SFX_On";
 
     public bool IsBGMOn { get; private set; }
     public bool IsSFXOn { get; private set; }
@@ -94,9 +94,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    // SFXAudioSource는 AudioManager와 같은 GameObject에 있으므로,
-    // Instantiate(SFXAudioSource, ...)로 복제하면 AudioManager 싱글턴까지 통째로 복제되어 버립니다.
-    // 그래서 AudioSource만 담은 새 GameObject를 만들어 필요한 설정만 옮겨줍니다.
     private AudioSource CreateSfxSource(int index)
     {
         GameObject obj = new GameObject($"SFX_Source_{index}");
@@ -130,8 +127,8 @@ public class AudioManager : MonoBehaviour
 
     private void LoadSettings()
     {
-        IsBGMOn = PlayerPrefs.GetInt(BGM_KEY, 1) == 1;
-        IsSFXOn = PlayerPrefs.GetInt(SFX_KEY, 1) == 1;
+        IsBGMOn = PlayerPrefs.GetInt(BgmKey, 1) == 1;
+        IsSFXOn = PlayerPrefs.GetInt(SfxKey, 1) == 1;
 
         if (BGMAudioSource != null) BGMAudioSource.mute = !IsBGMOn;
         SetSfxMute(!IsSFXOn);
@@ -141,7 +138,7 @@ public class AudioManager : MonoBehaviour
     {
         IsBGMOn = isOn;
         if (BGMAudioSource != null) BGMAudioSource.mute = !IsBGMOn;
-        PlayerPrefs.SetInt(BGM_KEY, IsBGMOn ? 1 : 0);
+        PlayerPrefs.SetInt(BgmKey, IsBGMOn ? 1 : 0);
         PlayerPrefs.Save();
     }
 
@@ -149,7 +146,7 @@ public class AudioManager : MonoBehaviour
     {
         IsSFXOn = isOn;
         SetSfxMute(!IsSFXOn);
-        PlayerPrefs.SetInt(SFX_KEY, IsSFXOn ? 1 : 0);
+        PlayerPrefs.SetInt(SfxKey, IsSFXOn ? 1 : 0);
         PlayerPrefs.Save();
     }
 
@@ -175,11 +172,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void StopBGM()
-    {
-        if (BGMAudioSource != null) BGMAudioSource.Stop();
-    }
-
     public void PlaySFX(SfxType type, bool useRandomPitch = false)
     {
         if (SfxPool.Count == 0) return;
@@ -193,8 +185,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    // 재생 중이지 않은 소스를 우선 반환합니다. 전부 사용 중이면 재생 중인 소리를 끊는 대신
-    // (최대치까지는) 풀을 늘려서 새 소스를 만듭니다 — 소리를 가로채면 파형 중간이 끊겨 클릭음이 납니다.
     private AudioSource GetAvailableSfxSource()
     {
         foreach (AudioSource source in SfxPool)

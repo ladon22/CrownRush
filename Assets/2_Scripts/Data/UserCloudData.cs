@@ -1,6 +1,4 @@
-﻿// UserCloudData.cs 전체를 아래 내용으로 교체하세요.
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -8,7 +6,7 @@ public class UserCloudData
 {
     public int BestScore = 0;
     public int TotalPlayCount = 0;
-    public int BestCombo = 0; // [추가]
+    public int BestCombo = 0;
 
     public Dictionary<string, bool> Achievements = new Dictionary<string, bool>();
 
@@ -17,7 +15,7 @@ public class UserCloudData
         var data = new UserCloudData();
         data.BestScore = PlayerPrefs.GetInt("BestScore", 0);
         data.TotalPlayCount = PlayerPrefs.GetInt("TotalPlayCount", 0);
-        data.BestCombo = PlayerPrefs.GetInt("BestCombo", 0); // [추가]
+        data.BestCombo = PlayerPrefs.GetInt("BestCombo", 0);
 
         if (database != null)
         {
@@ -40,7 +38,7 @@ public class UserCloudData
 
         merged.BestScore = Mathf.Max(local.BestScore, cloud.BestScore);
         merged.TotalPlayCount = Mathf.Max(local.TotalPlayCount, cloud.TotalPlayCount);
-        merged.BestCombo = Mathf.Max(local.BestCombo, cloud.BestCombo); // [추가]
+        merged.BestCombo = Mathf.Max(local.BestCombo, cloud.BestCombo);
 
         merged.Achievements = new Dictionary<string, bool>();
         foreach (var kv in local.Achievements)
@@ -61,7 +59,7 @@ public class UserCloudData
     {
         PlayerPrefs.SetInt("BestScore", BestScore);
         PlayerPrefs.SetInt("TotalPlayCount", TotalPlayCount);
-        PlayerPrefs.SetInt("BestCombo", BestCombo); // [추가]
+        PlayerPrefs.SetInt("BestCombo", BestCombo);
 
         foreach (var kv in Achievements)
             PlayerPrefs.SetInt($"{kv.Key}_Unlocked", kv.Value ? 1 : 0);

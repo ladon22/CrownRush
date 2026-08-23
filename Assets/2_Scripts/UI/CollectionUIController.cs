@@ -21,16 +21,14 @@ public class CollectionUIController : MonoBehaviour
     public RectTransform PanelRect;
 
     [Header("Localization Tables")]
-    // ���̺��� �뵵���� ������ �̸��� �޽��ϴ�.
     public string UITableName = "UI_Text";
     public string ItemTableName = "Item_Table";
     public string AchievementTableName = "Achievement_Table";
 
     [Header("Item Preview UI")]
-    // ���� TextMeshProUGUI ��� LocalizeStringEvent�� ����մϴ�.
     public LocalizeStringEvent ItemNameTextEvent;
 
-    [Header("Unlock Status UI (���/���൵ �ڽ�)")]
+    [Header("Unlock Status UI (잠금/진행도 박스)")]
     public GameObject LockOverlayPanel;
 
     public LocalizeStringEvent UnlockConditionTextEvent;
@@ -46,22 +44,19 @@ public class CollectionUIController : MonoBehaviour
     [Header("Item Preview UI - Frame")]
     public Image PreviewFrameImage;
 
-    // �����ͺ��̽����� ��Ų�� ���� ��Ƶ� ����Ʈ
     private List<AchievementEntry> SkinList = new List<AchievementEntry>();
     private int CurrentIndex = 0;
-    private Sprite defaultPreviewFrameSprite;
+    private Sprite DefaultPreviewFrameSprite;
 
     private void Awake()
     {
-        // ������ �� ���� UI�� ����Ǿ� �ִ� �⺻ �̹����� �����صӴϴ�.
         if (PreviewFrameImage != null)
         {
-            defaultPreviewFrameSprite = PreviewFrameImage.sprite;
+            DefaultPreviewFrameSprite = PreviewFrameImage.sprite;
         }
     }
     private void Start()
     {
-        // ��ư �̺�Ʈ ����
         if (LeftButton != null) LeftButton.onClick.AddListener(ShowPrevious);
         if (RightButton != null) RightButton.onClick.AddListener(ShowNext);
         if (SelectButton != null) SelectButton.onClick.AddListener(EquipCurrentItem);
@@ -76,7 +71,6 @@ public class CollectionUIController : MonoBehaviour
 
         gameObject.SetActive(true);
 
-        // 1. �����ͺ��̽����� ��Ų ��ϸ� �����ͼ� ����Ʈ ����
         SkinList.Clear();
         if (AchievementManager.Instance != null && AchievementManager.Instance.Database != null)
         {
@@ -90,9 +84,8 @@ public class CollectionUIController : MonoBehaviour
         }
 
         string equippedID = PlayerPrefs.GetString("Equipped_Skin", "skin_default");
-        CurrentIndex = 0; // Ȥ�� �� ã�� ��츦 ����� �⺻��
+        CurrentIndex = 0;
 
-        //3. [�߰�] ����Ʈ�� �Ⱦ�� ���� ���� ��Ų�� �� ��°�� �ִ��� ã���ϴ�.
         for (int i = 0; i < SkinList.Count; i++)
         {
             if (SkinList[i].RewardItem != null && SkinList[i].RewardItem.ItemID == equippedID)
@@ -104,13 +97,11 @@ public class CollectionUIController : MonoBehaviour
 
         UpdateUI();
 
-        // �˾� �ִϸ��̼�
         PanelRect.localScale = Vector3.zero;
         PanelRect.DOKill();
         PanelRect.DOScale(Vector3.one, 0.4f).SetEase(Ease.OutBack).SetUpdate(true);
     }
 
-    // ȭ��(����, ������, ��ư ����)�� �����ϴ� �ٽ� �Լ�
     private void UpdateUI()
     {
         if (SkinList.Count == 0) return;
@@ -119,15 +110,12 @@ public class CollectionUIController : MonoBehaviour
 
         bool isDefaultSkin = (currentData.RewardItem.ItemID == "skin_default");
 
-
-
-        // �̸� ����
         if (ItemNameTextEvent != null && currentData.RewardItem != null)
         {
             ItemNameTextEvent.StringReference.SetReference(ItemTableName, currentData.RewardItem.ItemID);
         }
 
-        if (currentData.RewardItem is SkinData skinData) // (���� ���� ����)
+        if (currentData.RewardItem is SkinData skinData)
         {
             UpdateSkinDiorama(skinData);
 
@@ -139,7 +127,7 @@ public class CollectionUIController : MonoBehaviour
                 }
                 else
                 {
-                    PreviewFrameImage.sprite = defaultPreviewFrameSprite;
+                    PreviewFrameImage.sprite = DefaultPreviewFrameSprite;
                 }
                 PreviewFrameImage.type = Image.Type.Tiled;
                 PreviewFrameImage.pixelsPerUnitMultiplier = 0.29f;
@@ -148,14 +136,11 @@ public class CollectionUIController : MonoBehaviour
         }
         else
         {
-            // ��Ų�� �ƴ� �Ϲ� �������� ����� ó�� (�ʿ��ϴٸ�)
             ClearPreviewSlots();
         }
 
         int currentProgress = GetCurrentProgress(currentData.Type);
-        // �ر� ���� �� ���� ���� Ȯ��
         string unlockKey = $"{currentData.RewardItem.ItemID}_Unlocked";
-        // RewardID�� "Skin_Default" (�Ǵ� "Board_Default")�� �⺻ �������� ������ true(�ر�)�� ó���մϴ�!
         bool isUnlocked = isDefaultSkin || (PlayerPrefs.GetInt(unlockKey, 0) == 1);
 
         if (!isUnlocked && currentProgress >= currentData.TargetValue)
@@ -174,7 +159,6 @@ public class CollectionUIController : MonoBehaviour
         }
         else
         {
-            // �⺻ ��Ų�� �ƴ� ���� �ؽ�Ʈ�� �������� �����մϴ�.
             if (UnlockConditionTextEvent != null)
                 UnlockConditionTextEvent.StringReference.SetReference(AchievementTableName, currentData.TitleKey);
 
@@ -184,15 +168,12 @@ public class CollectionUIController : MonoBehaviour
             if (ProgressSlider != null)
                 ProgressSlider.value = Mathf.Clamp01((float)currentProgress / currentData.TargetValue);
 
-            // �ر� ���ο� ������� �������� �г�(���� �ؽ�Ʈ �� ����)�� �ϴ� �ѵӴϴ�! 
-            // (�׷��� "���� �޼�", "���� �ڹ���" ���� ���̴ϱ��)
             if (LockOverlayPanel != null) LockOverlayPanel.SetActive(true);
         }
 
         if (isUnlocked)
         {
-            SelectButton.interactable = !isEquipped; // �̹� ���� ���̸� ��ư ��Ȱ��ȭ
-            // [����] ��ư�� �ؽ�Ʈ�� ���� ���¿� �°� �ٲ��ݴϴ�!
+            SelectButton.interactable = !isEquipped;
             if (SelectTextEvent != null)
             {
                 SelectTextEvent.StringReference.SetReference(UITableName, isEquipped ? "ui_btn_equipped" : "ui_btn_select");
@@ -200,7 +181,6 @@ public class CollectionUIController : MonoBehaviour
         }
         else
         {
-            // ��� ���� (�̹����� �Ȱ��� ���൵ �� ǥ��)
             if (LockOverlayPanel != null) LockOverlayPanel.SetActive(true);
             SelectButton.interactable = false;
 
@@ -211,37 +191,30 @@ public class CollectionUIController : MonoBehaviour
 
     private void UpdateSkinDiorama(SkinData skinData)
     {
-        // �ν����� ������ �����Ǿ����� ���� �˻�
         if (PreviewSlots == null || PreviewSlots.Length < 6)
         {
             return;
         }
 
-        //  3x2 ü���� ���Ͽ� �°� �����Ǵ� Ÿ�� ���� �迭 (Light, Dark ����)
         Sprite[] tiles = {
             skinData.LightTileSprite, skinData.DarkTileSprite, skinData.LightTileSprite,
             skinData.DarkTileSprite, skinData.LightTileSprite, skinData.DarkTileSprite
         };
 
-        // 1. ù ��° ���� [0] : �÷��̾� (King)
         SetSlotUI(PreviewSlots[0], tiles[0], skinData.PlayerSprite, skinData.PlayerColor);
 
-        // 2. ������ ���� [1]~[5] : �� �⹰��
-        // Enum ������ UI�� �����ְ� ���� ������� ��ġ�մϴ�.
         EnemyPieceType[] enemyTypes = {
-            EnemyPieceType.Pawn,     // [1] 폰
-            EnemyPieceType.Knight,   // [2] 나이트
-            EnemyPieceType.Rook,     // [3] 룩
-            EnemyPieceType.Bishop,   // [4] 비숍
-            EnemyPieceType.Queen     // [5] 퀸
+            EnemyPieceType.Pawn,
+            EnemyPieceType.Knight,
+            EnemyPieceType.Rook,
+            EnemyPieceType.Bishop,
+            EnemyPieceType.Queen
         };
 
         for (int i = 0; i < enemyTypes.Length; i++)
         {
-            // ��Ų �����Ϳ��� �ش� Ÿ���� �� ��������Ʈ�� ã�ƿɴϴ�.
             EnemySkinData enemySkin = skinData.GetEnemySkin(enemyTypes[i]);
 
-            // �÷��̾ 0���̹Ƿ� ���� 1�� �ε������� ����
             int slotIndex = i + 1;
 
             SetSlotUI(PreviewSlots[slotIndex], tiles[slotIndex], enemySkin.EnemySprite, skinData.EnemyColor);
@@ -250,21 +223,17 @@ public class CollectionUIController : MonoBehaviour
 
     private void SetSlotUI(PreviewSlotUI slot, Sprite tileSprite, Sprite pieceSprite, Color pieceColor)
     {
-        // Ÿ�� ����
         if (slot.TileImage != null)
         {
             slot.TileImage.sprite = tileSprite;
-            // ��������Ʈ�� ��������� �����ϰ�, ������ ���� ����(�Ͼ��)����
             slot.TileImage.color = (tileSprite != null) ? Color.white : Color.clear;
         }
 
-        // �⹰ ����
         if (slot.PieceImage != null)
         {
             slot.PieceImage.sprite = pieceSprite;
-            // ��������Ʈ�� ��������� �����ϰ�, ������ ������ ƾƮ �÷� ����
             slot.PieceImage.color = (pieceSprite != null) ? pieceColor : Color.clear;
-            slot.PieceImage.preserveAspect = true; // ���� ����
+            slot.PieceImage.preserveAspect = true;
         }
     }
 
@@ -276,16 +245,12 @@ public class CollectionUIController : MonoBehaviour
             SetSlotUI(slot, null, null, Color.clear);
         }
     }
-
-    // ������ ���� �÷��� ��ô��(�ְ� ���� ��)�� �������� �Լ�
     private int GetCurrentProgress(AchievementType type)
     {
         switch (type)
         {
             case AchievementType.Score:
-                // ���� GameOverUIController�� ����� ����Ʈ ���ھ� Ű
                 return PlayerPrefs.GetInt("BestScore", 0);
-            // �޺��� ų ī��Ʈ �� �ٸ� Ÿ���� �߰��Ǹ� ���⿡ PlayerPrefs�� �ҷ����� ���� �߰�
             default:
                 return 0;
         }
@@ -294,14 +259,14 @@ public class CollectionUIController : MonoBehaviour
     public void ShowNext()
     {
         CurrentIndex++;
-        if (CurrentIndex >= SkinList.Count) CurrentIndex = 0; // ���� �����ϸ� ó������
+        if (CurrentIndex >= SkinList.Count) CurrentIndex = 0;
         UpdateUI();
     }
 
     public void ShowPrevious()
     {
         CurrentIndex--;
-        if (CurrentIndex < 0) CurrentIndex = SkinList.Count - 1; // ó���� �����ϸ� ������
+        if (CurrentIndex < 0) CurrentIndex = SkinList.Count - 1;
         UpdateUI();
     }
 
@@ -310,7 +275,6 @@ public class CollectionUIController : MonoBehaviour
         AchievementEntry currentData = SkinList[CurrentIndex];
         if (currentData.RewardItem is SkinData skinData)
         {
-            // PlayerPrefs ���� ������ �ƴ� �Ŵ����� �̺�Ʈ ��� �Լ� ȣ��!
             if (AchievementManager.Instance != null)
             {
                 AchievementManager.Instance.EquipSkin(skinData.ItemID);

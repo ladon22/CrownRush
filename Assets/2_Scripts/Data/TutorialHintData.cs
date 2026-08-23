@@ -1,12 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// 힌트 하나의 데이터를 담는 ScriptableObject.
-///
-/// 새 힌트를 추가하려면
-///   Project 창 우클릭 → Create → Tutorial → Hint Data
-///   HintID, TitleKey, DescKey를 채우고 TutorialHintDatabase에 등록
-/// </summary>
 [CreateAssetMenu(fileName = "HintData_", menuName = "Tutorial/Hint Data")]
 public class TutorialHintData : ScriptableObject
 {

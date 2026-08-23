@@ -45,9 +45,6 @@ public abstract class ItemBase : MonoBehaviour, IBoardOccupant
         });
     }
 
-    // transform과 자식 SpriteRenderer 각각을 타겟으로 하는 트윈이 따로 존재하므로,
-    // 풀에 반납하기 전엔 반드시 이 메서드로 둘 다 죽여야 합니다(transform.DOKill()만으로는
-    // SpriteRenderer.DOFade 트윈이 살아남아 다음 재사용 시 새 트윈과 겹칩니다).
     public void KillTweens()
     {
         transform.DOKill();

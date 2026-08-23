@@ -47,10 +47,7 @@ public class PawnEnemy : EnemyBase
     private IEnumerator PromotionRoutine()
     {
         if (QueenPrefab == null)
-        {
-            Debug.LogWarning("QueenPrefab이 없습니다.");
             yield break;
-        }
 
         Vector2 TargetPos = GridManager.GetWorldPosition(CurrentX, CurrentY);
         GameObject QueenObj = PoolManager.Instance.SpawnFromPool(QueenPrefab, TargetPos, Quaternion.identity);

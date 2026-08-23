@@ -9,17 +9,16 @@ public class ItemManager : MonoBehaviour
     public GameObject[] ItemPrefabs;
     private List<ItemBase> ActiveItems = new List<ItemBase>();
 
-    private PlayerController _player;
-    private PlayerController CachedPlayer => _player != null ? _player : _player = FindFirstObjectByType<PlayerController>();
+    private PlayerController Player;
+    private PlayerController CachedPlayer => Player != null ? Player : Player = FindFirstObjectByType<PlayerController>();
 
     [Header("Item Spawn Settings")]
     public int ItemSpawnScoreThreshold = 200;
     public int MaxActiveItems = 2;
-    private int lastProcessedScore = 0;
+    private int LastProcessedScore = 0;
 
     private void Start()
     {
-        // 싱글턴 인스턴스를 참조해 이벤트 구독
         if (ScoreManager.Instance != null)
         {
             ScoreManager.Instance.OnScoreChanged += HandleScoreChanged;
@@ -63,16 +62,16 @@ public class ItemManager : MonoBehaviour
     {
         if (currentTotalScore == 0)
         {
-            lastProcessedScore = 0;
+            LastProcessedScore = 0;
             return;
         }
 
-        int scoreGained = currentTotalScore - lastProcessedScore;
+        int scoreGained = currentTotalScore - LastProcessedScore;
 
         if (scoreGained >= ItemSpawnScoreThreshold)
         {
             int spawnCount = scoreGained / ItemSpawnScoreThreshold;
-            lastProcessedScore += spawnCount * ItemSpawnScoreThreshold;
+            LastProcessedScore += spawnCount * ItemSpawnScoreThreshold;
 
             for (int i = 0; i < spawnCount; i++)
             {

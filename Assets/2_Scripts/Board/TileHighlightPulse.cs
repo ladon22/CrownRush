@@ -35,19 +35,16 @@ public class TileHighlightPulse : MonoBehaviour
             }
         }
 
-        // 1. 시작 크기를 타일에 딱 맞는 '기존 크기(baseScale)'로 고정합니다.
         transform.localScale = baseScale;
 
         Color color = SR.color;
         color.a = MinAlpha;
         SR.color = color;
 
-        // 2. DOTween 크기 애니메이션: 기본 크기 -> 커진 크기(MaxScaleRatio)를 반복합니다.
         transform.DOScale(baseScale * MaxScaleRatio, AnimDuration)
             .SetLoops(-1, LoopType.Yoyo)
             .SetEase(Ease.InOutSine);
 
-        // 3. DOTween 투명도 애니메이션
         SR.DOFade(MaxAlpha, AnimDuration)
             .SetLoops(-1, LoopType.Yoyo)
             .SetEase(Ease.InOutSine);

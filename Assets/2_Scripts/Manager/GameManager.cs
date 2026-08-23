@@ -42,9 +42,9 @@ public class GameManager : MonoBehaviour
     private PlayerController CurrentPlayer;
 
     public CollectionUIController CollectionUI;
-    private bool bHasRevivedThisGame = false;
+    private bool HasRevivedThisGame = false;
     private const string BestScoreKey = "BestScore";
-    private bool bIsStartingGame = false;
+    private bool IsStartingGame = false;
 
     private void Awake()
     {
@@ -138,8 +138,8 @@ public class GameManager : MonoBehaviour
     public void StartGame(bool IsRetry = false)
     {
 
-        if (bIsStartingGame) return;
-        bIsStartingGame = true;
+        if (IsStartingGame) return;
+        IsStartingGame = true;
 
         ChangeState(GameState.Initialize);
 
@@ -175,10 +175,10 @@ public class GameManager : MonoBehaviour
         DOVirtual.DelayedCall(StartDelay, () =>
         {
             TurnManager.StartGameLoop();
-            bIsStartingGame = false;
+            IsStartingGame = false;
         });
 
-        bHasRevivedThisGame = false;
+        HasRevivedThisGame = false;
     }
 
     public void GameOver()
@@ -228,7 +228,7 @@ public class GameManager : MonoBehaviour
         }
 
         if (GameOverUI != null)
-            GameOverUI.Show(currentScore, bestScore, !bHasRevivedThisGame);
+            GameOverUI.Show(currentScore, bestScore, !HasRevivedThisGame);
     }
 
     public void OnClickAdReviveButton()
@@ -245,7 +245,7 @@ public class GameManager : MonoBehaviour
 
     private void OnReviveSuccess()
     {
-        bHasRevivedThisGame = true;
+        HasRevivedThisGame = true;
 
         if (GameOverUI != null) GameOverUI.Hide();
 
@@ -277,12 +277,6 @@ public class GameManager : MonoBehaviour
         {
             Time.timeScale = 0f;
         }
-    }
-
-    public void CloseSettings()
-    {
-        if (SettingsUI != null) SettingsUI.Hide();
-        Time.timeScale = 1f;
     }
 
     public void ReturnToLobby()
@@ -342,12 +336,12 @@ public class GameManager : MonoBehaviour
     {
         if (!pauseStatus) return;
 
-        if (AdManager.bIsAdTransitioning) return;
+        if (AdManager.IsAdTransitioning) return;
 
-        bool bIsPlaying = CurrentState == GameState.PlayerTurn
+        bool isPlaying = CurrentState == GameState.PlayerTurn
                         || CurrentState == GameState.EnemyTurn;
 
-        if (!bIsPlaying) return;
+        if (!isPlaying) return;
 
         if (PauseMenu != null && !PauseMenu.gameObject.activeInHierarchy)
         {

@@ -142,15 +142,15 @@ public abstract class EnemyBase : MonoBehaviour, IBoardOccupant
         int PrevY = CurrentY;
 
         CalculateNextPosition();
-        bool bIsAttacking = ResolveCollisionWithRetry(PrevX, PrevY, 8);
+        bool isAttacking = ResolveCollisionWithRetry(PrevX, PrevY, 8);
 
         GridManager.RemoveOccupant(this, PrevX, PrevY);
-        if (!bIsAttacking)
+        if (!isAttacking)
             GridManager.PlaceOccupant(this, CurrentX, CurrentY);
 
         yield return StartCoroutine(AnimateMove(PrevX, PrevY, CurrentX, CurrentY));
 
-        if (bIsAttacking)
+        if (isAttacking)
         {
             ApplyDamage();
             if (EnemyManager != null) EnemyManager.RemoveEnemy(this);
@@ -196,18 +196,18 @@ public abstract class EnemyBase : MonoBehaviour, IBoardOccupant
         TemporaryBlocked.Clear();
 
         // 공격 여부 확인
-        bool bIsAttacking = Player != null
+        bool isAttacking = Player != null
             && Player.CurrentX == CurrentX
             && Player.CurrentY == CurrentY;
 
         // 재탐색 후에도 막혀 있으면 제자리
-        if (!bIsAttacking && IsPositionOccupied(CurrentX, CurrentY))
+        if (!isAttacking && IsPositionOccupied(CurrentX, CurrentY))
         {
             CurrentX = PrevX;
             CurrentY = PrevY;
         }
 
-        return bIsAttacking;
+        return isAttacking;
     }
 
     protected virtual IEnumerator AnimateMove(int StartX, int StartY, int TargetX, int TargetY)
@@ -266,11 +266,11 @@ public abstract class EnemyBase : MonoBehaviour, IBoardOccupant
     }
 
 
-    public void SetIntent(bool bIsAttacking)
+    public void SetIntent(bool isAttacking)
     {
         if (IntentIndicator != null)
         {
-            IntentIndicator.SetActive(bIsAttacking);
+            IntentIndicator.SetActive(isAttacking);
         }
     }
 }

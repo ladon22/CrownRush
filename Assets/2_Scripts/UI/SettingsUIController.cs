@@ -29,7 +29,7 @@ public class SettingsUIController : MonoBehaviour
     private const string PrivacyPolicyUrlEn = "https://crownrush.net/privacy-policy.html";
     private const string PrivacyPolicyUrlKo = "https://crownrush.net/privacy-policy-ko.html";
 
-    private bool bManageGameState = true;
+    private bool ManageGameState = true;
 
     private void Awake()
     {
@@ -40,7 +40,7 @@ public class SettingsUIController : MonoBehaviour
     {
         if (gameObject.activeInHierarchy) return;
 
-        bManageGameState = manageGameState;
+        ManageGameState = manageGameState;
 
         if (Overlay != null)
             Overlay.SetActive(manageGameState);
@@ -49,14 +49,12 @@ public class SettingsUIController : MonoBehaviour
             GameManager.Instance.InputController.PushInputLock();
 
         gameObject.SetActive(true);
-        // 1. 오디오 토글 UI 초기화 (AudioManager 연동)
         if (AudioManager.Instance != null)
         {
             if (BGMToggle != null) BGMToggle.SetIsOnWithoutNotify(AudioManager.Instance.IsBGMOn);
             if (SFXToggle != null) SFXToggle.SetIsOnWithoutNotify(AudioManager.Instance.IsSFXOn);
         }
 
-        // 2. 화면 흔들림 토글 UI 초기화
         if (SettingsManager.Instance != null )
         {
             if(VibrationToggle != null)
@@ -68,7 +66,6 @@ public class SettingsUIController : MonoBehaviour
             }
         }
 
-        // 3. 공식 Localization 언어 드롭다운 초기화
         if (LanguageDropdown != null && LocalizationSettings.AvailableLocales != null)
         {
             LanguageDropdown.SetValueWithoutNotify(LocalizationSettings.AvailableLocales.Locales.IndexOf(LocalizationSettings.SelectedLocale));
@@ -91,7 +88,7 @@ public class SettingsUIController : MonoBehaviour
             .SetUpdate(true)
             .OnComplete(() => {
                 gameObject.SetActive(false);
-                if (bManageGameState)
+                if (ManageGameState)
                 {
                     Time.timeScale = 1.0f;
                     if (GameManager.Instance != null)
@@ -142,10 +139,8 @@ public class SettingsUIController : MonoBehaviour
 
     private IEnumerator SetLocaleRoutine(int localeID)
     {
-        // 1. 다국어 시스템이 완벽하게 로딩될 때까지 안전하게 기다립니다.
         yield return LocalizationSettings.InitializationOperation;
 
-        // 2. 시스템이 준비되면 언어를 교체합니다.
         if (LocalizationSettings.AvailableLocales != null && localeID < LocalizationSettings.AvailableLocales.Locales.Count)
         {
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[localeID];
