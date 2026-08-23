@@ -1,13 +1,13 @@
 # Crown Rush
 
-체스 말을 스와이프로 이동시켜 진영을 방어하는 턴제 디펜스 로그라이트 모바일 게임입니다. Unity 개인 프로젝트로, 기획부터 프로그래밍까지 전부 혼자 작업했습니다.
+체스 말을 스와이프로 움직여 사방에서 몰려오는 적을 막아내는 턴제 서바이벌 모바일 게임.
 
 - 플랫폼: Android
 - 엔진/언어: Unity, C#
 - 개발 형태: 개인 프로젝트 (1인)
 
 ## 플레이 영상
-https://youtube.com/shorts/KT6_VUsvrk8
+https://youtu.be/IHdLX39VNvg
 
 ## 다운로드
 https://play.google.com/store/apps/details?id=com.bearhand.projectchess
