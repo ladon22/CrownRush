@@ -1,5 +1,7 @@
 ﻿using DG.Tweening;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PauseMenuController : MonoBehaviour
 {
@@ -33,10 +35,19 @@ public class PauseMenuController : MonoBehaviour
             PanelRect.gameObject.SetActive(true);
             PanelRect.DOKill();
             PanelRect.localScale = Vector3.one;
+            StartCoroutine(RebuildLayoutNextFrame());
         }
 
         if (UIBackHandler.Instance != null)
             UIBackHandler.Instance.Push(OnContinueButton);
+    }
+
+    private IEnumerator RebuildLayoutNextFrame()
+    {
+        // TMP_Text가 활성화 직후 첫 프레임에 preferred size를 잘못 보고하는 타이밍 문제 때문에
+        // ContentSizeFitter + HorizontalLayoutGroup 조합의 아이콘/텍스트가 한 프레임 겹쳐 보이는 것을 방지
+        yield return null;
+        LayoutRebuilder.ForceRebuildLayoutImmediate(PanelRect);
     }
 
     public void OnContinueButton()

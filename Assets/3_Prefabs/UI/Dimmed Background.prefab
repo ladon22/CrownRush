@@ -327,7 +327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2ab6a93bf6875945b8269f523280a65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScaleEffect
-  pressedScale: {x: 0.95, y: 0.95, z: 1}
+  PressedScale: {x: 0.95, y: 0.95, z: 1}
 --- !u!114 &3047263980193290112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -822,7 +822,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2ab6a93bf6875945b8269f523280a65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScaleEffect
-  pressedScale: {x: 0.95, y: 0.95, z: 1}
+  PressedScale: {x: 0.95, y: 0.95, z: 1}
 --- !u!114 &3369647309898400739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -900,7 +900,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 96.5, y: -30}
-  m_SizeDelta: {x: 112.01, y: 0}
+  m_SizeDelta: {x: 66.51, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8051604617067183315
 CanvasRenderer:
@@ -1107,7 +1107,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 96.5, y: -30}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 153.76, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8094917548887143537
 CanvasRenderer:
@@ -1404,7 +1404,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 96.5, y: -30}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 67.51, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &385631713009181851
 CanvasRenderer:
@@ -1806,7 +1806,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2ab6a93bf6875945b8269f523280a65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonScaleEffect
-  pressedScale: {x: 0.95, y: 0.95, z: 1}
+  PressedScale: {x: 0.95, y: 0.95, z: 1}
 --- !u!114 &1631378493228947862
 MonoBehaviour:
   m_ObjectHideFlags: 0
