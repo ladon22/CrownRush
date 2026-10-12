@@ -229,6 +229,8 @@ public class EnemyManager : MonoBehaviour
             yield return MoveRoutine;
         }
 
+        if (GameManager.Instance != null && GameManager.Instance.CurrentState == GameState.GameOver) yield break;
+
         MaintainEnemyCount();
     }
 

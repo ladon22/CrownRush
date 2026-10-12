@@ -27,11 +27,14 @@ public class TurnManager : MonoBehaviour
     private IEnumerator EnemyTurnRoutine()
     {
         GameManager.Instance.ChangeState(GameState.EnemyTurn);
+        GameManager.Instance.InputController.SetTurnInputBlocked(true);
 
         if (EnemyManager != null) EnemyManager.ClearAllIntents();
         yield return new WaitForSeconds(TurnDelay);
 
         yield return StartCoroutine(EnemyManager.ProcessEnemiesTurnRoutine());
+
+        if (GameManager.Instance.CurrentState == GameState.GameOver) yield break;
 
         if (TutorialHintManager.Instance != null)
             TutorialHintManager.Instance.TryShowHint(TutorialHintID.Intent);
@@ -43,12 +46,11 @@ public class TurnManager : MonoBehaviour
     {
 
         GameManager.Instance.ChangeState(GameState.PlayerTurn);
+        GameManager.Instance.InputController.SetTurnInputBlocked(false);
+
         if (EnemyManager != null) EnemyManager.UpdateEnemyIntents();
 
         yield return new WaitForSeconds(TurnDelay);
-
-        if (GameManager.Instance != null)
-            GameManager.Instance.InputController.PopInputLock();
 
         if (TutorialHintManager.Instance != null)
             TutorialHintManager.Instance.TryShowHint(TutorialHintID.Swipe);

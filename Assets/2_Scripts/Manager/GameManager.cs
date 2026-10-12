@@ -170,7 +170,7 @@ public class GameManager : MonoBehaviour
         if (AudioManager.Instance != null) AudioManager.Instance.PlayBGM(BgmType.InGame);
 
         if (InputController != null)
-            InputController.PushInputLock();
+            InputController.SetTurnInputBlocked(true);
 
         DOVirtual.DelayedCall(StartDelay, () =>
         {
@@ -184,6 +184,9 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         ChangeState(GameState.GameOver);
+
+        if (InputController != null)
+            InputController.SetTurnInputBlocked(true);
 
         int playCount = PlayerPrefs.GetInt("TotalPlayCount", 0) + 1;
         PlayerPrefs.SetInt("TotalPlayCount", playCount);
@@ -259,7 +262,7 @@ public class GameManager : MonoBehaviour
             ScoreManager.ResetCombo();
         }
 
-        ChangeState(GameState.PlayerTurn);
+        if (TurnManager != null) TurnManager.StartPlayerTurn();
 
         if (UITransition != null) UITransition.SlideToGame();
     }
@@ -284,6 +287,9 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
 
         ChangeState(GameState.Lobby);
+
+        if (InputController != null)
+            InputController.SetTurnInputBlocked(true);
 
         if (AudioManager.Instance != null)
             AudioManager.Instance.PlayBGM(BgmType.Lobby);

@@ -14,14 +14,18 @@ public class InputController : MonoBehaviour
 
     public float SwipeThreshold = 50f;
 
-    public int InputLockCount = 0;
-    public bool IsInputLocked => InputLockCount > 0;
+    private int InputLockCount = 0;
+    private bool IsTurnInputBlocked = true;
+
+    public bool IsInputLocked => InputLockCount > 0 || IsTurnInputBlocked;
+    private bool IsPanelInputLocked => InputLockCount > 0;
     public void PushInputLock() { InputLockCount++; }
     public void PopInputLock() { InputLockCount = Mathf.Max(0, InputLockCount - 1); }
+    public void SetTurnInputBlocked(bool IsBlocked) { IsTurnInputBlocked = IsBlocked; }
 
     void Update()
     {
-        if (IsInputLocked)
+        if (IsPanelInputLocked)
         {
             IsDragging = false;
             return;

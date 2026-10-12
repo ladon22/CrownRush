@@ -668,8 +668,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5c158de6c941304aa8346a7957bdea7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FireBaseManager
-  bIsLoginSequenceFinished: 0
-  bUseFirebase: 1
+  IsLoginSequenceFinished: 0
+  UseFirebase: 1
 --- !u!1 &1239357167
 GameObject:
   m_ObjectHideFlags: 0
@@ -714,10 +714,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20cfec27e97471d439ee623eed3b925b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AdManager
-  bDebugForceEEA: 0
+  DebugForceEEA: 0
   DebugTestDeviceHashedIds:
   - D8B79CD207BA50E9BDC4DC1A1E442932
-  bResetConsentOnLaunch: 0
+  ResetConsentOnLaunch: 0
 --- !u!1 &1243430210
 GameObject:
   m_ObjectHideFlags: 0
