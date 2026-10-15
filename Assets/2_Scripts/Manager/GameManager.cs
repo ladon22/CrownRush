@@ -56,6 +56,9 @@ public class GameManager : MonoBehaviour
     {
         ChangeState(GameState.Lobby);
 
+        if (InputController != null)
+            InputController.SetTurnInputBlocked(false);
+
         if (!IsInitialized)
         {
             InitializeGameStage();
@@ -289,7 +292,7 @@ public class GameManager : MonoBehaviour
         ChangeState(GameState.Lobby);
 
         if (InputController != null)
-            InputController.SetTurnInputBlocked(true);
+            InputController.SetTurnInputBlocked(false);
 
         if (AudioManager.Instance != null)
             AudioManager.Instance.PlayBGM(BgmType.Lobby);

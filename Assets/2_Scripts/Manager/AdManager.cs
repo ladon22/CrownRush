@@ -119,7 +119,10 @@ public class AdManager : MonoBehaviour
 
         MobileAds.Initialize(initStatus =>
         {
-            LoadRewardedAd();
+            MainThreadContext.Post(_ =>
+            {
+                LoadRewardedAd();
+            }, null);
         });
     }
 
@@ -135,12 +138,15 @@ public class AdManager : MonoBehaviour
         AdRequest adRequest = new AdRequest();
         RewardedAd.Load(AdUnitId, adRequest, (RewardedAd ad, LoadAdError error) =>
         {
-            if (error != null || ad == null)
+            MainThreadContext.Post(_ =>
             {
-                Invoke(nameof(LoadRewardedAd), 30f);
-                return;
-            }
-            RewardedAd = ad;
+                if (error != null || ad == null)
+                {
+                    Invoke(nameof(LoadRewardedAd), 30f);
+                    return;
+                }
+                RewardedAd = ad;
+            }, null);
         });
     }
 
@@ -161,19 +167,22 @@ public class AdManager : MonoBehaviour
 
     private void OnAdClosed()
     {
-        RewardedAd.OnAdFullScreenContentClosed -= OnAdClosed;
-
-        if (RewardEarned)
+        MainThreadContext.Post(_ =>
         {
-            OnRewardEarned?.Invoke();
-        }
+            RewardedAd.OnAdFullScreenContentClosed -= OnAdClosed;
 
-        RewardEarned = false;
-        OnRewardEarned = null;
+            if (RewardEarned)
+            {
+                OnRewardEarned?.Invoke();
+            }
 
-        LoadRewardedAd();
+            RewardEarned = false;
+            OnRewardEarned = null;
 
-        StartCoroutine(ClearAdTransitionFlagAfterDelay());
+            LoadRewardedAd();
+
+            StartCoroutine(ClearAdTransitionFlagAfterDelay());
+        }, null);
     }
 
     private IEnumerator ClearAdTransitionFlagAfterDelay()
