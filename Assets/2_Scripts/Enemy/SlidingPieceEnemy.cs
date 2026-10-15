@@ -18,15 +18,13 @@ public abstract class SlidingPieceEnemy : EnemyBase
                 CheckX += Dir.x;
                 CheckY += Dir.y;
                 if (!GridManager.IsValidGridPosition(CheckX, CheckY)) break;
-                if (IsPositionOccupied(CheckX, CheckY))
+                if (Player.CurrentX == CheckX && Player.CurrentY == CheckY)
                 {
-                    if (Player.CurrentX == CheckX && Player.CurrentY == CheckY)
-                    {
-                        BestMove = new Vector2Int(CheckX, CheckY);
-                        MinDistance = 0;
-                    }
+                    BestMove = new Vector2Int(CheckX, CheckY);
+                    MinDistance = 0;
                     break;
                 }
+                if (IsPositionOccupied(CheckX, CheckY)) break;
                 float dist = Vector2.Distance(new Vector2(CheckX, CheckY), 
                     new Vector2(Player.CurrentX, Player.CurrentY));
                 if (dist < MinDistance)
